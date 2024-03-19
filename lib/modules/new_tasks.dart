@@ -9,7 +9,7 @@ import '../shared/styles/styles.dart';
 
 
 class NewTasksScreen extends StatelessWidget {
-  const NewTasksScreen({super.key});
+   NewTasksScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -17,6 +17,12 @@ class NewTasksScreen extends StatelessWidget {
       listener: (context, state) {},
       builder: (context, state) {
         var tasks = AppCubit.get(context).newTasks;
+        if (!AppCubit.get(context).sortAscending) {
+          tasks.sort((a, b) => b['id'].compareTo(a['id'])); // Change 'date' to your sorting key
+        } else {
+          tasks.sort((a, b) => a['id'].compareTo(b['id'])); // Change 'date' to your sorting key
+        }
+
         return ConditionalBuilder(
           condition: tasks.isEmpty,
           builder: (context) => Center(

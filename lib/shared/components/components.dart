@@ -19,12 +19,10 @@ Widget buildTextField({
 }) {
   return Expanded(
     child: Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 50.0),
+      padding: const EdgeInsets.symmetric(horizontal: 5.0),
       child: Container(
         decoration: BoxDecoration(
-          color: Styles.lightBlackColor,
-          border: Border.all(color: Styles.greyColor, width: 2),
-          borderRadius: BorderRadius.circular(26.0),
+          color: Styles.blackColor,
         ),
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
@@ -64,12 +62,15 @@ Widget buildTaskItem({required Map model, context, required index}) =>
       direction: DismissDirection.startToEnd,
       background: Container(
         alignment: AlignmentDirectional.centerStart,
-        color: Styles.gumColor,
+        color: Styles.blackColor,
         child: const Padding(
           padding: EdgeInsets.fromLTRB(30.0, 0.0, 10.0, 0.0),
-          child: Icon(
-            Icons.delete_forever_rounded,
-            color: Styles.blackColor,
+          child: CircleAvatar(
+            backgroundColor: Colors.red,
+            child: Icon(
+              Icons.delete_forever_rounded,
+              color: Styles.blackColor,
+            ),
           ),
         ),
       ),
@@ -87,11 +88,11 @@ Widget buildTaskItem({required Map model, context, required index}) =>
               children: [
                 Container(
                   constraints: BoxConstraints(
-                      maxWidth: MediaQuery.of(context).size.width * 0.65),
+                      maxWidth: MediaQuery.of(context).size.width * 0.85),
                   decoration: BoxDecoration(
                     border: Border.all(
-                      width: 1.5,
-                      color: Styles.gumColor,
+                      width: 1,
+                      color: Styles.lightBlackColor,
                     ),
                     borderRadius: BorderRadius.circular(15.0),
                     color: Styles.greyColor.withOpacity(0.2),
@@ -99,22 +100,47 @@ Widget buildTaskItem({required Map model, context, required index}) =>
                   child: Padding(
                     padding: const EdgeInsets.all(10.0),
                     child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 7),
-                          child: SizedBox(
-                            // width: 100,
-                            child: Text('${model['title']}',
+                        SizedBox(
+                          // width: MediaQuery.of(context).size.width * 0.85,
+                          // child: Text('${model['title']}',
+                          //     textAlign: TextAlign.left,
+                          //     overflow: TextOverflow.ellipsis,
+                          //     maxLines: 5,
+                          //     style: const TextStyle(
+                          //         fontFamily: 'Thunder',
+                          //         fontSize: 20,
+                          //         height: 1.1,
+                          //         letterSpacing: 2,
+                          //         color: Styles.whiteColor)),
+                          child: Row(mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              RichText(
                                 textAlign: TextAlign.left,
                                 overflow: TextOverflow.ellipsis,
                                 maxLines: 5,
-                                style: const TextStyle(
-                                    fontFamily: 'Thunder',
-                                    fontSize: 20,
+                                text: TextSpan(
+                                  style: const TextStyle(
+                                    fontSize: 15,
                                     height: 1.1,
                                     letterSpacing: 2,
-                                    color: Styles.whiteColor)),
+                                    color: Styles.whiteColor,
+                                  ),
+                                  children: [
+                                    TextSpan(
+                                      text: '${model['title'].split('\n')[0]}',
+                                      style: TextStyle(fontFamily:'bitter-bold'),
+                                    ),
+                                    TextSpan(
+                                      text: '\n${model['title'].split('\n').sublist(1).join('\n')}',
+                                      style: TextStyle(fontFamily:'bitter'),
+
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                         const SizedBox(
@@ -128,7 +154,7 @@ Widget buildTaskItem({required Map model, context, required index}) =>
                                   '${model['time']}',
                                   style: const TextStyle(
                                       fontSize: 10,
-                                      fontFamily: 'Thunder',
+                                      fontFamily: 'bitter',
                                       color: Styles.greyColor),
                                 ),
                                 const SizedBox(width: 10,),

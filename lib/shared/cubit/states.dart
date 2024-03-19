@@ -18,5 +18,7 @@ class AppDeleteDatabaseState extends AppStates{}
 
 class AppChangeBottomSheetState extends AppStates{}
 
+class ToggleSortingOrderState extends AppStates{}
+
 
 

@@ -1,3 +1,5 @@
+
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sqflite/sqflite.dart';
@@ -9,14 +11,20 @@ import 'states.dart';
 class AppCubit extends Cubit<AppStates> {
   AppCubit() : super(AppInitialState());
   static AppCubit get(context) => BlocProvider.of(context);
-
   var currentIndex = 0;
+  bool sortAscending = true; // Initial sorting order
 
+  // Method to toggle sorting order
+  void toggleSortingOrder() {
+    sortAscending = !sortAscending;
+    // Emit a new state indicating that sorting order has changed
+    emit(ToggleSortingOrderState());
+  }
 
   List<Widget> screens = [
-    const NewTasksScreen(),
-    const DoneTasksScreen(),
-    const ArchivedTasksScreen(),
+     NewTasksScreen(),
+    // const DoneTasksScreen(),
+    // const ArchivedTasksScreen(),
   ];
 
   List<String> titles = ['New Tasks', 'Done Tasks', 'Archived Tasks'];
@@ -126,14 +134,11 @@ class AppCubit extends Cubit<AppStates> {
   }
 
   var isBottomSheetShown = false;
-  var fabIcon = Icons.edit;
 
   void changeAddTaskIcon(
     bool showing,
-    IconData icon,
   ) {
     isBottomSheetShown = showing;
-    fabIcon = icon;
     emit(AppChangeBottomSheetState());
   }
 }
