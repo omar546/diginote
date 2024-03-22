@@ -10,7 +10,7 @@ Widget buildTextField({
   required BuildContext context,
   required String labelText,
   required TextEditingController controller,
-  required IconData prefix,
+  IconData? prefix,
   bool isClickable = true,
   var onTap,
   var validate,
@@ -20,37 +20,34 @@ Widget buildTextField({
 }) {
   return Expanded(
     child: Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 5.0),
+      padding: const EdgeInsets.only(left: 5.0),
       child: Container(
         decoration: BoxDecoration(
           color: Styles.blackColor,
         ),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-          child: TextFormField(
-            enabled: isClickable,
-            validator: validate,
-            keyboardType: type,
-            minLines: 1,
-            maxLines: null,
-            onFieldSubmitted: onSubmit,
-            onChanged: onChange,
-            onTap: onTap,
-            style: const TextStyle(color: Styles.greyColor, fontSize: 16),
-            cursorColor: Styles.gumColor,
-            controller: controller,
-            // Set the validator function
-            decoration: InputDecoration(
-              prefixIcon: Icon(prefix, color: Styles.gumColor),
-              hintText: labelText,
-              hintStyle: TextStyle(
-                color: Styles.gumColor.withOpacity(0.5),
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-              ),
-              // contentPadding: const EdgeInsets.symmetric(vertical: 4.0),
-              border: InputBorder.none,
+        child: TextFormField(
+          enabled: isClickable,
+          validator: validate,
+          keyboardType: type,
+          minLines: 1,
+          maxLines: null,
+          onFieldSubmitted: onSubmit,
+          onChanged: onChange,
+          onTap: onTap,
+          style: const TextStyle(color: Styles.greyColor, fontSize: 16),
+          cursorColor: Styles.gumColor,
+          controller: controller,
+          // Set the validator function
+          decoration: InputDecoration(
+            prefixIcon: Icon(prefix, color: Styles.gumColor),
+            hintText: labelText,
+            hintStyle: TextStyle(
+              color: Styles.gumColor.withOpacity(0.5),
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
             ),
+            // contentPadding: const EdgeInsets.symmetric(vertical: 4.0),
+            border: InputBorder.none,
           ),
         ),
       ),

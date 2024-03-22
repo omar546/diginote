@@ -85,7 +85,6 @@ class HomeLayout extends StatelessWidget {
                                 context: context,
                                 labelText: 'Title',
                                 controller: titleController,
-                                prefix: Icons.title_rounded,
                                 validate: (String? value) {
                                   if (value == null || value.isEmpty) {
                                     return 'Please type a title';
@@ -280,213 +279,221 @@ class HomeLayout extends StatelessWidget {
                   const Center(child: CircularProgressIndicator())),
               fallback: ((context) => cubit.screens[cubit.currentIndex]),
             ),
-            floatingActionButton: Visibility(
-              visible: (cubit.isBottomSheetShown),
-              child: FloatingActionButton(
-                backgroundColor: Styles.gumColor,
-                child: Icon(
-                  Icons.check,
-                  color: Styles.blackColor,
-                ),
-                onPressed: () {
-                  if (cubit.isBottomSheetShown) {
-                    if (formKey.currentState!.validate()) {
-                      cubit
-                          .insertIntoDatabase(
-                        title: titleController.text,
-                        // date: dateController.text,
+            floatingActionButton: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [Padding(
+                padding: const EdgeInsets.only(left: 30.0),
+                child: FloatingActionButton(backgroundColor:Styles.gumColor,onPressed: (){},child: Icon(Icons.camera,size: 55,),),
+              ),
+                Visibility(
+                  visible: (cubit.isBottomSheetShown),
+                  child: FloatingActionButton(
+                    backgroundColor: Styles.gumColor,
+                    child: Icon(
+                      Icons.check,
+                      color: Styles.blackColor,
+                    ),
+                    onPressed: () {
+                      if (cubit.isBottomSheetShown) {
+                        if (formKey.currentState!.validate()) {
+                          cubit
+                              .insertIntoDatabase(
+                            title: titleController.text,
+                            // date: dateController.text,
 
-                         date: DateFormat.yMMMd()
-                             .format(DateTime.now()),
-                        // time: timeController.text,
-                         time: TimeOfDay.now().format(context),
-                      )
-                          .then(
-                        (value) {
-                          titleController.text = '';
-                          dateController.text = '';
-                          timeController.text = '';
-                        },
-                      ).catchError(
-                        (error) {},
-                      );
-                    }
-                  } else {
-                    scaffoldKey.currentState!
-                        .showBottomSheet(
-                          (context) => Container(
-                            color: Styles.lightBlackColor,
-                            child: Container(
-                              color: Styles.lightBlackColor,
-                              child: Form(
-                                key: formKey,
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    const SizedBox(
-                                        height: 35.0, width: double.infinity),
-                                    buildTextField(
+                             date: DateFormat.yMMMd()
+                                 .format(DateTime.now()),
+                            // time: timeController.text,
+                             time: TimeOfDay.now().format(context),
+                          )
+                              .then(
+                            (value) {
+                              titleController.text = '';
+                              dateController.text = '';
+                              timeController.text = '';
+                            },
+                          ).catchError(
+                            (error) {},
+                          );
+                        }
+                      } else {
+                        scaffoldKey.currentState!
+                            .showBottomSheet(
+                              (context) => Container(
+                                color: Styles.lightBlackColor,
+                                child: Container(
+                                  color: Styles.lightBlackColor,
+                                  child: Form(
+                                    key: formKey,
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        const SizedBox(
+                                            height: 35.0, width: double.infinity),
+                                        buildTextField(
 
-                                      context: context,
-                                      labelText: 'Title',
-                                      controller: titleController,
-                                      prefix: Icons.title_rounded,
-                                      validate: (String? value) {
-                                        if (value == null || value.isEmpty) {
-                                          return 'Please type a title';
-                                        }
-                                        return null; // Return null to indicate the input is valid
-                                      },
-                                      type: TextInputType.multiline,
+                                          context: context,
+                                          labelText: 'Title',
+                                          controller: titleController,
+                                          prefix: Icons.title_rounded,
+                                          validate: (String? value) {
+                                            if (value == null || value.isEmpty) {
+                                              return 'Please type a title';
+                                            }
+                                            return null; // Return null to indicate the input is valid
+                                          },
+                                          type: TextInputType.multiline,
+                                        ),
+                                        // Row(
+                                        //   mainAxisAlignment: MainAxisAlignment.center,
+                                        //   children: [
+                                        //     MaterialButton(
+                                        //       onPressed: () {
+                                        //         showDatePicker(
+                                        //           builder: (context, child) {
+                                        //             return Theme(
+                                        //               data:
+                                        //                   Theme.of(context).copyWith(
+                                        //                 colorScheme:
+                                        //                     const ColorScheme.dark(
+                                        //                   primary: Styles.gumColor,
+                                        //                   onPrimary:
+                                        //                       Styles.lightBlackColor,
+                                        //                   onSurface: Styles.greyColor,
+                                        //                 ),
+                                        //                 dialogBackgroundColor:
+                                        //                     Styles.blackColor,
+                                        //                 textButtonTheme:
+                                        //                     TextButtonThemeData(
+                                        //                   style: TextButton.styleFrom(
+                                        //                     foregroundColor:
+                                        //                         Styles.gumColor,
+                                        //                   ),
+                                        //                 ),
+                                        //               ),
+                                        //               child: child!,
+                                        //             );
+                                        //           },
+                                        //           context: context,
+                                        //           initialDate: DateTime.now(),
+                                        //           firstDate: DateTime.now(),
+                                        //           lastDate: DateTime(2050),
+                                        //         ).then((date) {
+                                        //           dateController.text =
+                                        //               DateFormat.yMMMd()
+                                        //                   .format(date!);
+                                        //         });
+                                        //       },
+                                        //       // child: Row(
+                                        //       //   children: const [
+                                        //       //     Icon(
+                                        //       //       Icons.date_range_rounded,
+                                        //       //       color: Styles.gumColor,
+                                        //       //       size: 25,
+                                        //       //     ),
+                                        //       //     SizedBox(
+                                        //       //       width: 5,
+                                        //       //     ),
+                                        //       //     Text(
+                                        //       //       'Date',
+                                        //       //       style: TextStyle(
+                                        //       //           color: Styles.greyColor,
+                                        //       //           fontFamily: "Thunder",
+                                        //       //           fontSize: 16),
+                                        //       //     ),
+                                        //       //     SizedBox(
+                                        //       //       width: 15,
+                                        //       //     ),
+                                        //       //   ],
+                                        //       // ),
+                                        //     ),
+                                        //     MaterialButton(
+                                        //       onPressed: () {
+                                        //         showTimePicker(
+                                        //                 builder: (context, child) {
+                                        //                   return Theme(
+                                        //                     data: Theme.of(context)
+                                        //                         .copyWith(
+                                        //                       colorScheme:
+                                        //                           const ColorScheme
+                                        //                               .dark(
+                                        //                         primary: Styles
+                                        //                             .gumColor, // <-- SEE HERE
+                                        //                         onPrimary: Styles
+                                        //                             .blackColor, // <-- SEE HERE
+                                        //                         onSurface: Styles
+                                        //                             .greyColor, // <-- SEE HERE
+                                        //                       ),
+                                        //                       textButtonTheme:
+                                        //                           TextButtonThemeData(
+                                        //                         style: TextButton
+                                        //                             .styleFrom(
+                                        //                           foregroundColor: Styles
+                                        //                               .gumColor, // button text color
+                                        //                         ),
+                                        //                       ),
+                                        //                     ),
+                                        //                     child: child!,
+                                        //                   );
+                                        //                 },
+                                        //                 context: context,
+                                        //                 initialTime: TimeOfDay.now())
+                                        //             .then(
+                                        //           (time) {
+                                        //             timeController.text =
+                                        //                 time!.format(context);
+                                        //           },
+                                        //         ).catchError(
+                                        //           (error) {
+                                        //             timeController.text = "";
+                                        //           },
+                                        //         );
+                                        //       },
+                                        //       // child: Row(
+                                        //       //   children: const [
+                                        //       //     Icon(
+                                        //       //       Icons.access_time_rounded,
+                                        //       //       color: Styles.gumColor,
+                                        //       //       size: 25,
+                                        //       //     ),
+                                        //       //     SizedBox(
+                                        //       //       width: 5,
+                                        //       //     ),
+                                        //       //     Text(
+                                        //       //       'Time',
+                                        //       //       style: TextStyle(
+                                        //       //           color: Styles.greyColor,
+                                        //       //           fontFamily: "Thunder",
+                                        //       //           fontSize: 16),
+                                        //       //     ),
+                                        //       //   ],
+                                        //       // ),
+                                        //     ),
+                                        //   ],
+                                        // ),
+                                        // const SizedBox(height: 80.0, width: double.infinity),
+                                      ],
                                     ),
-                                    // Row(
-                                    //   mainAxisAlignment: MainAxisAlignment.center,
-                                    //   children: [
-                                    //     MaterialButton(
-                                    //       onPressed: () {
-                                    //         showDatePicker(
-                                    //           builder: (context, child) {
-                                    //             return Theme(
-                                    //               data:
-                                    //                   Theme.of(context).copyWith(
-                                    //                 colorScheme:
-                                    //                     const ColorScheme.dark(
-                                    //                   primary: Styles.gumColor,
-                                    //                   onPrimary:
-                                    //                       Styles.lightBlackColor,
-                                    //                   onSurface: Styles.greyColor,
-                                    //                 ),
-                                    //                 dialogBackgroundColor:
-                                    //                     Styles.blackColor,
-                                    //                 textButtonTheme:
-                                    //                     TextButtonThemeData(
-                                    //                   style: TextButton.styleFrom(
-                                    //                     foregroundColor:
-                                    //                         Styles.gumColor,
-                                    //                   ),
-                                    //                 ),
-                                    //               ),
-                                    //               child: child!,
-                                    //             );
-                                    //           },
-                                    //           context: context,
-                                    //           initialDate: DateTime.now(),
-                                    //           firstDate: DateTime.now(),
-                                    //           lastDate: DateTime(2050),
-                                    //         ).then((date) {
-                                    //           dateController.text =
-                                    //               DateFormat.yMMMd()
-                                    //                   .format(date!);
-                                    //         });
-                                    //       },
-                                    //       // child: Row(
-                                    //       //   children: const [
-                                    //       //     Icon(
-                                    //       //       Icons.date_range_rounded,
-                                    //       //       color: Styles.gumColor,
-                                    //       //       size: 25,
-                                    //       //     ),
-                                    //       //     SizedBox(
-                                    //       //       width: 5,
-                                    //       //     ),
-                                    //       //     Text(
-                                    //       //       'Date',
-                                    //       //       style: TextStyle(
-                                    //       //           color: Styles.greyColor,
-                                    //       //           fontFamily: "Thunder",
-                                    //       //           fontSize: 16),
-                                    //       //     ),
-                                    //       //     SizedBox(
-                                    //       //       width: 15,
-                                    //       //     ),
-                                    //       //   ],
-                                    //       // ),
-                                    //     ),
-                                    //     MaterialButton(
-                                    //       onPressed: () {
-                                    //         showTimePicker(
-                                    //                 builder: (context, child) {
-                                    //                   return Theme(
-                                    //                     data: Theme.of(context)
-                                    //                         .copyWith(
-                                    //                       colorScheme:
-                                    //                           const ColorScheme
-                                    //                               .dark(
-                                    //                         primary: Styles
-                                    //                             .gumColor, // <-- SEE HERE
-                                    //                         onPrimary: Styles
-                                    //                             .blackColor, // <-- SEE HERE
-                                    //                         onSurface: Styles
-                                    //                             .greyColor, // <-- SEE HERE
-                                    //                       ),
-                                    //                       textButtonTheme:
-                                    //                           TextButtonThemeData(
-                                    //                         style: TextButton
-                                    //                             .styleFrom(
-                                    //                           foregroundColor: Styles
-                                    //                               .gumColor, // button text color
-                                    //                         ),
-                                    //                       ),
-                                    //                     ),
-                                    //                     child: child!,
-                                    //                   );
-                                    //                 },
-                                    //                 context: context,
-                                    //                 initialTime: TimeOfDay.now())
-                                    //             .then(
-                                    //           (time) {
-                                    //             timeController.text =
-                                    //                 time!.format(context);
-                                    //           },
-                                    //         ).catchError(
-                                    //           (error) {
-                                    //             timeController.text = "";
-                                    //           },
-                                    //         );
-                                    //       },
-                                    //       // child: Row(
-                                    //       //   children: const [
-                                    //       //     Icon(
-                                    //       //       Icons.access_time_rounded,
-                                    //       //       color: Styles.gumColor,
-                                    //       //       size: 25,
-                                    //       //     ),
-                                    //       //     SizedBox(
-                                    //       //       width: 5,
-                                    //       //     ),
-                                    //       //     Text(
-                                    //       //       'Time',
-                                    //       //       style: TextStyle(
-                                    //       //           color: Styles.greyColor,
-                                    //       //           fontFamily: "Thunder",
-                                    //       //           fontSize: 16),
-                                    //       //     ),
-                                    //       //   ],
-                                    //       // ),
-                                    //     ),
-                                    //   ],
-                                    // ),
-                                    // const SizedBox(height: 80.0, width: double.infinity),
-                                  ],
+                                  ),
                                 ),
                               ),
-                            ),
-                          ),
-                        )
-                        .closed
-                        .then(
-                      (value) {
-                        cubit.changeAddTaskIcon(false);
+                            )
+                            .closed
+                            .then(
+                          (value) {
+                            cubit.changeAddTaskIcon(false);
 
-                      },
-                    ).catchError(
-                      (error) {},
-                    );
+                          },
+                        ).catchError(
+                          (error) {},
+                        );
 
-                    cubit.changeAddTaskIcon(true);
-                  }
-                },
-              ),
+                        cubit.changeAddTaskIcon(true);
+                      }
+                    },
+                  ),
+                ),
+              ],
             ),
             // bottomNavigationBar: BottomNavigationBar(
             //   selectedItemColor: Styles.gumColor,
