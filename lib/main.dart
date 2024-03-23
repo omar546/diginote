@@ -28,9 +28,10 @@ void main() async {
 
   if(onBoarding != false)
   {
-
-    widget = LoginScreen();
-
+    widget = BlocProvider(
+      create: (context) => AppCubit()..createDatabase(),
+      child: LoginScreen(),
+    );
   }else
   {
     widget = const OnBoardingScreen();

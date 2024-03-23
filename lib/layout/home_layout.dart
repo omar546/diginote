@@ -1,4 +1,5 @@
 import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
+import 'package:diginotefromtodo/modules/EditScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -35,11 +36,13 @@ class HomeLayout extends StatelessWidget {
             appBar: AppBar(
               elevation: 0,
               automaticallyImplyLeading: false,
-              leading: (cubit.isBottomSheetShown) ? null : Padding(
+              leading: (cubit.isBottomSheetShown || cubit.currentIndex>0) ? null : Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 15.0),
                 child: IconButton(onPressed: (){AppCubit.get(context).toggleSortingOrder();},icon: const Icon(Icons.sort_rounded,size: 30,),color: Styles.gumColor,),
               ),
-              actions: (cubit.isBottomSheetShown) ? null : [IconButton(onPressed: (){},icon: const Icon(Icons.category_rounded,size: 30,),color: Styles.gumColor,),IconButton(onPressed: () {
+              actions: (cubit.isBottomSheetShown || cubit.currentIndex>0) ? null : [IconButton(onPressed: (){
+                    cubit.changeBottomNavBarState(cubit.currentIndex+1);
+              },icon: const Icon(Icons.category_rounded,size: 30,),color: Styles.gumColor,),IconButton(onPressed: () {
                 if (cubit.isBottomSheetShown) {
                   if (formKey.currentState!.validate()) {
                     cubit
@@ -92,134 +95,6 @@ class HomeLayout extends StatelessWidget {
                               ),
                               const SizedBox(
                                   height: 15.0, width: double.infinity),
-                              // Row(
-                              //   mainAxisAlignment: MainAxisAlignment.center,
-                              //   children: [
-                              //     MaterialButton(
-                              //       onPressed: () {
-                              //         showDatePicker(
-                              //           builder: (context, child) {
-                              //             return Theme(
-                              //               data:
-                              //               Theme.of(context).copyWith(
-                              //                 colorScheme:
-                              //                 const ColorScheme.dark(
-                              //                   primary: Styles.gumColor,
-                              //                   onPrimary:
-                              //                   Styles.lightBlackColor,
-                              //                   onSurface: Styles.greyColor,
-                              //                 ),
-                              //                 dialogBackgroundColor:
-                              //                 Styles.blackColor,
-                              //                 textButtonTheme:
-                              //                 TextButtonThemeData(
-                              //                   style: TextButton.styleFrom(
-                              //                     foregroundColor:
-                              //                     Styles.gumColor,
-                              //                   ),
-                              //                 ),
-                              //               ),
-                              //               child: child!,
-                              //             );
-                              //           },
-                              //           context: context,
-                              //           initialDate: DateTime.now(),
-                              //           firstDate: DateTime.now(),
-                              //           lastDate: DateTime(2050),
-                              //         ).then((date) {
-                              //           dateController.text =
-                              //               DateFormat.yMMMd()
-                              //                   .format(date!);
-                              //         });
-                              //       },
-                              //       // child: Row(
-                              //       //   children: const [
-                              //       //     Icon(
-                              //       //       Icons.date_range_rounded,
-                              //       //       color: Styles.gumColor,
-                              //       //       size: 25,
-                              //       //     ),
-                              //       //     SizedBox(
-                              //       //       width: 5,
-                              //       //     ),
-                              //       //     Text(
-                              //       //       'Date',
-                              //       //       style: TextStyle(
-                              //       //           color: Styles.greyColor,
-                              //       //           fontFamily: "Thunder",
-                              //       //           fontSize: 16),
-                              //       //     ),
-                              //       //     SizedBox(
-                              //       //       width: 15,
-                              //       //     ),
-                              //       //   ],
-                              //       // ),
-                              //     ),
-                              //     MaterialButton(
-                              //       onPressed: () {
-                              //         showTimePicker(
-                              //             builder: (context, child) {
-                              //               return Theme(
-                              //                 data: Theme.of(context)
-                              //                     .copyWith(
-                              //                   colorScheme:
-                              //                   const ColorScheme
-                              //                       .dark(
-                              //                     primary: Styles
-                              //                         .gumColor, // <-- SEE HERE
-                              //                     onPrimary: Styles
-                              //                         .blackColor, // <-- SEE HERE
-                              //                     onSurface: Styles
-                              //                         .greyColor, // <-- SEE HERE
-                              //                   ),
-                              //                   textButtonTheme:
-                              //                   TextButtonThemeData(
-                              //                     style: TextButton
-                              //                         .styleFrom(
-                              //                       foregroundColor: Styles
-                              //                           .gumColor, // button text color
-                              //                     ),
-                              //                   ),
-                              //                 ),
-                              //                 child: child!,
-                              //               );
-                              //             },
-                              //             context: context,
-                              //             initialTime: TimeOfDay.now())
-                              //             .then(
-                              //               (time) {
-                              //             timeController.text =
-                              //                 time!.format(context);
-                              //           },
-                              //         ).catchError(
-                              //               (error) {
-                              //             timeController.text = "";
-                              //           },
-                              //         );
-                              //       },
-                              //       // child: Row(
-                              //       //   children: const [
-                              //       //     Icon(
-                              //       //       Icons.access_time_rounded,
-                              //       //       color: Styles.gumColor,
-                              //       //       size: 25,
-                              //       //     ),
-                              //       //     SizedBox(
-                              //       //       width: 5,
-                              //       //     ),
-                              //       //     Text(
-                              //       //       'Time',
-                              //       //       style: TextStyle(
-                              //       //           color: Styles.greyColor,
-                              //       //           fontFamily: "Thunder",
-                              //       //           fontSize: 16),
-                              //       //     ),
-                              //       //   ],
-                              //       // ),
-                              //     ),
-                              //   ],
-                              // ),
-                              // const SizedBox(height: 80.0, width: double.infinity),
                               const SizedBox(
                                   height: 5.0, width: double.infinity),
                             ],
@@ -241,7 +116,7 @@ class HomeLayout extends StatelessWidget {
                   cubit.changeAddTaskIcon(true);
                 }
               },icon: const Icon(Icons.add_circle_rounded,size: 30,),color: Styles.gumColor,)],
-              title: (cubit.isBottomSheetShown) ? null : Container(
+              title: (cubit.isBottomSheetShown || cubit.currentIndex>0) ? null : Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(25.0,),
                   color: Theme.of(context).inputDecorationTheme.suffixIconColor ?? Colors.black, // Text color for dark theme,
@@ -284,8 +159,13 @@ class HomeLayout extends StatelessWidget {
               children: [Padding(
                 padding: const EdgeInsets.only(left: 30.0),
                 child: Visibility(
-                  visible: !(cubit.isBottomSheetShown),
-                    child: FloatingActionButton(backgroundColor:Styles.gumColor,onPressed: (){},child: Icon(Icons.camera,size: 55,),)),
+                  visible: (!(cubit.isBottomSheetShown) && (cubit.currentIndex!=2)),
+                    child: FloatingActionButton(backgroundColor:Styles.gumColor,onPressed: (){
+                      if(cubit.currentIndex==0){
+                          cubit.changeBottomNavBarState(1);}
+                      else{
+                        cubit.changeBottomNavBarState(2);}
+                    },child: Icon(Icons.camera,size: 55,),)),
               ),
                 Visibility(
                   visible: (cubit.isBottomSheetShown),
@@ -313,6 +193,7 @@ class HomeLayout extends StatelessWidget {
                               titleController.text = '';
                               dateController.text = '';
                               timeController.text = '';
+                              cubit.changeBottomNavBarState(0);
                             },
                           ).catchError(
                             (error) {},
@@ -320,7 +201,7 @@ class HomeLayout extends StatelessWidget {
                         }
                       } else {
                         scaffoldKey.currentState!
-                            .showBottomSheet(
+                            .showBottomSheet(enableDrag:  cubit.currentIndex<2,
                               (context) => Container(
                                 color: Theme.of(context).scaffoldBackgroundColor,
                                 child: Container(
@@ -346,134 +227,6 @@ class HomeLayout extends StatelessWidget {
                                           },
                                           type: TextInputType.multiline,
                                         ),
-                                        // Row(
-                                        //   mainAxisAlignment: MainAxisAlignment.center,
-                                        //   children: [
-                                        //     MaterialButton(
-                                        //       onPressed: () {
-                                        //         showDatePicker(
-                                        //           builder: (context, child) {
-                                        //             return Theme(
-                                        //               data:
-                                        //                   Theme.of(context).copyWith(
-                                        //                 colorScheme:
-                                        //                     const ColorScheme.dark(
-                                        //                   primary: Styles.gumColor,
-                                        //                   onPrimary:
-                                        //                       Styles.lightBlackColor,
-                                        //                   onSurface: Styles.greyColor,
-                                        //                 ),
-                                        //                 dialogBackgroundColor:
-                                        //                     Styles.blackColor,
-                                        //                 textButtonTheme:
-                                        //                     TextButtonThemeData(
-                                        //                   style: TextButton.styleFrom(
-                                        //                     foregroundColor:
-                                        //                         Styles.gumColor,
-                                        //                   ),
-                                        //                 ),
-                                        //               ),
-                                        //               child: child!,
-                                        //             );
-                                        //           },
-                                        //           context: context,
-                                        //           initialDate: DateTime.now(),
-                                        //           firstDate: DateTime.now(),
-                                        //           lastDate: DateTime(2050),
-                                        //         ).then((date) {
-                                        //           dateController.text =
-                                        //               DateFormat.yMMMd()
-                                        //                   .format(date!);
-                                        //         });
-                                        //       },
-                                        //       // child: Row(
-                                        //       //   children: const [
-                                        //       //     Icon(
-                                        //       //       Icons.date_range_rounded,
-                                        //       //       color: Styles.gumColor,
-                                        //       //       size: 25,
-                                        //       //     ),
-                                        //       //     SizedBox(
-                                        //       //       width: 5,
-                                        //       //     ),
-                                        //       //     Text(
-                                        //       //       'Date',
-                                        //       //       style: TextStyle(
-                                        //       //           color: Styles.greyColor,
-                                        //       //           fontFamily: "Thunder",
-                                        //       //           fontSize: 16),
-                                        //       //     ),
-                                        //       //     SizedBox(
-                                        //       //       width: 15,
-                                        //       //     ),
-                                        //       //   ],
-                                        //       // ),
-                                        //     ),
-                                        //     MaterialButton(
-                                        //       onPressed: () {
-                                        //         showTimePicker(
-                                        //                 builder: (context, child) {
-                                        //                   return Theme(
-                                        //                     data: Theme.of(context)
-                                        //                         .copyWith(
-                                        //                       colorScheme:
-                                        //                           const ColorScheme
-                                        //                               .dark(
-                                        //                         primary: Styles
-                                        //                             .gumColor, // <-- SEE HERE
-                                        //                         onPrimary: Styles
-                                        //                             .blackColor, // <-- SEE HERE
-                                        //                         onSurface: Styles
-                                        //                             .greyColor, // <-- SEE HERE
-                                        //                       ),
-                                        //                       textButtonTheme:
-                                        //                           TextButtonThemeData(
-                                        //                         style: TextButton
-                                        //                             .styleFrom(
-                                        //                           foregroundColor: Styles
-                                        //                               .gumColor, // button text color
-                                        //                         ),
-                                        //                       ),
-                                        //                     ),
-                                        //                     child: child!,
-                                        //                   );
-                                        //                 },
-                                        //                 context: context,
-                                        //                 initialTime: TimeOfDay.now())
-                                        //             .then(
-                                        //           (time) {
-                                        //             timeController.text =
-                                        //                 time!.format(context);
-                                        //           },
-                                        //         ).catchError(
-                                        //           (error) {
-                                        //             timeController.text = "";
-                                        //           },
-                                        //         );
-                                        //       },
-                                        //       // child: Row(
-                                        //       //   children: const [
-                                        //       //     Icon(
-                                        //       //       Icons.access_time_rounded,
-                                        //       //       color: Styles.gumColor,
-                                        //       //       size: 25,
-                                        //       //     ),
-                                        //       //     SizedBox(
-                                        //       //       width: 5,
-                                        //       //     ),
-                                        //       //     Text(
-                                        //       //       'Time',
-                                        //       //       style: TextStyle(
-                                        //       //           color: Styles.greyColor,
-                                        //       //           fontFamily: "Thunder",
-                                        //       //           fontSize: 16),
-                                        //       //     ),
-                                        //       //   ],
-                                        //       // ),
-                                        //     ),
-                                        //   ],
-                                        // ),
-                                        // const SizedBox(height: 80.0, width: double.infinity),
                                       ],
                                     ),
                                   ),
@@ -497,28 +250,6 @@ class HomeLayout extends StatelessWidget {
                 ),
               ],
             ),
-            // bottomNavigationBar: BottomNavigationBar(
-            //   selectedItemColor: Styles.gumColor,
-            //   unselectedItemColor: Styles.greyColor,
-            //   backgroundColor: Styles.blackColor,
-            //   type: BottomNavigationBarType.fixed,
-            //   currentIndex: cubit.currentIndex,
-            //   onTap: (index) => cubit.changeBottomNavBarState(index),
-            //   items: const [
-            //     BottomNavigationBarItem(
-            //       icon: Icon(Icons.view_list),
-            //       label: 'Tasks',
-            //     ),
-            //     BottomNavigationBarItem(
-            //       icon: Icon(Icons.done_outline_rounded),
-            //       label: 'Done',
-            //     ),
-            //     BottomNavigationBarItem(
-            //       icon: Icon(Icons.archive_outlined),
-            //       label: 'Archived',
-            //     ),
-            //   ],
-            // ),
           );
         },
       ),

@@ -8,8 +8,8 @@ import '../shared/cubit/states.dart';
 import '../shared/styles/styles.dart';
 
 
-class NewTasksScreen extends StatelessWidget {
-   NewTasksScreen({super.key});
+class NewNotesScreen extends StatelessWidget {
+   NewNotesScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

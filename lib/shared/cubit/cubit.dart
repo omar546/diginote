@@ -1,5 +1,8 @@
 
 
+import 'package:camera/camera.dart';
+import 'package:diginotefromtodo/modules/CameraScreen.dart';
+import 'package:diginotefromtodo/modules/loadingScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sqflite/sqflite.dart';
@@ -20,15 +23,21 @@ class AppCubit extends Cubit<AppStates> {
     emit(ToggleSortingOrderState());
   }
 
+  List<CameraDescription>? cameras;
+  CameraController? cameracontroller;
+  String imagePath = "";
+
   List<Widget> screens = [
-     NewTasksScreen(),
-    // const DoneTasksScreen(),
-    // const ArchivedTasksScreen(),
+     NewNotesScreen(),
+    CameraScreen(),
+    LoadingScreen(),
+
   ];
 
-  List<String> titles = ['New Tasks', 'Done Tasks', 'Archived Tasks'];
+  List<String> titles = ['New Notes', 'Loading', 'Camera'];
 
   void changeBottomNavBarState(index) {
+    if(index>2){index=0;}
     currentIndex = index;
     emit(AppChangeNavBarState());
   }
