@@ -3,8 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sqflite/sqflite.dart';
-import '../../modules/archived_tasks.dart';
-import '../../modules/done_tasks.dart';
+
 import '../../modules/new_tasks.dart';
 import 'states.dart';
 

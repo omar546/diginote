@@ -23,7 +23,7 @@ Widget buildTextField({
       padding: const EdgeInsets.only(left: 5.0),
       child: Container(
         decoration: BoxDecoration(
-          color: Styles.blackColor,
+          color: Theme.of(context).scaffoldBackgroundColor
         ),
         child: TextFormField(
           enabled: isClickable,
@@ -34,7 +34,7 @@ Widget buildTextField({
           onFieldSubmitted: onSubmit,
           onChanged: onChange,
           onTap: onTap,
-          style: const TextStyle(color: Styles.greyColor, fontSize: 16),
+          style: TextStyle(color:Theme.of(context).textTheme.bodyMedium?.color, fontSize: 16),
           cursorColor: Styles.gumColor,
           controller: controller,
           // Set the validator function
@@ -61,17 +61,17 @@ Widget buildTaskItem({required Map model, context, required index}) =>
           Clipboard.setData(ClipboardData(text: model['title']));
           showToast(message: 'Copied',state: ToastStates.SUCCESS);},
         child: Dismissible(
-        direction: DismissDirection.startToEnd,
+        direction: DismissDirection.endToStart,
         background: Container(
-          alignment: AlignmentDirectional.centerStart,
-          color: Styles.blackColor,
-          child: const Padding(
-            padding: EdgeInsets.fromLTRB(30.0, 0.0, 10.0, 0.0),
+          alignment: AlignmentDirectional.centerEnd,
+          color: Theme.of(context).scaffoldBackgroundColor,
+          child: Padding(
+            padding: EdgeInsets.only(right: 30),
             child: CircleAvatar(
               backgroundColor: Colors.red,
               child: Icon(
                 Icons.delete_forever_rounded,
-                color: Styles.blackColor,
+                color: Theme.of(context).scaffoldBackgroundColor,
               ),
             ),
           ),
@@ -94,10 +94,10 @@ Widget buildTaskItem({required Map model, context, required index}) =>
                     decoration: BoxDecoration(
                       border: Border.all(
                         width: 1,
-                        color: Styles.lightBlackColor,
+                        color: Theme.of(context).inputDecorationTheme.prefixIconColor?.withOpacity(0.5) ?? Colors.black,
                       ),
                       borderRadius: BorderRadius.circular(15.0),
-                      color: Styles.greyColor.withOpacity(0.2),
+                      color: Theme.of(context).inputDecorationTheme.suffixIconColor ?? Colors.black,
                     ),
                     child: Padding(
                       padding: const EdgeInsets.all(10.0),
@@ -124,11 +124,11 @@ Widget buildTaskItem({required Map model, context, required index}) =>
                                     overflow: TextOverflow.ellipsis,
                                     maxLines: 6,
                                     text: TextSpan(
-                                      style: const TextStyle(
+                                      style: TextStyle(
                                         fontSize: 15,
                                         height: 1.1,
                                         letterSpacing: 2,
-                                        color: Styles.whiteColor,
+                                        color: Theme.of(context).textTheme.bodyMedium?.color,
                                       ),
                                       children: [
                                         TextSpan(
@@ -156,18 +156,18 @@ Widget buildTaskItem({required Map model, context, required index}) =>
                                 children: [
                                   Text(
                                     '${model['time']}',
-                                    style: const TextStyle(
+                                    style: TextStyle(
                                         fontSize: 10,
                                         fontFamily: 'bitter',
-                                        color: Styles.greyColor),
+                                        color: Theme.of(context).inputDecorationTheme.prefixIconColor ?? Colors.black,),
                                   ),
                                   const SizedBox(width: 10,),
                                   Text(
                                     '${model['date']}',
-                                    style: const TextStyle(
+                                    style: TextStyle(
                                         fontSize: 10,
-                                        fontFamily: 'Thunder',
-                                        color: Styles.greyColor),
+                                        fontFamily: 'bitter',
+                                        color: Theme.of(context).inputDecorationTheme.prefixIconColor ?? Colors.black,),
                                   )
                                 ],
                               )),
@@ -344,8 +344,8 @@ void showToast({
 }) {
   Fluttertoast.showToast(
       msg: message,
-      toastLength: Toast.LENGTH_LONG,
-      gravity: ToastGravity.BOTTOM,
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.TOP,
       timeInSecForIosWeb: 5,
       backgroundColor: chooseToastColor(state),
       textColor: Colors.white,

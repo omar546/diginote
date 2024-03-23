@@ -11,7 +11,6 @@ import '../shared/styles/styles.dart';
 
 class HomeLayout extends StatelessWidget {
   HomeLayout({super.key});
-
   var scaffoldKey = GlobalKey<ScaffoldState>();
   var formKey = GlobalKey<FormState>();
   var titleController = TextEditingController();
@@ -33,11 +32,9 @@ class HomeLayout extends StatelessWidget {
 
           return Scaffold(
             key: scaffoldKey,
-            backgroundColor: Styles.blackColor,
             appBar: AppBar(
-              elevation: 2,
+              elevation: 0,
               automaticallyImplyLeading: false,
-              backgroundColor: Styles.blackColor,
               leading: (cubit.isBottomSheetShown) ? null : Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 15.0),
                 child: IconButton(onPressed: (){AppCubit.get(context).toggleSortingOrder();},icon: const Icon(Icons.sort_rounded,size: 30,),color: Styles.gumColor,),
@@ -70,9 +67,9 @@ class HomeLayout extends StatelessWidget {
                       .showBottomSheet(
                         (context) => Container(
                           height: double.infinity,
-                      color: Styles.blackColor,
+                      color: Theme.of(context).scaffoldBackgroundColor,
                       child: Container(
-                        color: Styles.blackColor,
+                        color: Theme.of(context).scaffoldBackgroundColor,
                         child: Form(
                           key: formKey,
                           child: Column(
@@ -247,7 +244,7 @@ class HomeLayout extends StatelessWidget {
               title: (cubit.isBottomSheetShown) ? null : Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(25.0,),
-                  color: Styles.lightBlackColor,
+                  color: Theme.of(context).inputDecorationTheme.suffixIconColor ?? Colors.black, // Text color for dark theme,
                 ),
                 padding: const EdgeInsets.all(5.0,),
                 child: Row(
@@ -256,7 +253,8 @@ class HomeLayout extends StatelessWidget {
                       width: 5.0,
                     ),
                     Icon(
-                        Icons.search,color: Styles.greyColor,
+                        Icons.search,
+                      color: Theme.of(context).inputDecorationTheme.prefixIconColor?.withOpacity(0.3) ?? Colors.black,
                     ),
                     SizedBox(
                       width: 5.0,
@@ -264,7 +262,7 @@ class HomeLayout extends StatelessWidget {
                     Text(
                       'Search',
                       style: TextStyle(
-                        color: Styles.greyColor,
+                        color:Theme.of(context).inputDecorationTheme.prefixIconColor?.withOpacity(0.5) ?? Colors.black,
                         fontSize: 10,
                       ),
                     ),
@@ -280,10 +278,14 @@ class HomeLayout extends StatelessWidget {
               fallback: ((context) => cubit.screens[cubit.currentIndex]),
             ),
             floatingActionButton: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: (cubit.isBottomSheetShown)
+                  ? MainAxisAlignment.end // Text color for light theme
+                  : MainAxisAlignment.center,
               children: [Padding(
                 padding: const EdgeInsets.only(left: 30.0),
-                child: FloatingActionButton(backgroundColor:Styles.gumColor,onPressed: (){},child: Icon(Icons.camera,size: 55,),),
+                child: Visibility(
+                  visible: !(cubit.isBottomSheetShown),
+                    child: FloatingActionButton(backgroundColor:Styles.gumColor,onPressed: (){},child: Icon(Icons.camera,size: 55,),)),
               ),
                 Visibility(
                   visible: (cubit.isBottomSheetShown),
@@ -291,7 +293,7 @@ class HomeLayout extends StatelessWidget {
                     backgroundColor: Styles.gumColor,
                     child: Icon(
                       Icons.check,
-                      color: Styles.blackColor,
+                      color: Theme.of(context).scaffoldBackgroundColor,
                     ),
                     onPressed: () {
                       if (cubit.isBottomSheetShown) {
@@ -320,9 +322,9 @@ class HomeLayout extends StatelessWidget {
                         scaffoldKey.currentState!
                             .showBottomSheet(
                               (context) => Container(
-                                color: Styles.lightBlackColor,
+                                color: Theme.of(context).scaffoldBackgroundColor,
                                 child: Container(
-                                  color: Styles.lightBlackColor,
+                                  color: Theme.of(context).scaffoldBackgroundColor,
                                   child: Form(
                                     key: formKey,
                                     child: Column(

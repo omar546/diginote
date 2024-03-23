@@ -47,7 +47,7 @@ class NewTasksScreen extends StatelessWidget {
           ),
           fallback: (context) => ListView.separated(
             itemBuilder: (context, index) => buildTaskItem(
-              model: tasks[index],context: context,index: 0
+              model: tasks[index],context: context,index: 0,
             ),
             separatorBuilder: (context, index) => const SizedBox(height: 1,
             ),
