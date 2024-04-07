@@ -27,8 +27,9 @@ class AppCubit extends Cubit<AppStates> {
   Future<void> initializeCamera() async {
     cameras = await availableCameras();
     if (cameras != null && cameras!.isNotEmpty) {
-      cameraController = CameraController(cameras![0], ResolutionPreset.max).setFlashMode(FlashMode.off) as CameraController?;
+      cameraController = CameraController(cameras![0], ResolutionPreset.max);
       await cameraController!.initialize();
+    cameraController?.setFlashMode(FlashMode.off);
       emit(AppCameraInitializedState());
     }
   }
