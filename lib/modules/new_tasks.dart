@@ -17,7 +17,7 @@ class NewNotesScreen extends StatelessWidget {
       listener: (context, state) {},
       builder: (context, state) {
         var tasks = AppCubit.get(context).newTasks;
-        if (!AppCubit.get(context).sortAscending) {
+        if (AppCubit.get(context).sortAscending) {
           tasks.sort((a, b) => b['id'].compareTo(a['id'])); // Change 'date' to your sorting key
         } else {
           tasks.sort((a, b) => a['id'].compareTo(b['id'])); // Change 'date' to your sorting key

@@ -3,6 +3,8 @@
 import 'package:camera/camera.dart';
 import 'package:diginotefromtodo/modules/CameraScreen.dart';
 import 'package:diginotefromtodo/modules/loadingScreen.dart';
+import 'package:diginotefromtodo/shared/components/components.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sqflite/sqflite.dart';
@@ -11,10 +13,45 @@ import '../../modules/new_tasks.dart';
 import 'states.dart';
 
 class AppCubit extends Cubit<AppStates> {
+  bool flashflag = false;
+  String imagePath = "";
   AppCubit() : super(AppInitialState());
   static AppCubit get(context) => BlocProvider.of(context);
   var currentIndex = 0;
   bool sortAscending = true; // Initial sorting order
+
+  List<CameraDescription>? cameras;
+  CameraController? cameraController;
+
+  // Initialize camera
+  Future<void> initializeCamera() async {
+    cameras = await availableCameras();
+    if (cameras != null && cameras!.isNotEmpty) {
+      cameraController = CameraController(cameras![0], ResolutionPreset.max).setFlashMode(FlashMode.off) as CameraController?;
+      await cameraController!.initialize();
+      emit(AppCameraInitializedState());
+    }
+  }
+
+  // Dispose camera
+  void disposeCamera() {
+    cameraController?.dispose();
+    emit(AppCameraDisposedState());
+  }
+
+  Future<void> take() async {
+    try {
+      // Take picture using camera controller
+      final image = await cameraController?.takePicture();
+      imagePath = image!.path;
+      // Emit a new state with the image path
+      emit(CameraPictureTaken());
+    } catch (e) {
+      // Handle errors
+      print('Error taking picture: $e');
+      emit(CameraError());
+    }
+  }
 
   // Method to toggle sorting order
   void toggleSortingOrder() {
@@ -23,14 +60,11 @@ class AppCubit extends Cubit<AppStates> {
     emit(ToggleSortingOrderState());
   }
 
-  List<CameraDescription>? cameras;
-  CameraController? cameracontroller;
-  String imagePath = "";
 
   List<Widget> screens = [
-     NewNotesScreen(),
+    NewNotesScreen(),
     CameraScreen(),
-    LoadingScreen(),
+    const LoadingScreen(),
 
   ];
 
@@ -39,6 +73,7 @@ class AppCubit extends Cubit<AppStates> {
   void changeBottomNavBarState(index) {
     if(index>2){index=0;}
     currentIndex = index;
+    if(index==2){disposeCamera();}
     emit(AppChangeNavBarState());
   }
 
@@ -80,6 +115,7 @@ class AppCubit extends Cubit<AppStates> {
             .then(
           (value) {
             emit(AppInsertDatabaseState());
+            changeBottomNavBarState(0);
             getFromDatabase(database);
           },
         );

@@ -1,64 +1,49 @@
 import 'package:camera/camera.dart';
-import 'package:diginotefromtodo/modules/loadingScreen.dart';
 import 'package:flutter/material.dart';
 
-class CameraScreen extends StatefulWidget {
-  const CameraScreen({Key? key}) : super(key: key);
+import '../shared/cubit/cubit.dart';
 
-  @override
-  State<CameraScreen> createState() => _CameraScreenState();
-}
-
-class _CameraScreenState extends State<CameraScreen> {
-  List<CameraDescription>? cameras;
-  CameraController? controller;
-  String imagePath = "";
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsFlutterBinding.ensureInitialized();
-
-    // Get a list of available cameras
-    availableCameras().then((cameraList) {
-      cameras = cameraList;
-      if (cameras != null && cameras!.isNotEmpty) {
-        controller = CameraController(cameras![0], ResolutionPreset.max);
-        controller!.initialize().then((_) {
-          if (!mounted) {
-            return;
-          }
-          setState(() {});
-        });
-      }
-    });
-  }
-
-  @override
-  void dispose() {
-    controller?.dispose();
-    super.dispose();
-  }
-
+class CameraScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(children: [
-        if (controller != null && controller!.value.isInitialized)
-          Expanded(
-            child: Container(
-              child: AspectRatio(
-                aspectRatio: controller!.value.aspectRatio,
-                child: CameraPreview(controller!),
-              ),
-            ),
-          ),
-        SizedBox(height: 100,), // Add space between the buttons
-
-
-      ]),
+      body: FutureBuilder<void>(
+        future: _initializeCamera(context),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            final appCubit = AppCubit.get(context);
+            if (appCubit.cameraController != null &&
+                appCubit.cameraController!.value.isInitialized) {
+              return Column(
+                children: [
+                  Expanded(
+                    child: AspectRatio(
+                      aspectRatio: appCubit.cameraController!.value.aspectRatio,
+                      child: CameraPreview(appCubit.cameraController!),
+                    ),
+                  ),
+                  SizedBox(height: 100,)
+                ],
+              );
+            } else {
+              return Container(
+                color: Colors.white, // Placeholder for when camera is not initialized
+              );
+            }
+          } else {
+            return Center(
+              child: LinearProgressIndicator(), // Loading indicator while initializing camera
+            );
+          }
+        },
+      ),
     );
   }
+
+  Future<void> _initializeCamera(BuildContext context) async {
+    final appCubit = AppCubit.get(context);
+    if (appCubit.cameraController == null) {
+      await appCubit.initializeCamera();
+    }
+  }
 }
-
-
