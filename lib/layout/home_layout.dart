@@ -60,41 +60,20 @@ class HomeLayout extends StatelessWidget {
                           color: Styles.gumColor,
                         ),
               actions: (cubit.isBottomSheetShown || cubit.currentIndex > 0)
-                  ? [
-                      (cubit.flashflag == false)
-                          ? Visibility(
-                              visible: !cubit.isBottomSheetShown,
-                              child: IconButton(
-                                onPressed: () {
-                                  cubit.cameraController
-                                      ?.setFlashMode(FlashMode.off);
-                                  cubit.flashflag = !cubit.flashflag;
-                                  cubit.emit(AppCameraFlashState());
-                                },
-                                icon: Icon(
-                                  Icons.flash_on_rounded,
-                                  size: 30,
-                                ),
-                                color: Styles.gumColor,
-                              ),
-                            )
-                          : Visibility(
-                              visible: !cubit.isBottomSheetShown,
-                              child: IconButton(
-                                onPressed: () {
-                                  cubit.cameraController
-                                      ?.setFlashMode(FlashMode.always);
-                                  cubit.flashflag = !cubit.flashflag;
-                                  cubit.emit(AppCameraFlashState());
-                                },
-                                icon: Icon(
-                                  Icons.flash_off_rounded,
-                                  size: 30,
-                                ),
-                                color: Styles.gumColor,
-                              ),
-                            )
-                    ]
+                  ? [IconButton(onPressed: () async {
+                if (cubit.currentIndex == 0) {
+                  cubit.changeBottomNavBarState(1);
+                } else {
+                  await cubit.pickImageFromGallery().then((value) =>
+                      cubit.insertIntoDatabase(
+                          title:
+                          'camera test\npath${cubit.imagePath}',
+                          time: TimeOfDay.now().format(context),
+                          date: DateFormat.yMMMd()
+                              .format(DateTime.now())));
+                  // cubit.disposeCamera();
+                }
+              }, icon: Icon(Icons.image_search_rounded,size: 30,color: Styles.gumColor,))]
                   : [
                       IconButton(
                         onPressed: () {},
@@ -134,38 +113,42 @@ class HomeLayout extends StatelessWidget {
                                     height: double.infinity,
                                     color: Theme.of(context)
                                         .scaffoldBackgroundColor,
-                                    child: Container(
-                                      color: Theme.of(context)
-                                          .scaffoldBackgroundColor,
-                                      child: Form(
-                                        key: formKey,
-                                        child: Column(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            const SizedBox(
-                                                height: 35.0,
-                                                width: double.infinity),
-                                            buildTextField(
-                                              context: context,
-                                              labelText: 'Title',
-                                              controller: titleController,
-                                              validate: (String? value) {
-                                                if (value == null ||
-                                                    value.isEmpty) {
-                                                  return 'Please type a title';
-                                                }
-                                                return null; // Return null to indicate the input is valid
-                                              },
-                                              type: TextInputType.multiline,
-                                            ),
-                                            const SizedBox(
-                                                height: 15.0,
-                                                width: double.infinity),
-                                            const SizedBox(
-                                                height: 5.0,
-                                                width: double.infinity),
-                                          ],
-                                        ),
+                                    child: Form(
+                                      key: formKey,
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Container(
+                                            height: 3,
+                                            width: 80,
+                                            decoration: BoxDecoration(
+                                                color: Styles.greyColor,
+                                                borderRadius:
+                                                    BorderRadius.circular(5)),
+                                          ),
+                                          const SizedBox(
+                                              height: 35.0,
+                                              width: double.infinity),
+                                          buildTextField(
+                                            context: context,
+                                            labelText: 'Title',
+                                            controller: titleController,
+                                            validate: (String? value) {
+                                              if (value == null ||
+                                                  value.isEmpty) {
+                                                return 'Please type a title';
+                                              }
+                                              return null; // Return null to indicate the input is valid
+                                            },
+                                            type: TextInputType.multiline,
+                                          ),
+                                          const SizedBox(
+                                              height: 15.0,
+                                              width: double.infinity),
+                                          const SizedBox(
+                                              height: 5.0,
+                                              width: double.infinity),
+                                        ],
                                       ),
                                     ),
                                   ),
@@ -254,11 +237,11 @@ class HomeLayout extends StatelessWidget {
                           (cubit.currentIndex != 2)),
                       child: FloatingActionButton(
                         backgroundColor: Styles.gumColor,
-                        onPressed: () {
+                        onPressed: () async {
                           if (cubit.currentIndex == 0) {
                             cubit.changeBottomNavBarState(1);
                           } else {
-                            cubit.take().then((value) =>
+                            await cubit.take().then((value) =>
                                 cubit.insertIntoDatabase(
                                     title:
                                         'camera test\npath${cubit.imagePath}',

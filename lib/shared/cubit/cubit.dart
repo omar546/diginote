@@ -1,14 +1,15 @@
 
 
 import 'package:camera/camera.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:diginotefromtodo/modules/CameraScreen.dart';
 import 'package:diginotefromtodo/modules/loadingScreen.dart';
-import 'package:diginotefromtodo/shared/components/components.dart';
-import 'package:flutter/foundation.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sqflite/sqflite.dart';
 
+import '../../modules/categoryScreen.dart';
 import '../../modules/new_tasks.dart';
 import 'states.dart';
 
@@ -40,6 +41,21 @@ class AppCubit extends Cubit<AppStates> {
     emit(AppCameraDisposedState());
   }
 
+  Future<void> pickImageFromGallery() async {
+    final imagePicker = ImagePicker();
+    final XFile? pickedImage = await imagePicker.pickImage(
+      source: ImageSource.gallery,
+    );
+
+    if (pickedImage != null) {
+      // Use the path of the picked image
+      imagePath = pickedImage.path;
+      // You can now use the imagePath for further processing
+    } else {
+      print('User canceled image selection');
+    }
+  }
+
   Future<void> take() async {
     try {
       // Take picture using camera controller
@@ -66,7 +82,7 @@ class AppCubit extends Cubit<AppStates> {
     NewNotesScreen(),
     CameraScreen(),
     const LoadingScreen(),
-
+    CategoryScreen(),
   ];
 
   List<String> titles = ['New Notes', 'Loading', 'Camera'];
@@ -74,7 +90,6 @@ class AppCubit extends Cubit<AppStates> {
   void changeBottomNavBarState(index) {
     if(index>2){index=0;}
     currentIndex = index;
-    if(index==2){disposeCamera();}
     emit(AppChangeNavBarState());
   }
 

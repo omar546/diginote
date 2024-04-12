@@ -46,6 +46,7 @@ class NewNotesScreen extends StatelessWidget {
             ),
           ),
           fallback: (context) => ListView.separated(
+            physics: const BouncingScrollPhysics(),
             itemBuilder: (context, index) => buildTaskItem(
               model: tasks[index],context: context,index: 0,
             ),
