@@ -13,6 +13,7 @@ import '../../modules/register/showEditScreen.dart';
 import 'states.dart';
 
 class AppCubit extends Cubit<AppStates> {
+  var editformKey = GlobalKey<FormState>();
   var edittitleController = TextEditingController();
   String tappedTitle = "";
   String tappedTime = "";

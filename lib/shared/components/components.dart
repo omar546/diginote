@@ -39,6 +39,7 @@ Widget buildTextField({
           controller: controller,
           // Set the validator function
           decoration: InputDecoration(
+            contentPadding: EdgeInsets.only(left: 45.0),
             prefixIcon: Icon(prefix, color: Styles.gumColor),
             hintText: labelText,
             hintStyle: TextStyle(
@@ -155,20 +156,20 @@ Widget buildTaskItem({required Map model, context, required index}) =>
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
                                   Text(
-                                    '${model['time']}',
+                                    '${model['date']}',
                                     style: TextStyle(
-                                        fontSize: 10,
-                                        fontFamily: 'bitter',
-                                        color: Theme.of(context).inputDecorationTheme.prefixIconColor ?? Colors.black,),
+                                      fontSize: 10,
+                                      fontFamily: 'bitter',
+                                      color: Theme.of(context).inputDecorationTheme.prefixIconColor ?? Colors.black,),
                                   ),
                                   const SizedBox(width: 10,),
                                   Text(
-                                    '${model['date']}',
+                                    '${model['time']}',
                                     style: TextStyle(
-                                        fontSize: 10,
-                                        fontFamily: 'bitter',
-                                        color: Theme.of(context).inputDecorationTheme.prefixIconColor ?? Colors.black,),
-                                  )
+                                      fontSize: 10,
+                                      fontFamily: 'bitter',
+                                      color: Theme.of(context).inputDecorationTheme.prefixIconColor ?? Colors.black,),
+                                  ),
                                 ],
                               )),
                         ],

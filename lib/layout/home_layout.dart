@@ -89,7 +89,7 @@ class HomeLayout extends StatelessWidget {
                             cubit.currentIndex == 2,
                         child: IconButton(
                             onPressed: () {
-                              if(cubit.edittitleController.text != cubit.tappedTitle){
+                              if(cubit.edittitleController.text != cubit.tappedTitle && cubit.editformKey.currentState!.validate()){
                               cubit.updateDatabase(oldId: cubit.tappedId,time: TimeOfDay.now().format(context),date:DateFormat.yMMMd()
                                   .format(DateTime.now()),title: cubit.edittitleController.text);}
                               cubit.changeBottomNavBarState(0);
@@ -147,7 +147,7 @@ class HomeLayout extends StatelessWidget {
                                         children: [
                                           Container(
                                             height: 3,
-                                            width: 80,
+                                            width: double.infinity,
                                             decoration: BoxDecoration(
                                                 color: Styles.greyColor,
                                                 borderRadius:

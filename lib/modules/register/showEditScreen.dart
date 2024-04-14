@@ -11,7 +11,6 @@ class ShowEditScreen extends StatefulWidget {
 }
 
 class _ShowEditScreenState extends State<ShowEditScreen> {
-  var editformKey = GlobalKey<FormState>();
 
 
   var edittimeController = TextEditingController();
@@ -35,7 +34,7 @@ class _ShowEditScreenState extends State<ShowEditScreen> {
           color:
           Theme.of(context).scaffoldBackgroundColor,
           child: Form(
-            key: editformKey,
+            key: AppCubit.get(context).editformKey,
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
