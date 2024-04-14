@@ -60,23 +60,47 @@ class HomeLayout extends StatelessWidget {
                           color: Styles.gumColor,
                         ),
               actions: (cubit.isBottomSheetShown || cubit.currentIndex > 0)
-                  ? [Visibility(
-                visible: !cubit.isBottomSheetShown,
-                    child: IconButton(onPressed: () async {
-                if (cubit.currentIndex == 0) {
-                    cubit.changeBottomNavBarState(1);
-                } else {
-                    await cubit.pickImageFromGallery().then((value) =>
-                        cubit.insertIntoDatabase(
-                            title:
-                            'camera test\npath${cubit.imagePath}',
-                            time: TimeOfDay.now().format(context),
-                            date: DateFormat.yMMMd()
-                                .format(DateTime.now())));
-                    // cubit.disposeCamera();
-                }
-              }, icon: Icon(Icons.image_search_rounded,size: 30,color: Styles.gumColor,)),
-                  )]
+                  ? [
+                      Visibility(
+                        visible: !cubit.isBottomSheetShown &&
+                            cubit.currentIndex != 2,
+                        child: IconButton(
+                            onPressed: () async {
+                              if (cubit.currentIndex == 0) {
+                                cubit.changeBottomNavBarState(1);
+                              } else {
+                                await cubit.pickImageFromGallery().then(
+                                    (value) => cubit.insertIntoDatabase(
+                                        title:
+                                            'camera test\npath${cubit.imagePath}',
+                                        time: TimeOfDay.now().format(context),
+                                        date: DateFormat.yMMMd()
+                                            .format(DateTime.now())));
+                              }
+                            },
+                            icon: Icon(
+                              Icons.image_search_rounded,
+                              size: 30,
+                              color: Styles.gumColor,
+                            )),
+                      ),
+                      Visibility(
+                        visible: !cubit.isBottomSheetShown &&
+                            cubit.currentIndex == 2,
+                        child: IconButton(
+                            onPressed: () {
+                              if(cubit.edittitleController.text != cubit.tappedTitle){
+                              cubit.updateDatabase(oldId: cubit.tappedId,time: TimeOfDay.now().format(context),date:DateFormat.yMMMd()
+                                  .format(DateTime.now()),title: cubit.edittitleController.text);}
+                              cubit.changeBottomNavBarState(0);
+                            },
+                            icon: Icon(
+                              Icons.check_circle,
+                              size: 30,
+                              color: Styles.gumColor,
+                            )),
+                      )
+                    ]
                   : [
                       IconButton(
                         onPressed: () {},
@@ -263,10 +287,11 @@ class HomeLayout extends StatelessWidget {
                 Visibility(
                   visible: (cubit.isBottomSheetShown),
                   child: FloatingActionButton(
-                    backgroundColor: Styles.gumColor,
+                    backgroundColor: Styles.blackColor,
                     child: Icon(
-                      Icons.check,
-                      color: Theme.of(context).scaffoldBackgroundColor,
+                      Icons.check_circle,
+                      color: Styles.gumColor,
+                      size: 40,
                     ),
                     onPressed: () {
                       if (cubit.isBottomSheetShown) {

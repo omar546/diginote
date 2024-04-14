@@ -1,9 +1,7 @@
-
-
 import 'package:camera/camera.dart';
+import 'package:flutter/foundation.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:diginotefromtodo/modules/CameraScreen.dart';
-import 'package:diginotefromtodo/modules/loadingScreen.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -11,9 +9,15 @@ import 'package:sqflite/sqflite.dart';
 
 import '../../modules/categoryScreen.dart';
 import '../../modules/new_tasks.dart';
+import '../../modules/register/showEditScreen.dart';
 import 'states.dart';
 
 class AppCubit extends Cubit<AppStates> {
+  var edittitleController = TextEditingController();
+  String tappedTitle = "";
+  String tappedTime = "";
+  String tappedDate = "";
+  var tappedId = 0;
   bool flashflag = false;
   String imagePath = "";
   AppCubit() : super(AppInitialState());
@@ -30,7 +34,7 @@ class AppCubit extends Cubit<AppStates> {
     if (cameras != null && cameras!.isNotEmpty) {
       cameraController = CameraController(cameras![0], ResolutionPreset.max);
       await cameraController!.initialize();
-    cameraController?.setFlashMode(FlashMode.off);
+      cameraController?.setFlashMode(FlashMode.off);
       emit(AppCameraInitializedState());
     }
   }
@@ -52,7 +56,9 @@ class AppCubit extends Cubit<AppStates> {
       imagePath = pickedImage.path;
       // You can now use the imagePath for further processing
     } else {
-      print('User canceled image selection');
+      if (kDebugMode) {
+        print('User canceled image selection');
+      }
     }
   }
 
@@ -65,7 +71,9 @@ class AppCubit extends Cubit<AppStates> {
       emit(CameraPictureTaken());
     } catch (e) {
       // Handle errors
-      print('Error taking picture: $e');
+      if (kDebugMode) {
+        print('Error taking picture: $e');
+      }
       emit(CameraError());
     }
   }
@@ -77,18 +85,19 @@ class AppCubit extends Cubit<AppStates> {
     emit(ToggleSortingOrderState());
   }
 
-
   List<Widget> screens = [
     NewNotesScreen(),
     CameraScreen(),
-    const LoadingScreen(),
-    CategoryScreen(),
+    ShowEditScreen(),
+    const CategoryScreen(),
   ];
 
   List<String> titles = ['New Notes', 'Loading', 'Camera'];
 
   void changeBottomNavBarState(index) {
-    if(index>2){index=0;}
+    if (index > 3) {
+      index = 0;
+    }
     currentIndex = index;
     emit(AppChangeNavBarState());
   }
@@ -104,7 +113,7 @@ class AppCubit extends Cubit<AppStates> {
       version: 1,
       onCreate: (db, version) async {
         await db.execute(
-            'CREATE TABLE tasks (id INTEGER PRIMARY KEY, title TEXT, date TEXT,time TEXT ,status TEXT)');
+            'CREATE TABLE tasks (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, date TEXT,time TEXT ,status TEXT)');
       },
       onOpen: (database) {
         getFromDatabase(database);
@@ -147,24 +156,24 @@ class AppCubit extends Cubit<AppStates> {
     emit(AppGetDatabaseLoadingState());
 
     database.rawQuery('Select * FROM tasks').then(
-      (values) {
+          (values) {
         values.forEach(
-          (element) {
+              (element) {
             //sego sort algo :)
             if (element['status'] == 'new') {
               newTasks.add(element);
               newTasks.sort(
-                (b, a) => a['id'].compareTo(b['id']),
+                    (b, a) => a['id'].compareTo(b['id']),
               );
             } else if (element['status'] == 'done') {
               doneTasks.add(element);
               doneTasks.sort(
-                (b, a) => a['id'].compareTo(b['id']),
+                    (b, a) => a['id'].compareTo(b['id']),
               );
             } else {
               archivedTasks.add(element);
               archivedTasks.sort(
-                (b, a) => a['id'].compareTo(b['id']),
+                    (b, a) => a['id'].compareTo(b['id']),
               );
             }
           },
@@ -174,15 +183,47 @@ class AppCubit extends Cubit<AppStates> {
     );
   }
 
-  void updateDatabase({required String status, required int id}) {
-    database.rawUpdate(
-        'UPDATE tasks SET status = ? WHERE id = ?', [status, id]).then(
-      (value) {
-        getFromDatabase(database);
-        emit(AppUpdateDatabaseState());
-      },
-    );
+  // void updateDatabase({
+  //   required int id,
+  //   required String title,
+  //   required String date,
+  //   required String time,
+  // }) {
+  //   database.rawUpdate(
+  //     'UPDATE tasks SET title = ?, date = ?, time = ? WHERE id = ?',
+  //     [title, date, time, id],
+  //   ).then(
+  //     (value) {
+  //       getFromDatabase(database);
+  //       emit(AppUpdateDatabaseState());
+  //     },
+  //   );
+  // }
+
+  Future<void> updateDatabase({
+    required int oldId,
+    required String title,
+    required String date,
+    required String time,
+  }) async {
+    // Insert a new row with updated data
+    await database.transaction((txn) async {
+      int newId = await txn.rawInsert(
+        'INSERT INTO tasks(title, date, time, status) VALUES(?, ?, ?, "new")',
+        [title, date, time],
+      );
+
+      // Delete the old row
+      await txn.rawDelete('DELETE FROM tasks WHERE id = ?', [oldId]);
+
+      getFromDatabase(database);
+      emit(AppUpdateDatabaseState());
+    });
+
+    // Return null to satisfy the Future<void> return type
+    return null;
   }
+
 
   void deleteDatabase({required int id}) {
     database.rawDelete('DELETE FROM tasks WHERE id = ?', [id]).then(

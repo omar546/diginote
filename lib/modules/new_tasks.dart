@@ -47,8 +47,16 @@ class NewNotesScreen extends StatelessWidget {
           ),
           fallback: (context) => ListView.separated(
             physics: const BouncingScrollPhysics(),
-            itemBuilder: (context, index) => buildTaskItem(
-              model: tasks[index],context: context,index: 0,
+            itemBuilder: (context, index) => GestureDetector(
+              onTap: (){
+                AppCubit.get(context).tappedTitle = tasks[index]['title'];
+                AppCubit.get(context).tappedTime = tasks[index]['time'];
+                AppCubit.get(context).tappedDate = tasks[index]['date'];
+                AppCubit.get(context).tappedId = tasks[index]['id'];
+                AppCubit.get(context).changeBottomNavBarState(2);},
+              child: buildTaskItem(
+                model: tasks[index],context: context,index: 0,
+              ),
             ),
             separatorBuilder: (context, index) => const SizedBox(height: 1,
             ),
