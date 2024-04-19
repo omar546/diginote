@@ -28,22 +28,38 @@ class AppCubit extends Cubit<AppStates> {
 
   List<CameraDescription>? cameras;
   CameraController? cameraController;
+  late bool isFlashOn = false;
+
 
   // Initialize camera
   Future<void> initializeCamera() async {
+    if (cameraController == null) {
     cameras = await availableCameras();
     if (cameras != null && cameras!.isNotEmpty) {
       cameraController = CameraController(cameras![0], ResolutionPreset.max);
       await cameraController!.initialize();
       cameraController?.setFlashMode(FlashMode.off);
       emit(AppCameraInitializedState());
-    }
+    }}
   }
 
   // Dispose camera
   void disposeCamera() {
     cameraController?.dispose();
     emit(AppCameraDisposedState());
+  }
+
+  Future<void> toggleFlashLight() async {
+    try {
+      if (isFlashOn) {
+        await cameraController?.setFlashMode(FlashMode.off);
+      } else {
+        await cameraController?.setFlashMode(FlashMode.torch);
+      }
+
+        isFlashOn = !isFlashOn;
+      emit(AppCameraFlashState());
+    } catch (e) {}
   }
 
   Future<void> pickImageFromGallery() async {

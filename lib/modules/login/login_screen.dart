@@ -179,7 +179,7 @@ class LoginScreen extends StatelessWidget {
                                     //       email: emailController.text,
                                     //       password: passwordController.text);
                                     // }
-                                    navigateTo(context, HomeLayout());
+                                    navigateAndFinish(context, HomeLayout());
                                   }),
                               fallback: (context) =>
                               const CircularProgressIndicator()),

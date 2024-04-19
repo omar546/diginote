@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import '../../shared/components/components.dart';
 
 class ShowEditScreen extends StatefulWidget {
-   ShowEditScreen({Key? key}) : super(key: key);
+   const ShowEditScreen({Key? key}) : super(key: key);
 
   @override
   State<ShowEditScreen> createState() => _ShowEditScreenState();
@@ -41,9 +41,9 @@ class _ShowEditScreenState extends State<ShowEditScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(AppCubit.get(context).tappedDate,style: TextStyle(color: Colors.grey,fontSize: 12),),
-                    SizedBox(width: 10,),
-                    Text(AppCubit.get(context).tappedTime,style: TextStyle(color: Colors.grey,fontSize: 12),),
+                    Text(AppCubit.get(context).tappedDate,style: const TextStyle(color: Colors.grey,fontSize: 12),),
+                    const SizedBox(width: 10,),
+                    Text(AppCubit.get(context).tappedTime,style: const TextStyle(color: Colors.grey,fontSize: 12),),
                   ],),
                 const SizedBox(
                     height: 35.0,

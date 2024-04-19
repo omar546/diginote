@@ -39,7 +39,7 @@ Widget buildTextField({
           controller: controller,
           // Set the validator function
           decoration: InputDecoration(
-            contentPadding: EdgeInsets.only(left: 45.0),
+            contentPadding: const EdgeInsets.only(left: 45.0),
             prefixIcon: Icon(prefix, color: Styles.gumColor),
             hintText: labelText,
             hintStyle: TextStyle(
@@ -67,7 +67,7 @@ Widget buildTaskItem({required Map model, context, required index}) =>
           alignment: AlignmentDirectional.centerEnd,
           color: Theme.of(context).scaffoldBackgroundColor,
           child: Padding(
-            padding: EdgeInsets.only(right: 30),
+            padding: const EdgeInsets.only(right: 30),
             child: CircleAvatar(
               backgroundColor: Colors.red,
               child: Icon(
@@ -134,11 +134,11 @@ Widget buildTaskItem({required Map model, context, required index}) =>
                                       children: [
                                         TextSpan(
                                           text: '${model['title'].split('\n')[0]+'\n'}',
-                                          style: TextStyle(fontFamily:'bitter-bold'),
+                                          style: const TextStyle(fontFamily:'bitter-bold'),
                                         ),
                                         TextSpan(
                                           text: '\n${model['title'].split('\n').sublist(1).join('\n')}',
-                                          style: TextStyle(fontFamily:'bitter'),
+                                          style: const TextStyle(fontFamily:'bitter'),
 
                                         ),
                                       ],
