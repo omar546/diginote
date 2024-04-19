@@ -248,6 +248,7 @@ class HomeLayout extends StatelessWidget {
                 title: (cubit.isBottomSheetShown || cubit.currentIndex > 0)
                     ? null
                     : Container(
+                  constraints:BoxConstraints(maxHeight: 30.0) ,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(
                             25.0,
@@ -258,15 +259,20 @@ class HomeLayout extends StatelessWidget {
                               Colors.black, // Text color for dark theme,
                         ),
                         child: TextField(
+                          textAlignVertical: TextAlignVertical.center,
                           style: TextStyle(
                               color:
                                   Theme.of(context).textTheme.bodyMedium?.color,
-                              fontSize: 16),
+                              fontSize: 13),
                           controller: cubit.searchController,
                           decoration: InputDecoration(
                             prefixIcon: Icon(
                               Icons.search_rounded,
-                              color: Styles.greyColor.withOpacity(0.4),
+                              color: Theme.of(context)
+                                      .inputDecorationTheme
+                                      .prefixIconColor
+                                      ?.withOpacity(0.5) ??
+                                  Colors.black,
                             ),
                             hintText: 'Search',
                             hintStyle: TextStyle(
@@ -285,49 +291,6 @@ class HomeLayout extends StatelessWidget {
                           },
                         ),
                       ),
-                // Container(
-                //         decoration: BoxDecoration(
-                //           borderRadius: BorderRadius.circular(
-                //             25.0,
-                //           ),
-                //           color: Theme.of(context)
-                //                   .inputDecorationTheme
-                //                   .suffixIconColor ??
-                //               Colors.black, // Text color for dark theme,
-                //         ),
-                //         padding: const EdgeInsets.all(
-                //           5.0,
-                //         ),
-                //         child: Row(
-                //           children: [
-                //             const SizedBox(
-                //               width: 5.0,
-                //             ),
-                //             Icon(
-                //               Icons.search,
-                //               color: Theme.of(context)
-                //                       .inputDecorationTheme
-                //                       .prefixIconColor
-                //                       ?.withOpacity(0.3) ??
-                //                   Colors.black,
-                //             ),
-                //             const SizedBox(
-                //               width: 5.0,
-                //             ),
-                //             Text(
-                //               'Search',
-                //               style: TextStyle(
-                //                 color: Theme.of(context)
-                //                         .inputDecorationTheme
-                //                         .prefixIconColor
-                //                         ?.withOpacity(0.5) ??
-                //                     Colors.black,
-                //                 fontSize: 10,
-                //               ),
-                //             ),
-                //           ],
-                //         ),
-                //       ),
               ),
               body: ConditionalBuilder(
                 condition:
