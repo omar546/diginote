@@ -115,6 +115,9 @@ class AppCubit extends Cubit<AppStates> {
       index = 0;
     }
     currentIndex = index;
+    if(currentIndex == 0){
+      toggleFlashLight();
+    }
     emit(AppChangeNavBarState());
   }
 
