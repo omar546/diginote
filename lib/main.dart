@@ -16,6 +16,7 @@ void main() async {
   // await Future.delayed(const Duration(milliseconds: 750));
   // if main() is async and there is await down here it will wait for it to finish before launching app
   WidgetsFlutterBinding.ensureInitialized();
+  await AppCubit().initializeCamera();
   Bloc.observer = MyBlocObserver();
   DioHelper.init();
   await CacheHelper.init();

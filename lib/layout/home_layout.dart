@@ -29,7 +29,8 @@ class HomeLayout extends StatelessWidget {
         } else {
           // Start a timer for double tap interval
           _doubleTapped = true;
-          showToast(message: 'one more!',state: ToastStates.WARNING);
+          if (AppCubit.get(context).currentIndex==0){showToast(message: 'one more!',state: ToastStates.WARNING);}else{if(AppCubit.get(context).isBottomSheetShown == true){}else{AppCubit.get(context).changeBottomNavBarState(0);}}
+
           await Future.delayed(const Duration(milliseconds: 600));
           _doubleTapped = false;
           // Prevent back navigation
@@ -293,7 +294,6 @@ class HomeLayout extends StatelessWidget {
                           backgroundColor: Styles.gumColor,
                           onPressed: () async {
                             if (cubit.currentIndex == 0) {
-                              await AppCubit().initializeCamera();
                               cubit.changeBottomNavBarState(1);
                             } else {
                               await cubit.take().then((value) =>
