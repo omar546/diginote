@@ -29,7 +29,14 @@ class HomeLayout extends StatelessWidget {
         } else {
           // Start a timer for double tap interval
           _doubleTapped = true;
-          if (AppCubit.get(context).currentIndex==0){showToast(message: 'one more!',state: ToastStates.WARNING);}else{if(AppCubit.get(context).isBottomSheetShown == true){}else{AppCubit.get(context).changeBottomNavBarState(0);}}
+          if (AppCubit.get(context).currentIndex == 0) {
+            showToast(message: 'one more!', state: ToastStates.WARNING);
+          } else {
+            if (AppCubit.get(context).isBottomSheetShown == true) {
+            } else {
+              AppCubit.get(context).changeBottomNavBarState(0);
+            }
+          }
 
           await Future.delayed(const Duration(milliseconds: 600));
           _doubleTapped = false;
@@ -72,23 +79,25 @@ class HomeLayout extends StatelessWidget {
                             onPressed: () {
                               cubit.changeBottomNavBarState(0);
                             },
-                            icon: const Icon(Icons.arrow_back_rounded, size: 30),
+                            icon:
+                                const Icon(Icons.arrow_back_rounded, size: 30),
                             color: Styles.gumColor,
                           ),
                 actions: (cubit.isBottomSheetShown || cubit.currentIndex > 0)
-                    ? [Visibility(
-                  visible: !cubit.isBottomSheetShown &&
-                      cubit.currentIndex != 2,
-                  child: IconButton(
-                      onPressed: () async {
-                        cubit.toggleFlashLight();
-                      },
-                      icon: const Icon(
-                        Icons.flare_sharp,
-                        size: 30,
-                        color: Styles.gumColor,
-                      )),
-                ),
+                    ? [
+                        Visibility(
+                          visible: !cubit.isBottomSheetShown &&
+                              cubit.currentIndex != 2,
+                          child: IconButton(
+                              onPressed: () async {
+                                cubit.toggleFlashLight();
+                              },
+                              icon: const Icon(
+                                Icons.flare_sharp,
+                                size: 30,
+                                color: Styles.gumColor,
+                              )),
+                        ),
                         Visibility(
                           visible: !cubit.isBottomSheetShown &&
                               cubit.currentIndex != 2,
@@ -117,9 +126,17 @@ class HomeLayout extends StatelessWidget {
                               cubit.currentIndex == 2,
                           child: IconButton(
                               onPressed: () {
-                                if(cubit.edittitleController.text != cubit.tappedTitle && cubit.editformKey.currentState!.validate()){
-                                cubit.updateDatabase(oldId: cubit.tappedId,time: TimeOfDay.now().format(context),date:DateFormat.yMMMd()
-                                    .format(DateTime.now()),title: cubit.edittitleController.text);}
+                                if (cubit.edittitleController.text !=
+                                        cubit.tappedTitle &&
+                                    cubit.editformKey.currentState!
+                                        .validate()) {
+                                  cubit.updateDatabase(
+                                      oldId: cubit.tappedId,
+                                      time: TimeOfDay.now().format(context),
+                                      date: DateFormat.yMMMd()
+                                          .format(DateTime.now()),
+                                      title: cubit.edittitleController.text);
+                                }
                                 cubit.changeBottomNavBarState(0);
                               },
                               icon: const Icon(
@@ -147,7 +164,8 @@ class HomeLayout extends StatelessWidget {
                                   title: titleController.text,
                                   // date: dateController.text,
 
-                                  date: DateFormat.yMMMd().format(DateTime.now()),
+                                  date:
+                                      DateFormat.yMMMd().format(DateTime.now()),
                                   // time: timeController.text,
                                   time: TimeOfDay.now().format(context),
                                 )
@@ -239,39 +257,77 @@ class HomeLayout extends StatelessWidget {
                                   .suffixIconColor ??
                               Colors.black, // Text color for dark theme,
                         ),
-                        padding: const EdgeInsets.all(
-                          5.0,
-                        ),
-                        child: Row(
-                          children: [
-                            const SizedBox(
-                              width: 5.0,
+                        child: TextField(
+                          style: TextStyle(
+                              color:
+                                  Theme.of(context).textTheme.bodyMedium?.color,
+                              fontSize: 16),
+                          controller: cubit.searchController,
+                          decoration: InputDecoration(
+                            prefixIcon: Icon(
+                              Icons.search_rounded,
+                              color: Styles.greyColor.withOpacity(0.4),
                             ),
-                            Icon(
-                              Icons.search,
+                            hintText: 'Search',
+                            hintStyle: TextStyle(
                               color: Theme.of(context)
                                       .inputDecorationTheme
                                       .prefixIconColor
-                                      ?.withOpacity(0.3) ??
+                                      ?.withOpacity(0.5) ??
                                   Colors.black,
+                              fontSize: 13,
                             ),
-                            const SizedBox(
-                              width: 5.0,
-                            ),
-                            Text(
-                              'Search',
-                              style: TextStyle(
-                                color: Theme.of(context)
-                                        .inputDecorationTheme
-                                        .prefixIconColor
-                                        ?.withOpacity(0.5) ??
-                                    Colors.black,
-                                fontSize: 10,
-                              ),
-                            ),
-                          ],
+                            border: InputBorder.none,
+                          ),
+                          onChanged: (query) {
+                            // Perform filtering whenever the text changes
+                            cubit.filterTasks(query);
+                          },
                         ),
                       ),
+                // Container(
+                //         decoration: BoxDecoration(
+                //           borderRadius: BorderRadius.circular(
+                //             25.0,
+                //           ),
+                //           color: Theme.of(context)
+                //                   .inputDecorationTheme
+                //                   .suffixIconColor ??
+                //               Colors.black, // Text color for dark theme,
+                //         ),
+                //         padding: const EdgeInsets.all(
+                //           5.0,
+                //         ),
+                //         child: Row(
+                //           children: [
+                //             const SizedBox(
+                //               width: 5.0,
+                //             ),
+                //             Icon(
+                //               Icons.search,
+                //               color: Theme.of(context)
+                //                       .inputDecorationTheme
+                //                       .prefixIconColor
+                //                       ?.withOpacity(0.3) ??
+                //                   Colors.black,
+                //             ),
+                //             const SizedBox(
+                //               width: 5.0,
+                //             ),
+                //             Text(
+                //               'Search',
+                //               style: TextStyle(
+                //                 color: Theme.of(context)
+                //                         .inputDecorationTheme
+                //                         .prefixIconColor
+                //                         ?.withOpacity(0.5) ??
+                //                     Colors.black,
+                //                 fontSize: 10,
+                //               ),
+                //             ),
+                //           ],
+                //         ),
+                //       ),
               ),
               body: ConditionalBuilder(
                 condition:
@@ -352,8 +408,8 @@ class HomeLayout extends StatelessWidget {
                                   color:
                                       Theme.of(context).scaffoldBackgroundColor,
                                   child: Container(
-                                    color:
-                                        Theme.of(context).scaffoldBackgroundColor,
+                                    color: Theme.of(context)
+                                        .scaffoldBackgroundColor,
                                     child: Form(
                                       key: formKey,
                                       child: Column(

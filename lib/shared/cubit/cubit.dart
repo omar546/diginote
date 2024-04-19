@@ -14,6 +14,7 @@ import 'states.dart';
 
 class AppCubit extends Cubit<AppStates> {
   var editformKey = GlobalKey<FormState>();
+  var searchController = TextEditingController();
   var edittitleController = TextEditingController();
   String tappedTitle = "";
   String tappedTime = "";
@@ -25,6 +26,23 @@ class AppCubit extends Cubit<AppStates> {
   static AppCubit get(context) => BlocProvider.of(context);
   var currentIndex = 0;
   bool sortAscending = true; // Initial sorting order
+
+
+  List<Map> filteredTasks = [];
+
+  void filterTasks(String query) {
+    // If the query is empty, show all tasks
+    if (query.isEmpty) {
+      filteredTasks = newTasks;
+    } else {
+      // Filter tasks based on the query
+      filteredTasks = newTasks.where((task) {
+        // Check if the task title contains the query (case-insensitive)
+        return task['title'].toLowerCase().contains(query.toLowerCase());
+      }).toList();
+    }
+    emit(AppFilterTasksState());
+  }
 
   List<CameraDescription>? cameras;
   CameraController? cameraController;
@@ -158,6 +176,8 @@ class AppCubit extends Cubit<AppStates> {
         )
             .then(
           (value) {
+            filteredTasks = [];
+            searchController.clear();
             emit(AppInsertDatabaseState());
             changeBottomNavBarState(0);
             getFromDatabase(database);
@@ -234,7 +254,8 @@ class AppCubit extends Cubit<AppStates> {
 
       // Delete the old row
       await txn.rawDelete('DELETE FROM tasks WHERE id = ?', [oldId]);
-
+      filteredTasks = [];
+      searchController.clear();
       getFromDatabase(database);
       emit(AppUpdateDatabaseState());
     });
