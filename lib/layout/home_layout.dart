@@ -248,7 +248,6 @@ class HomeLayout extends StatelessWidget {
                 title: (cubit.isBottomSheetShown || cubit.currentIndex > 0)
                     ? null
                     : Container(
-                  constraints:BoxConstraints(maxHeight: 30.0) ,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(
                             25.0,

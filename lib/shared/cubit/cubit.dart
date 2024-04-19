@@ -46,7 +46,7 @@ class AppCubit extends Cubit<AppStates> {
 
   List<CameraDescription>? cameras;
   CameraController? cameraController;
-  late bool isFlashOn = false;
+  bool isFlashOn = false;
 
 
   // Initialize camera
@@ -74,7 +74,7 @@ class AppCubit extends Cubit<AppStates> {
         await cameraController?.setFlashMode(FlashMode.torch);
       }
 
-        isFlashOn = !isFlashOn;
+      isFlashOn = !isFlashOn;
       emit(AppCameraFlashState());
     } catch (e) {}
   }
@@ -128,14 +128,14 @@ class AppCubit extends Cubit<AppStates> {
 
   List<String> titles = ['New Notes', 'Loading', 'Camera'];
 
-  void changeBottomNavBarState(index) {
+  Future<void> changeBottomNavBarState(index) async {
     if (index > 3) {
       index = 0;
     }
     currentIndex = index;
     if(currentIndex == 0){
-      toggleFlashLight();
     }
+    await cameraController?.setFlashMode(FlashMode.off);
     emit(AppChangeNavBarState());
   }
 
