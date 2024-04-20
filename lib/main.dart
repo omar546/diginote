@@ -38,7 +38,8 @@ void main() async {
     widget = const OnBoardingScreen();
   }
 
-  runApp(MyApp(widget));
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
+      .then((value) => runApp(MyApp(widget)));
 }
 
 
