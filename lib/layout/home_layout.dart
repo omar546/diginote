@@ -248,6 +248,7 @@ class HomeLayout extends StatelessWidget {
                 title: (cubit.isBottomSheetShown || cubit.currentIndex > 0)
                     ? null
                     : Container(
+                  height: 40,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(
                             25.0,
@@ -283,6 +284,7 @@ class HomeLayout extends StatelessWidget {
                               fontSize: 13,
                             ),
                             border: InputBorder.none,
+                            contentPadding: EdgeInsets.only(bottom: 8),
                           ),
                           onChanged: (query) {
                             // Perform filtering whenever the text changes
