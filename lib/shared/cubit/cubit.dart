@@ -1,4 +1,5 @@
 import 'package:camera/camera.dart';
+import 'package:diginotefromtodo/layout/home_layout.dart';
 import 'package:flutter/foundation.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:diginotefromtodo/modules/CameraScreen.dart';
@@ -60,11 +61,10 @@ class AppCubit extends Cubit<AppStates> {
     }
   }
 
-  // Dispose camera
-  // void disposeCamera() {
-  //   cameraController?.dispose();
-  //   emit(AppCameraDisposedState());
-  // }
+  void disposeCamera() {
+    cameraController?.dispose();
+    emit(AppCameraDisposedState());
+  }
 
   Future<void> toggleFlashLight() async {
     try {
@@ -133,8 +133,6 @@ class AppCubit extends Cubit<AppStates> {
       index = 0;
     }
     currentIndex = index;
-    if(currentIndex == 0){
-    }
     await cameraController?.setFlashMode(FlashMode.off);
     emit(AppChangeNavBarState());
   }

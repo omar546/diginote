@@ -1,4 +1,5 @@
 import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -16,34 +17,31 @@ class HomeLayout extends StatelessWidget {
   var titleController = TextEditingController();
   var timeController = TextEditingController();
   var dateController = TextEditingController();
+  bool notSheeting = true;
   bool _doubleTapped = false;
 
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        if (_doubleTapped) {
-          // Allow back navigation if double tapped
-          SystemChannels.platform.invokeMethod<void>('SystemNavigator.pop');
-          // This will exit the app
-        } else {
-          // Start a timer for double tap interval
-          _doubleTapped = true;
-          if (AppCubit.get(context).currentIndex == 0) {
-            showToast(message: 'one more!', state: ToastStates.WARNING);
-          } else {
-            if (AppCubit.get(context).isBottomSheetShown == true) {
-            } else {
-              AppCubit.get(context).changeBottomNavBarState(0);
-            }
-          }
 
-          await Future.delayed(const Duration(milliseconds: 600));
-          _doubleTapped = false;
-          // Prevent back navigation
+        // If bottom sheet is not showing
+        if (!_doubleTapped && notSheeting) {
+          // On first back press, show a toast and set a flag
+          showToast(message: 'Press again to quit', state: ToastStates.WARNING);
+          _doubleTapped = true;
+
+          // Start a timer for double tap interval
+          Future.delayed(const Duration(seconds: 2), () {
+            _doubleTapped = false; // Reset the flag after delay
+          });
+          return false; // Prevent back navigation
+        } else {
+          // On second back press, allow back navigation (exit the app)
+          return true;
         }
-        return false;
-      },
+      }
+      ,
       child: BlocProvider(
         create: (context) => AppCubit()..createDatabase(),
         child: BlocConsumer<AppCubit, AppStates>(
@@ -180,6 +178,7 @@ class HomeLayout extends StatelessWidget {
                                 );
                               }
                             } else {
+                              notSheeting = false;
                               scaffoldKey.currentState!
                                   .showBottomSheet(
                                     (context) => Container(
@@ -229,6 +228,7 @@ class HomeLayout extends StatelessWidget {
                                   .closed
                                   .then(
                                 (value) {
+                                  notSheeting = true;
                                   cubit.changeAddTaskIcon(false);
                                 },
                               ).catchError(
@@ -248,7 +248,7 @@ class HomeLayout extends StatelessWidget {
                 title: (cubit.isBottomSheetShown || cubit.currentIndex > 0)
                     ? null
                     : Container(
-                  height: 40,
+                        height: 40,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(
                             25.0,
@@ -335,7 +335,8 @@ class HomeLayout extends StatelessWidget {
                   Visibility(
                     visible: (cubit.isBottomSheetShown),
                     child: FloatingActionButton(
-                      backgroundColor: Styles.blackColor,
+                      backgroundColor:
+                          Theme.of(context).scaffoldBackgroundColor,
                       child: const Icon(
                         Icons.check_circle,
                         color: Styles.gumColor,

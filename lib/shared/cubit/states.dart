@@ -33,6 +33,7 @@ class CameraPictureTaken extends AppStates{}
 class CameraError extends AppStates{}
 
 class AppFilterTasksState extends AppStates{}
+class AppPopping extends AppStates{}
 
 
 

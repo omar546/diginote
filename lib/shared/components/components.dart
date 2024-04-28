@@ -346,7 +346,7 @@ void showToast({
   Fluttertoast.showToast(
       msg: message,
       toastLength: Toast.LENGTH_SHORT,
-      gravity: ToastGravity.TOP,
+      gravity: ToastGravity.CENTER,
       timeInSecForIosWeb: 5,
       backgroundColor: chooseToastColor(state),
       textColor: Colors.white,
@@ -366,7 +366,7 @@ Color chooseToastColor(ToastStates state) {
       color = Colors.red;
       break;
     case ToastStates.WARNING:
-      color = Colors.amber;
+      color = Styles.gumColor;
       break;
   }
 
