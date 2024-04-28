@@ -1,16 +1,4 @@
-# diginotefromtodo
+# 🚧 diginote 🚧
 
-A new Flutter project.
-
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+a Flutter Notes app with Handwriting Recognition/digitalization features.
+![icon](https://github.com/omar546/diginote/assets/71936776/30bc815a-9c0b-4965-a657-eb656c39e9f1)
