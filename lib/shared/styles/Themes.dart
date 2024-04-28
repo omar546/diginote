@@ -1,4 +1,4 @@
-import 'package:diginotefromtodo/shared/styles/styles.dart';
+import 'package:diginote/shared/styles/styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 

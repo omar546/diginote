@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
-import 'package:diginotefromtodo/shared/network/local/cache_helper.dart';
-import 'package:diginotefromtodo/shared/network/remote/dio_helper.dart';
-import 'package:diginotefromtodo/shared/styles/Themes.dart';
+import 'package:diginote/shared/network/local/cache_helper.dart';
+import 'package:diginote/shared/network/remote/dio_helper.dart';
+import 'package:diginote/shared/styles/Themes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

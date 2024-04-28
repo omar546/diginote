@@ -1,4 +1,4 @@
-import 'package:diginotefromtodo/shared/cubit/cubit.dart';
+import 'package:diginote/shared/cubit/cubit.dart';
 import 'package:flutter/material.dart';
 
 import '../../shared/components/components.dart';

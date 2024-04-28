@@ -1,8 +1,8 @@
 import 'package:camera/camera.dart';
-import 'package:diginotefromtodo/layout/home_layout.dart';
+import 'package:diginote/layout/home_layout.dart';
 import 'package:flutter/foundation.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:diginotefromtodo/modules/CameraScreen.dart';
+import 'package:diginote/modules/CameraScreen.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
