@@ -8,6 +8,7 @@ import 'package:torch_light/torch_light.dart';
 import '../shared/components/components.dart';
 import '../shared/cubit/cubit.dart';
 import '../shared/cubit/states.dart';
+import '../shared/network/remote/dio_helper.dart';
 import '../shared/styles/styles.dart';
 
 class HomeLayout extends StatelessWidget {
@@ -146,9 +147,15 @@ class HomeLayout extends StatelessWidget {
                       ]
                     : [
                         IconButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            DioHelper.getData(url: 'test').then((value){
+                              showToast(message: value.data['text'], state: ToastStates.SUCCESS);
+
+                            }).catchError((error) {showToast(message: 'Offline', state: ToastStates.ERROR);
+                            print(error);});
+                          },
                           icon: const Icon(
-                            Icons.category_rounded,
+                            Icons.online_prediction_rounded,
                             size: 30,
                           ),
                           color: Styles.gumColor,
