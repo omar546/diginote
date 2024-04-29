@@ -329,15 +329,14 @@ class HomeLayout extends StatelessWidget {
                             if (cubit.currentIndex == 0) {
                               cubit.changeBottomNavBarState(1);
                             } else {
-                              await cubit.take()
-                                  .then(
+                              await cubit.take().then(
                                       (value) =>
                                       cubit.insertIntoDatabase(
                                           title:
                                           cubit.textfromimage,
                                           time: TimeOfDay.now().format(context),
                                           date: DateFormat.yMMMd()
-                                              .format(DateTime.now()))
+                                              .format(DateTime.now())));
                             }
                           },
                           child: const Icon(
