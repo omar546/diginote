@@ -113,7 +113,7 @@ class HomeLayout extends StatelessWidget {
                                       (value) =>
                                           cubit.insertIntoDatabase(
                                           title:
-                                          cubit.textfromimage,
+                                          cubit.responseValue,
                                           time: TimeOfDay.now().format(context),
                                           date: DateFormat.yMMMd()
                                               .format(DateTime.now()))
@@ -333,7 +333,7 @@ class HomeLayout extends StatelessWidget {
                                       (value) =>
                                       cubit.insertIntoDatabase(
                                           title:
-                                          cubit.textfromimage,
+                                          cubit.responseValue,
                                           time: TimeOfDay.now().format(context),
                                           date: DateFormat.yMMMd()
                                               .format(DateTime.now())));
