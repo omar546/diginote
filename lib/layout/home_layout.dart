@@ -61,7 +61,9 @@ class HomeLayout extends StatelessWidget {
 
             return Scaffold(
               key: scaffoldKey,
-              appBar: AppBar(
+              appBar: cubit.currentIndex ==4
+                  ? null
+                  :AppBar(
                 elevation: 0,
                 automaticallyImplyLeading: false,
                 leading: cubit.isBottomSheetShown
@@ -105,13 +107,17 @@ class HomeLayout extends StatelessWidget {
                                 if (cubit.currentIndex == 0) {
                                   cubit.changeBottomNavBarState(1);
                                 } else {
-                                  await cubit.pickImageFromGallery().then(
-                                      (value) => cubit.insertIntoDatabase(
+
+                                  await cubit.pickImageFromGallery()
+                                      .then(
+                                      (value) =>
+                                          cubit.insertIntoDatabase(
                                           title:
-                                              'camera test\npath${cubit.imagePath}',
+                                          cubit.textfromimage,
                                           time: TimeOfDay.now().format(context),
                                           date: DateFormat.yMMMd()
-                                              .format(DateTime.now())));
+                                              .format(DateTime.now()))
+                                  );
                                 }
                               },
                               icon: const Icon(
@@ -316,21 +322,22 @@ class HomeLayout extends StatelessWidget {
                     padding: const EdgeInsets.only(left: 30.0),
                     child: Visibility(
                         visible: (!(cubit.isBottomSheetShown) &&
-                            (cubit.currentIndex != 2)),
+                            (cubit.currentIndex != 4)),
                         child: FloatingActionButton(
                           backgroundColor: Styles.gumColor,
                           onPressed: () async {
                             if (cubit.currentIndex == 0) {
                               cubit.changeBottomNavBarState(1);
                             } else {
-                              await cubit.take().then((value) =>
-                                  cubit.insertIntoDatabase(
-                                      title:
-                                          'camera test\npath${cubit.imagePath}',
-                                      time: TimeOfDay.now().format(context),
-                                      date: DateFormat.yMMMd()
-                                          .format(DateTime.now())));
-                              // cubit.disposeCamera();
+                              await cubit.take()
+                                  .then(
+                                      (value) =>
+                                      cubit.insertIntoDatabase(
+                                          title:
+                                          cubit.textfromimage,
+                                          time: TimeOfDay.now().format(context),
+                                          date: DateFormat.yMMMd()
+                                              .format(DateTime.now()))
                             }
                           },
                           child: const Icon(

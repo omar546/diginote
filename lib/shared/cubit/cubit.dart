@@ -1,9 +1,13 @@
 import 'package:camera/camera.dart';
-import 'package:diginote/layout/home_layout.dart';
+import 'package:diginote/modules/loadingScreen.dart';
 import 'package:flutter/foundation.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:diginote/modules/CameraScreen.dart';
-
+import 'package:path/path.dart';
+import 'package:async/async.dart';
+import 'dart:io';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sqflite/sqflite.dart';
@@ -28,7 +32,6 @@ class AppCubit extends Cubit<AppStates> {
   var currentIndex = 0;
   bool sortAscending = true; // Initial sorting order
 
-
   List<Map> filteredTasks = [];
 
   void filterTasks(String query) {
@@ -48,7 +51,6 @@ class AppCubit extends Cubit<AppStates> {
   List<CameraDescription>? cameras;
   CameraController? cameraController;
   bool isFlashOn = false;
-
 
   // Initialize camera
   Future<void> initializeCamera() async {
@@ -79,6 +81,51 @@ class AppCubit extends Cubit<AppStates> {
     } catch (e) {}
   }
 
+  String textfromimage = "";
+  String responseValue = "";
+  String extractText(String jsonString) {
+    // Parse the JSON string
+    Map<String, dynamic> jsonMap = json.decode(jsonString);
+
+    // Extract the value associated with the "text" key
+    String text = jsonMap['text'];
+
+    return text;
+  }
+
+  Future<String> upload(File imageFile) async {
+    // open a bytestream
+    var stream =
+        new http.ByteStream(DelegatingStream.typed(imageFile.openRead()));
+    // get file length
+    var length = await imageFile.length();
+
+    // string to uri
+    var uri = Uri.parse("https://example-pre-reader.onrender.com/upload/");
+
+    // create multipart request
+    var request = new http.MultipartRequest("POST", uri);
+
+    // multipart that takes file
+    var multipartFile = new http.MultipartFile('file', stream, length,
+        filename: basename(imageFile.path));
+
+    // add file to multipart
+    request.files.add(multipartFile);
+
+    // send
+    var response = await request.send();
+    print(response.statusCode);
+
+    // listen for response
+    response.stream.transform(utf8.decoder).listen((value) async {
+      textfromimage = extractText(value);
+      emit(CameraPictureTaken());
+      print(textfromimage);
+    });
+    return textfromimage;
+  }
+
   Future<void> pickImageFromGallery() async {
     final imagePicker = ImagePicker();
     final XFile? pickedImage = await imagePicker.pickImage(
@@ -87,8 +134,19 @@ class AppCubit extends Cubit<AppStates> {
 
     if (pickedImage != null) {
       // Use the path of the picked image
-      imagePath = pickedImage.path;
-      // You can now use the imagePath for further processing
+      String imagePath = pickedImage.path;
+
+      try {
+        // FormData formData = FormData.fromMap({
+        //   'file': await MultipartFile.fromFile(imagePath),
+        // });
+
+        // Use DioHelper.postData to upload the image
+        changeBottomNavBarState(4);
+        responseValue = await upload(File(imagePath));
+      } catch (e) {
+        print('Error uploading image: $e');
+      }
     } else {
       if (kDebugMode) {
         print('User canceled image selection');
@@ -97,12 +155,14 @@ class AppCubit extends Cubit<AppStates> {
   }
 
   Future<void> take() async {
+    final image = await cameraController?.takePicture();
+    imagePath = image!.path;
     try {
       // Take picture using camera controller
-      final image = await cameraController?.takePicture();
-      imagePath = image!.path;
+
       // Emit a new state with the image path
-      emit(CameraPictureTaken());
+      changeBottomNavBarState(4);
+      responseValue = await upload(File(imagePath));
     } catch (e) {
       // Handle errors
       if (kDebugMode) {
@@ -124,12 +184,13 @@ class AppCubit extends Cubit<AppStates> {
     CameraScreen(),
     ShowEditScreen(),
     const CategoryScreen(),
+    const LoadingScreen(),
   ];
 
   List<String> titles = ['New Notes', 'Loading', 'Camera'];
 
   Future<void> changeBottomNavBarState(index) async {
-    if (index > 3) {
+    if (index > 4) {
       index = 0;
     }
     currentIndex = index;
@@ -193,24 +254,24 @@ class AppCubit extends Cubit<AppStates> {
     emit(AppGetDatabaseLoadingState());
 
     database.rawQuery('Select * FROM tasks').then(
-          (values) {
+      (values) {
         values.forEach(
-              (element) {
+          (element) {
             //sego sort algo :)
             if (element['status'] == 'new') {
               newTasks.add(element);
               newTasks.sort(
-                    (b, a) => a['id'].compareTo(b['id']),
+                (b, a) => a['id'].compareTo(b['id']),
               );
             } else if (element['status'] == 'done') {
               doneTasks.add(element);
               doneTasks.sort(
-                    (b, a) => a['id'].compareTo(b['id']),
+                (b, a) => a['id'].compareTo(b['id']),
               );
             } else {
               archivedTasks.add(element);
               archivedTasks.sort(
-                    (b, a) => a['id'].compareTo(b['id']),
+                (b, a) => a['id'].compareTo(b['id']),
               );
             }
           },
@@ -261,7 +322,6 @@ class AppCubit extends Cubit<AppStates> {
     // Return null to satisfy the Future<void> return type
     return null;
   }
-
 
   void deleteDatabase({required int id}) {
     database.rawDelete('DELETE FROM tasks WHERE id = ?', [id]).then(

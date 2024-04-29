@@ -19,6 +19,7 @@ void main() async {
   await AppCubit().initializeCamera();
   Bloc.observer = MyBlocObserver();
   DioHelper.init();
+
   await CacheHelper.init();
   Widget widget;
   bool onBoarding = CacheHelper.getData(key: 'onBoarding') ?? false;
