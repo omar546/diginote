@@ -322,7 +322,7 @@ class HomeLayout extends StatelessWidget {
                     padding: const EdgeInsets.only(left: 30.0),
                     child: Visibility(
                         visible: (!(cubit.isBottomSheetShown) &&
-                            (cubit.currentIndex != 4 ||cubit.currentIndex != 2 )),
+                            (cubit.currentIndex != 4 && cubit.currentIndex != 2 )),
                         child: FloatingActionButton(
                           backgroundColor: Styles.gumColor,
                           onPressed: () async {
