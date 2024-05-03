@@ -37,7 +37,7 @@ class EditScreen extends StatelessWidget {
             onPressed: () {
               if (formKey.currentState!.validate()) {
                 cubit.insertIntoDatabase(
-                  title: titleController.text,
+                  title: titleController.text.replaceAll("'", "''").replaceAll('"', '""'),
                   date: DateFormat.yMMMd().format(DateTime.now()),
                   time: TimeOfDay.now().format(context),
                 ).then(
@@ -79,6 +79,7 @@ class EditScreen extends StatelessWidget {
                   },
                   type: TextInputType.multiline,
                 ),
+                SizedBox(height: 50,)
               ],
             ),
           ),

@@ -30,7 +30,7 @@ Widget buildTextField({
           validator: validate,
           keyboardType: type,
           minLines: 1,
-          maxLines: null,
+          maxLines: double.maxFinite.toInt() ,
           onFieldSubmitted: onSubmit,
           onChanged: onChange,
           onTap: onTap,
@@ -59,7 +59,7 @@ Widget buildTextField({
 Widget buildTaskItem({required Map model, context, required index}) =>
     GestureDetector(
         onLongPress:() {
-          Clipboard.setData(ClipboardData(text: model['title']));
+          Clipboard.setData(ClipboardData(text: model['title'].replaceAll('""', '"').replaceAll("''", "'")));
           showToast(message: 'Copied',state: ToastStates.SUCCESS);},
         child: Dismissible(
         direction: DismissDirection.endToStart,
@@ -133,11 +133,11 @@ Widget buildTaskItem({required Map model, context, required index}) =>
                                       ),
                                       children: [
                                         TextSpan(
-                                          text: '${model['title'].split('\n')[0]+'\n'}',
+                                          text: '${model['title'].replaceAll('""', '"').replaceAll("''", "'").split('\n')[0]+'\n'}',
                                           style: const TextStyle(fontFamily:'bitter-bold'),
                                         ),
                                         TextSpan(
-                                          text: '\n${model['title'].split('\n').sublist(1).join('\n')}',
+                                          text: '\n${model['title'].replaceAll('""', '"').replaceAll("''", "'").split('\n').sublist(1).join('\n')}',
                                           style: const TextStyle(fontFamily:'bitter'),
 
                                         ),

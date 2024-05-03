@@ -360,7 +360,7 @@ class HomeLayout extends StatelessWidget {
                           if (formKey.currentState!.validate()) {
                             cubit
                                 .insertIntoDatabase(
-                              title: titleController.text,
+                              title: titleController.text.replaceAll("'", "''").replaceAll('"', '""'),
                               // date: dateController.text,
 
                               date: DateFormat.yMMMd().format(DateTime.now()),
