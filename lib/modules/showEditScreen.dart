@@ -1,7 +1,7 @@
 import 'package:diginote/shared/cubit/cubit.dart';
 import 'package:flutter/material.dart';
 
-import '../../shared/components/components.dart';
+import '../shared/components/components.dart';
 
 class ShowEditScreen extends StatefulWidget {
    const ShowEditScreen({Key? key}) : super(key: key);

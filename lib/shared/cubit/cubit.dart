@@ -14,7 +14,7 @@ import 'package:sqflite/sqflite.dart';
 
 import '../../modules/categoryScreen.dart';
 import '../../modules/new_tasks.dart';
-import '../../modules/register/showEditScreen.dart';
+import '../../modules/showEditScreen.dart';
 import 'states.dart';
 
 class AppCubit extends Cubit<AppStates> {
