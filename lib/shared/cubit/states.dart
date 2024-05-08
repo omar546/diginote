@@ -1,4 +1,3 @@
-import 'package:camera/camera.dart';
 
 abstract class AppStates{}
 

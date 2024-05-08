@@ -45,7 +45,7 @@ ThemeData lightTheme = ThemeData(
     inputDecorationTheme: InputDecorationTheme(
       prefixIconColor: Styles.lightBlackColor,
       suffixIconColor: Styles.greyColor.withOpacity(0.5),
-      labelStyle: TextStyle(color: Styles.blackColor),
+      labelStyle: const TextStyle(color: Styles.blackColor),
     )
 );
 ThemeData darkTheme = ThemeData(

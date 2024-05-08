@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import '../shared/cubit/cubit.dart';
 
 class CameraScreen extends StatelessWidget {
+  const CameraScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,7 +24,7 @@ class CameraScreen extends StatelessWidget {
                       child: CameraPreview(appCubit.cameraController!),
                     ),
                   ),
-                  SizedBox(height: 100,)
+                  const SizedBox(height: 100,)
                 ],
               );
             } else {
@@ -31,7 +33,7 @@ class CameraScreen extends StatelessWidget {
               );
             }
           } else {
-            return Center(
+            return const Center(
               child: LinearProgressIndicator(), // Loading indicator while initializing camera
             );
           }

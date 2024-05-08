@@ -1,10 +1,7 @@
 import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import 'package:torch_light/torch_light.dart';
 import '../shared/components/components.dart';
 import '../shared/cubit/cubit.dart';
 import '../shared/cubit/states.dart';
@@ -297,7 +294,7 @@ class HomeLayout extends StatelessWidget {
                               fontSize: 13,
                             ),
                             border: InputBorder.none,
-                            contentPadding: EdgeInsets.only(bottom: 8),
+                            contentPadding: const EdgeInsets.only(bottom: 8),
                           ),
                           onChanged: (query) {
                             // Perform filtering whenever the text changes

@@ -1,4 +1,3 @@
-import 'package:diginote/shared/cubit/cubit.dart';
 import 'package:flutter/material.dart';
 
 class CategoryScreen extends StatelessWidget {

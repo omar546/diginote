@@ -8,7 +8,7 @@ import '../shared/cubit/states.dart';
 import '../shared/styles/styles.dart';
 
 class NewNotesScreen extends StatelessWidget {
-  NewNotesScreen({Key? key}) : super(key: key);
+  const NewNotesScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -27,10 +27,10 @@ class NewNotesScreen extends StatelessWidget {
 
         return ConditionalBuilder(
           condition: tasks.isEmpty,
-          builder: (context) => Center(
+          builder: (context) => const Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: const [
+              children: [
                 Icon(
                   Icons.hourglass_empty_rounded,
                   color: Styles.greyColor,

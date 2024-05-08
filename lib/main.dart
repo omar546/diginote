@@ -1,11 +1,9 @@
-import 'package:bloc/bloc.dart';
 import 'package:diginote/shared/network/local/cache_helper.dart';
 import 'package:diginote/shared/network/remote/dio_helper.dart';
 import 'package:diginote/shared/styles/Themes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'layout/home_layout.dart';
 import 'modules/login/login_screen.dart';
 import 'modules/onboarding/onboarding_screen.dart';
 import 'shared/bloc_observer.dart';

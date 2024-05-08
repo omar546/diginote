@@ -1,6 +1,7 @@
 import 'package:camera/camera.dart';
 import 'package:diginote/modules/loadingScreen.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_quill/flutter_quill.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:diginote/modules/CameraScreen.dart';
 import 'package:path/path.dart';
@@ -18,6 +19,10 @@ import '../../modules/showEditScreen.dart';
 import 'states.dart';
 
 class AppCubit extends Cubit<AppStates> {
+
+  final QuillController quillController = QuillController.basic();
+
+
   var editformKey = GlobalKey<FormState>();
   var searchController = TextEditingController();
   var edittitleController = TextEditingController();
@@ -96,7 +101,7 @@ class AppCubit extends Cubit<AppStates> {
   Future<String> upload(File imageFile) async {
     // open a bytestream
     var stream =
-        new http.ByteStream(DelegatingStream.typed(imageFile.openRead()));
+        http.ByteStream(DelegatingStream.typed(imageFile.openRead()));
     // get file length
     var length = await imageFile.length();
 
@@ -104,10 +109,10 @@ class AppCubit extends Cubit<AppStates> {
     var uri = Uri.parse("https://example-pre-reader.onrender.com/upload/");
 
     // create multipart request
-    var request = new http.MultipartRequest("POST", uri);
+    var request = http.MultipartRequest("POST", uri);
 
     // multipart that takes file
-    var multipartFile = new http.MultipartFile('file', stream, length,
+    var multipartFile = http.MultipartFile('file', stream, length,
         filename: basename(imageFile.path));
 
     // add file to multipart
@@ -180,9 +185,9 @@ class AppCubit extends Cubit<AppStates> {
   }
 
   List<Widget> screens = [
-    NewNotesScreen(),
-    CameraScreen(),
-    ShowEditScreen(),
+    const NewNotesScreen(),
+    const CameraScreen(),
+    const ShowEditScreen(),
     const CategoryScreen(),
     const LoadingScreen(),
   ];
@@ -320,7 +325,7 @@ class AppCubit extends Cubit<AppStates> {
     });
 
     // Return null to satisfy the Future<void> return type
-    return null;
+    return;
   }
 
   void deleteDatabase({required int id}) {
