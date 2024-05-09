@@ -21,7 +21,7 @@ import 'states.dart';
 
 class AppCubit extends Cubit<AppStates> {
 
-  final QuillController quillController = QuillController.basic();
+  QuillController quillController = QuillController.basic();
 
 bool formaterB = true;
 bool formaterA = false;

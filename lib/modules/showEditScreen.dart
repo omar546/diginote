@@ -24,7 +24,7 @@ class _ShowEditScreenState extends State<ShowEditScreen> {
    void initState() {
      super.initState();
      // Set the initial title to the edittitleController when the widget initializes
-     AppCubit.get(context).edittitleController.text = AppCubit.get(context).tappedTitle;
+     AppCubit.get(context).quillController = QuillController(document: Document()..insert(0, AppCubit.get(context).tappedTitle), selection: TextSelection.collapsed(offset:AppCubit.get(context).tappedTitle.length));
    }
 
   @override

@@ -27,23 +27,11 @@ class NewNotesScreen extends StatelessWidget {
 
         return ConditionalBuilder(
           condition: tasks.isEmpty,
-          builder: (context) => const Center(
+          builder: (context) => Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(
-                  Icons.hourglass_empty_rounded,
-                  color: Styles.greyColor,
-                  size: 40.0,
-                ),
-                Text(
-                  'Take new Notes !!',
-                  style: TextStyle(
-                    color: Styles.greyColor,
-                    fontSize: 12.0,
-                    fontWeight: FontWeight.bold,
-                  ),
-                )
+                Image.asset('assets/icon/icon_trans.png',opacity: const AlwaysStoppedAnimation(.09)),
               ],
             ),
           ),
