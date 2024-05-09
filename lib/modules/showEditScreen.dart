@@ -1,7 +1,11 @@
 import 'package:diginote/shared/cubit/cubit.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:flutter_quill/flutter_quill.dart';
+
+import '../shared/cubit/states.dart';
 
 class ShowEditScreen extends StatefulWidget {
    const ShowEditScreen({Key? key}) : super(key: key);
@@ -25,6 +29,9 @@ class _ShowEditScreenState extends State<ShowEditScreen> {
 
   @override
   Widget build(BuildContext context) {
+    return BlocConsumer<AppCubit, AppStates>(
+        listener: (context, state) {},
+    builder: (context, state) {
     return Scaffold(
       body: Container(
         color:
@@ -34,20 +41,39 @@ class _ShowEditScreenState extends State<ShowEditScreen> {
           Theme.of(context).scaffoldBackgroundColor,
           child: Column(
               children: [
-                QuillToolbar.simple(
-                  configurations: QuillSimpleToolbarConfigurations(
-                    controller: AppCubit.get(context).quillController,
-                    sharedConfigurations: const QuillSharedConfigurations(
-                      locale: Locale('en'),
+                Visibility(
+                  visible: AppCubit.get(context).formater,
+                  child: QuillToolbar.simple(
+                    configurations: QuillSimpleToolbarConfigurations(
+                      showDividers: false,
+                      showClipboardPaste: false,
+                      showClipboardCut: false,
+                      showClipboardCopy: false,
+                      showRightAlignment:false,
+                      showCodeBlock: false,
+                      showFontFamily: false,
+                      showInlineCode: false,
+                      showHeaderStyle: false,
+                      showAlignmentButtons: true,
+                      showQuote: false,
+                      showIndent: false,
+                      showStrikeThrough: false,
+                      controller: AppCubit.get(context).quillController,
+                      sharedConfigurations: const QuillSharedConfigurations(
+                        locale: Locale('en'),
+                      ),
                     ),
                   ),
                 ),
                 Expanded(
-                  child: QuillEditor.basic(
-                    configurations: QuillEditorConfigurations(
-                      controller: AppCubit.get(context).quillController,
-                      sharedConfigurations: const QuillSharedConfigurations(
-                        locale: Locale('en'),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                    child: QuillEditor.basic(
+                      configurations: QuillEditorConfigurations(
+                        controller: AppCubit.get(context).quillController,
+                        sharedConfigurations: const QuillSharedConfigurations(
+                          locale: Locale('en'),
+                        ),
                       ),
                     ),
                   ),
@@ -89,5 +115,6 @@ class _ShowEditScreenState extends State<ShowEditScreen> {
         ),
       ),
     );
-  }
+  });
+}
 }

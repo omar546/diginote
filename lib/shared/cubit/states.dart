@@ -27,6 +27,8 @@ class AppCameraDisposedState extends AppStates{}
 
 class AppCameraFlashState extends AppStates{}
 
+class FormattingState extends AppStates{}
+
 class CameraPictureTaken extends AppStates{}
 
 class CameraError extends AppStates{}

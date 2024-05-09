@@ -38,7 +38,7 @@ ThemeData lightTheme = ThemeData(
     primarySwatch: customGum,
     textTheme: TextTheme(
       bodyMedium:
-      const TextStyle(color: Styles.blackColor, fontFamily: 'bitter-bold'),
+      const TextStyle(color: Styles.blackColor, fontFamily: 'bitter'),
       bodySmall: TextStyle(
           color: Styles.blackColor.withOpacity(0.5), fontFamily: 'bitter'),
     ),
@@ -71,7 +71,7 @@ ThemeData darkTheme = ThemeData(
     primarySwatch: customGum,
     textTheme: TextTheme(
       bodyMedium: const TextStyle(
-          color: Styles.whiteColor, fontFamily: 'bitter-bold'),
+          color: Styles.whiteColor, fontFamily: 'bitter'),
       bodySmall: TextStyle(
           color: Styles.greyColor.withOpacity(0.5), fontFamily: 'bitter'),
     ),

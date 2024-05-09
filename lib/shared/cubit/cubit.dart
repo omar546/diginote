@@ -1,3 +1,4 @@
+
 import 'package:camera/camera.dart';
 import 'package:diginote/modules/loadingScreen.dart';
 import 'package:flutter/foundation.dart';
@@ -22,7 +23,7 @@ class AppCubit extends Cubit<AppStates> {
 
   final QuillController quillController = QuillController.basic();
 
-
+bool formater = true;
   var editformKey = GlobalKey<FormState>();
   var searchController = TextEditingController();
   var edittitleController = TextEditingController();
@@ -344,5 +345,10 @@ class AppCubit extends Cubit<AppStates> {
   ) {
     isBottomSheetShown = showing;
     emit(AppChangeBottomSheetState());
+  }
+
+  void FormaterVisbility(){
+    formater = !formater;
+    emit(FormattingState());
   }
 }

@@ -123,29 +123,46 @@ class HomeLayout extends StatelessWidget {
                                 color: Styles.gumColor,
                               )),
                         ),
-                        Visibility(
-                          visible: !cubit.isBottomSheetShown &&
-                              cubit.currentIndex == 2,
-                          child: IconButton(
-                              onPressed: () {
-                                if (cubit.edittitleController.text !=
-                                        cubit.tappedTitle &&
-                                    cubit.editformKey.currentState!
-                                        .validate()) {
-                                  cubit.updateDatabase(
-                                      oldId: cubit.tappedId,
-                                      time: TimeOfDay.now().format(context),
-                                      date: DateFormat.yMMMd()
-                                          .format(DateTime.now()),
-                                      title: cubit.edittitleController.text);
-                                }
-                                cubit.changeBottomNavBarState(0);
-                              },
-                              icon: const Icon(
-                                Icons.check_circle,
-                                size: 30,
-                                color: Styles.gumColor,
-                              )),
+                        Row(
+                          children: [
+                            Visibility(
+                              visible: !cubit.isBottomSheetShown &&
+                                  cubit.currentIndex == 2,
+                              child: IconButton(
+                                  onPressed: () {
+                                    cubit.FormaterVisbility();
+                                  },
+                                  icon: const Icon(
+                                    Icons.text_format_rounded,
+                                    size: 30,
+                                    color: Styles.gumColor,
+                                  )),
+                            ),
+                            Visibility(
+                              visible: !cubit.isBottomSheetShown &&
+                                  cubit.currentIndex == 2,
+                              child: IconButton(
+                                  onPressed: () {
+                                    if (cubit.edittitleController.text !=
+                                            cubit.tappedTitle &&
+                                        cubit.editformKey.currentState!
+                                            .validate()) {
+                                      cubit.updateDatabase(
+                                          oldId: cubit.tappedId,
+                                          time: TimeOfDay.now().format(context),
+                                          date: DateFormat.yMMMd()
+                                              .format(DateTime.now()),
+                                          title: cubit.edittitleController.text);
+                                    }
+                                    cubit.changeBottomNavBarState(0);
+                                  },
+                                  icon: const Icon(
+                                    Icons.check_circle,
+                                    size: 30,
+                                    color: Styles.gumColor,
+                                  )),
+                            ),
+                          ],
                         )
                       ]
                     : [
