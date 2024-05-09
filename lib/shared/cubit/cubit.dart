@@ -23,7 +23,8 @@ class AppCubit extends Cubit<AppStates> {
 
   final QuillController quillController = QuillController.basic();
 
-bool formater = true;
+bool formaterB = true;
+bool formaterA = false;
   var editformKey = GlobalKey<FormState>();
   var searchController = TextEditingController();
   var edittitleController = TextEditingController();
@@ -347,8 +348,14 @@ bool formater = true;
     emit(AppChangeBottomSheetState());
   }
 
-  void FormaterVisbility(){
-    formater = !formater;
+  void FormaterVisbilityA(){
+    formaterA = !formaterA;
+    if(formaterA==true){formaterB =false;}
+    emit(FormattingState());
+  }
+  void FormaterVisbilityB(){
+    formaterB = !formaterB;
+    if(formaterB==true){formaterA =false;}
     emit(FormattingState());
   }
 }

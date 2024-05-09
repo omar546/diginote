@@ -130,12 +130,25 @@ class HomeLayout extends StatelessWidget {
                                   cubit.currentIndex == 2,
                               child: IconButton(
                                   onPressed: () {
-                                    cubit.FormaterVisbility();
+                                    cubit.FormaterVisbilityB();
                                   },
-                                  icon: const Icon(
+                                  icon: Icon(
+                                    Icons.short_text_rounded,
+                                    size: 30,
+                                    color: cubit.formaterB ? Styles.greyColor : Styles.gumColor,
+                                  )),
+                            ),
+                            Visibility(
+                              visible: !cubit.isBottomSheetShown &&
+                                  cubit.currentIndex == 2,
+                              child: IconButton(
+                                  onPressed: () {
+                                    cubit.FormaterVisbilityA();
+                                  },
+                                  icon: Icon(
                                     Icons.text_format_rounded,
                                     size: 30,
-                                    color: Styles.gumColor,
+                                    color: cubit.formaterA ? Styles.greyColor : Styles.gumColor,
                                   )),
                             ),
                             Visibility(
@@ -157,7 +170,7 @@ class HomeLayout extends StatelessWidget {
                                     cubit.changeBottomNavBarState(0);
                                   },
                                   icon: const Icon(
-                                    Icons.check_circle,
+                                    Icons.check_rounded,
                                     size: 30,
                                     color: Styles.gumColor,
                                   )),

@@ -42,9 +42,12 @@ class _ShowEditScreenState extends State<ShowEditScreen> {
           child: Column(
               children: [
                 Visibility(
-                  visible: AppCubit.get(context).formater,
+                  visible: AppCubit.get(context).formaterB,
                   child: QuillToolbar.simple(
                     configurations: QuillSimpleToolbarConfigurations(
+                      showBoldButton: false,
+                      showItalicButton: false,
+                      showUnderLineButton: false,
                       showDividers: false,
                       showClipboardPaste: false,
                       showClipboardCut: false,
@@ -58,6 +61,46 @@ class _ShowEditScreenState extends State<ShowEditScreen> {
                       showQuote: false,
                       showIndent: false,
                       showStrikeThrough: false,
+                      showFontSize: false,
+                      showSearchButton: false,
+                      controller: AppCubit.get(context).quillController,
+                      sharedConfigurations: const QuillSharedConfigurations(
+                        locale: Locale('en'),
+                      ),
+                    ),
+                  ),
+                ),
+                Visibility(
+                  visible: AppCubit.get(context).formaterA,
+                  child: QuillToolbar.simple(
+                    configurations: QuillSimpleToolbarConfigurations(
+                      showListNumbers: false,
+                      showListBullets: false,
+                      showListCheck: false,
+                      showDividers: false,
+                      showClipboardPaste: false,
+                      showClipboardCut: false,
+                      showClipboardCopy: false,
+                      showRightAlignment:false,
+                      showCodeBlock: false,
+                      showFontFamily: false,
+                      showInlineCode: false,
+                      showHeaderStyle: false,
+                      showAlignmentButtons: true,
+                      showQuote: false,
+                      showIndent: false,
+                      showStrikeThrough: false,
+                      showSmallButton: false,
+                      showBackgroundColorButton: false,
+                      showCenterAlignment: false,
+                      showColorButton: false,
+                      showDirection: false,
+                      showJustifyAlignment: false,
+                      showLeftAlignment:false,
+                      showLink: false,
+                      showSubscript: false,
+                      showSuperscript: false,
+
                       controller: AppCubit.get(context).quillController,
                       sharedConfigurations: const QuillSharedConfigurations(
                         locale: Locale('en'),
