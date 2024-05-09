@@ -45,6 +45,8 @@ class _ShowEditScreenState extends State<ShowEditScreen> {
                   visible: AppCubit.get(context).formaterB,
                   child: QuillToolbar.simple(
                     configurations: QuillSimpleToolbarConfigurations(
+                      showSuperscript: false,
+                      showSubscript: false,
                       showBoldButton: false,
                       showItalicButton: false,
                       showUnderLineButton: false,
@@ -59,9 +61,10 @@ class _ShowEditScreenState extends State<ShowEditScreen> {
                       showHeaderStyle: false,
                       showAlignmentButtons: true,
                       showQuote: false,
-                      showIndent: false,
                       showStrikeThrough: false,
                       showFontSize: false,
+                      showBackgroundColorButton: false,
+                      showColorButton: false,
                       showSearchButton: false,
                       controller: AppCubit.get(context).quillController,
                       sharedConfigurations: const QuillSharedConfigurations(
@@ -91,9 +94,7 @@ class _ShowEditScreenState extends State<ShowEditScreen> {
                       showIndent: false,
                       showStrikeThrough: false,
                       showSmallButton: false,
-                      showBackgroundColorButton: false,
                       showCenterAlignment: false,
-                      showColorButton: false,
                       showDirection: false,
                       showJustifyAlignment: false,
                       showLeftAlignment:false,
@@ -108,11 +109,13 @@ class _ShowEditScreenState extends State<ShowEditScreen> {
                     ),
                   ),
                 ),
+                SizedBox(height: 55,),
                 Expanded(
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                    padding: const EdgeInsets.symmetric(horizontal: 30.0),
                     child: QuillEditor.basic(
                       configurations: QuillEditorConfigurations(
+                        scrollPhysics: BouncingScrollPhysics(),
                         controller: AppCubit.get(context).quillController,
                         sharedConfigurations: const QuillSharedConfigurations(
                           locale: Locale('en'),
