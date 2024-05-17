@@ -32,7 +32,7 @@ class _ShowEditScreenState extends State<ShowEditScreen> {
      AppCubit.get(context).quillController = QuillController(
        document: Document.fromJson(
            jsonDecode(
-               AppCubit.get(context).tappedTitle
+               AppCubit.get(context).tappedTitle.replaceAll("''", "'").replaceAll('""', '\\"')
            )),
        selection: const TextSelection.collapsed(offset: 0),
      );

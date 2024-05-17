@@ -239,7 +239,8 @@ bool formaterA = false;
       (Transaction txn) async {
         txn
             .rawInsert(
-          'INSERT INTO tasks(title,ptitle, date, time) VALUES("$title","$ptitle",  "$date", "$time")',
+          'INSERT INTO tasks(title,ptitle, date, time) VALUES(?, ?, ?,?)',
+          ['[{\"insert\":\"${title.replaceAll("'", "''").replaceAll('"', '""').replaceAll('\n', '\\n')}\\n\"}]',ptitle.replaceAll("'", "''").replaceAll('"', '""'), date, time],
         )
             .then(
           (value) {
@@ -306,7 +307,7 @@ bool formaterA = false;
     await database.transaction((txn) async {
       int newId = await txn.rawInsert(
         'INSERT INTO tasks(title,ptitle, date, time) VALUES(?, ?, ?,?)',
-        [title,ptitle, date, time],
+        [title.replaceAll("'", "''").replaceAll('\\"', '""'),ptitle.replaceAll("'", "''").replaceAll('"', '""'), date, time],
       );
 
       // Delete the old row
@@ -349,4 +350,32 @@ bool formaterA = false;
     if(formaterB==true){formaterA =false;}
     emit(FormattingState());
   }
+
+  void showPrompt(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Logout'),
+          content: Text('Are you sure you want to logout?'),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop(); // Dismiss the dialog
+              },
+            ),
+            TextButton(
+              child: Text('Yes'),
+              onPressed: () {
+                // Handle "Yes" action
+                Navigator.of(context).pop(); // Dismiss the dialog
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
 }

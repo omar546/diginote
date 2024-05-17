@@ -69,24 +69,40 @@ class HomeLayout extends StatelessWidget {
                   :AppBar(
                 elevation: 0,
                 automaticallyImplyLeading: false,
+                leadingWidth: 100,
                 leading: cubit.isBottomSheetShown
                     ? null
                     : (cubit.currentIndex == 0)
-                        ? IconButton(
-                            onPressed: () {
-                              AppCubit.get(context).toggleSortingOrder();
-                            },
-                            icon: const Icon(Icons.sort_rounded, size: 30),
-                            color: Styles.gumColor,
-                          )
-                        : IconButton(
-                            onPressed: () {
-                              cubit.changeBottomNavBarState(0);
-                            },
-                            icon:
-                                const Icon(Icons.arrow_back_rounded, size: 30),
-                            color: Styles.gumColor,
-                          ),
+                        ? Row(
+                  children: [
+                            IconButton(
+                                onPressed: () {
+                                  AppCubit.get(context).toggleSortingOrder();
+                                },
+                                icon: const Icon(Icons.sort_rounded, size: 30),
+                                color: Styles.gumColor,
+                              ),
+                            IconButton(
+                              onPressed: () {
+                                cubit.showPrompt(context);
+                              },
+                              icon: const Icon(Icons.logout_rounded, size: 30),
+                              color: Styles.gumColor,
+                            ),
+                          ],
+                        )
+                        : Row(
+                          children: [
+                            IconButton(
+                                onPressed: () {
+                                  cubit.changeBottomNavBarState(0);
+                                },
+                                icon:
+                                    const Icon(Icons.arrow_back_rounded, size: 30),
+                                color: Styles.gumColor,
+                              ),
+                          ],
+                        ),
                 actions: (cubit.isBottomSheetShown || cubit.currentIndex > 0)
                     ? [
                         Visibility(
@@ -225,7 +241,7 @@ class HomeLayout extends StatelessWidget {
                             print(error);});
                           },
                           icon: const Icon(
-                            Icons.online_prediction_rounded,
+                            Icons.category_outlined,
                             size: 30,
                           ),
                           color: Styles.gumColor,
@@ -336,38 +352,41 @@ class HomeLayout extends StatelessWidget {
                                   .suffixIconColor ??
                               Colors.black, // Text color for dark theme,
                         ),
-                        child: TextField(
-                          textAlignVertical: TextAlignVertical.center,
-                          style: TextStyle(
-                              color:
-                                  Theme.of(context).textTheme.bodyMedium?.color,
-                              fontSize: 13),
-                          controller: cubit.searchController,
-                          decoration: InputDecoration(
-                            prefixIcon: Icon(
-                              Icons.search_rounded,
-                              color: Theme.of(context)
-                                      .inputDecorationTheme
-                                      .prefixIconColor
-                                      ?.withOpacity(0.5) ??
-                                  Colors.black,
+                        child: Padding(
+                          padding: const EdgeInsets.only(right: 8.0),
+                          child: TextField(
+                            textAlignVertical: TextAlignVertical.center,
+                            style: TextStyle(
+                                color:
+                                    Theme.of(context).textTheme.bodyMedium?.color,
+                                fontSize: 13),
+                            controller: cubit.searchController,
+                            decoration: InputDecoration(
+                              prefixIcon: Icon(
+                                Icons.search_rounded,
+                                color: Theme.of(context)
+                                        .inputDecorationTheme
+                                        .prefixIconColor
+                                        ?.withOpacity(0.5) ??
+                                    Colors.black,
+                              ),
+                              hintText: 'Search',
+                              hintStyle: TextStyle(
+                                color: Theme.of(context)
+                                        .inputDecorationTheme
+                                        .prefixIconColor
+                                        ?.withOpacity(0.5) ??
+                                    Colors.black,
+                                fontSize: 13,
+                              ),
+                              border: InputBorder.none,
+                              contentPadding: const EdgeInsets.only(bottom: 8),
                             ),
-                            hintText: 'Search',
-                            hintStyle: TextStyle(
-                              color: Theme.of(context)
-                                      .inputDecorationTheme
-                                      .prefixIconColor
-                                      ?.withOpacity(0.5) ??
-                                  Colors.black,
-                              fontSize: 13,
-                            ),
-                            border: InputBorder.none,
-                            contentPadding: const EdgeInsets.only(bottom: 8),
+                            onChanged: (query) {
+                              // Perform filtering whenever the text changes
+                              cubit.filterTasks(query);
+                            },
                           ),
-                          onChanged: (query) {
-                            // Perform filtering whenever the text changes
-                            cubit.filterTasks(query);
-                          },
                         ),
                       ),
               ),
@@ -431,8 +450,8 @@ class HomeLayout extends StatelessWidget {
                           if (formKey.currentState!.validate()) {
                             cubit
                                 .insertIntoDatabase(
-                              title: '[{""insert"":""${titleController.text.replaceAll("'", "''").replaceAll('"', '""')}\\n""}]'
-                              ,ptitle: titleController.text.replaceAll("'", "''").replaceAll('"', '""'),
+                              title: titleController.text
+                              ,ptitle: titleController.text,
 
 
                               date: DateFormat.yMMMd().format(DateTime.now()),
