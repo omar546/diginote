@@ -22,7 +22,7 @@ ThemeData lightTheme = ThemeData(
       type: BottomNavigationBarType.fixed,
       selectedItemColor: Styles.gumColor,
       unselectedItemColor: Styles.greyColor,
-      selectedLabelStyle: TextStyle(fontFamily: 'bitter'),
+      selectedLabelStyle: TextStyle(fontFamily: 'nunito'),
     ),
     appBarTheme: const AppBarTheme(
       iconTheme: IconThemeData(color: Styles.gumColor),
@@ -38,9 +38,9 @@ ThemeData lightTheme = ThemeData(
     primarySwatch: customGum,
     textTheme: TextTheme(
       bodyMedium:
-      const TextStyle(color: Styles.blackColor, fontFamily: 'bitter'),
+      const TextStyle(color: Styles.blackColor,),
       bodySmall: TextStyle(
-          color: Styles.blackColor.withOpacity(0.5), fontFamily: 'bitter'),
+          color: Styles.blackColor.withOpacity(0.5), fontFamily: 'nunito'),
     ),
     inputDecorationTheme: InputDecorationTheme(
       prefixIconColor: Styles.lightBlackColor,
@@ -55,7 +55,7 @@ ThemeData darkTheme = ThemeData(
       type: BottomNavigationBarType.fixed,
       selectedItemColor: Styles.gumColor,
       unselectedItemColor: Styles.greyColor,
-      selectedLabelStyle: TextStyle(fontFamily: 'bitter'),
+      selectedLabelStyle: TextStyle(fontFamily: 'nunito'),
     ),
     appBarTheme: const AppBarTheme(
       iconTheme: IconThemeData(color: Styles.whiteColor),
@@ -71,9 +71,9 @@ ThemeData darkTheme = ThemeData(
     primarySwatch: customGum,
     textTheme: TextTheme(
       bodyMedium: const TextStyle(
-          color: Styles.whiteColor, fontFamily: 'bitter'),
+          color: Styles.whiteColor,),
       bodySmall: TextStyle(
-          color: Styles.greyColor.withOpacity(0.5), fontFamily: 'bitter'),
+          color: Styles.greyColor.withOpacity(0.5), fontFamily: 'nunito'),
     ),
     iconTheme: IconThemeData(color: Styles.greyColor),
     inputDecorationTheme: const InputDecorationTheme(

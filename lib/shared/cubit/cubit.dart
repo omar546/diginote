@@ -216,7 +216,7 @@ bool formaterA = false;
       version: 1,
       onCreate: (db, version) async {
         await db.execute(
-            'CREATE TABLE tasks (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, date TEXT,time TEXT ,status TEXT)');
+            'CREATE TABLE tasks (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT,ptitle TEXT, date TEXT,time TEXT)');
       },
       onOpen: (database) {
         getFromDatabase(database);
@@ -231,6 +231,7 @@ bool formaterA = false;
 
   Future insertIntoDatabase({
     required String title,
+    required String ptitle,
     required String date,
     required String time,
   }) {
@@ -238,7 +239,7 @@ bool formaterA = false;
       (Transaction txn) async {
         txn
             .rawInsert(
-          'INSERT INTO tasks(title, date, time,status) VALUES("$title",  "$date", "$time", "new")',
+          'INSERT INTO tasks(title,ptitle, date, time) VALUES("$title","$ptitle",  "$date", "$time")',
         )
             .then(
           (value) {
@@ -265,22 +266,11 @@ bool formaterA = false;
         values.forEach(
           (element) {
             //sego sort algo :)
-            if (element['status'] == 'new') {
               newTasks.add(element);
               newTasks.sort(
                 (b, a) => a['id'].compareTo(b['id']),
               );
-            } else if (element['status'] == 'done') {
-              doneTasks.add(element);
-              doneTasks.sort(
-                (b, a) => a['id'].compareTo(b['id']),
-              );
-            } else {
-              archivedTasks.add(element);
-              archivedTasks.sort(
-                (b, a) => a['id'].compareTo(b['id']),
-              );
-            }
+
           },
         );
         emit(AppGetDatabaseState());
@@ -308,14 +298,15 @@ bool formaterA = false;
   Future<void> updateDatabase({
     required int oldId,
     required String title,
+    required String ptitle,
     required String date,
     required String time,
   }) async {
     // Insert a new row with updated data
     await database.transaction((txn) async {
       int newId = await txn.rawInsert(
-        'INSERT INTO tasks(title, date, time, status) VALUES(?, ?, ?, "new")',
-        [title, date, time],
+        'INSERT INTO tasks(title,ptitle, date, time) VALUES(?, ?, ?,?)',
+        [title,ptitle, date, time],
       );
 
       // Delete the old row

@@ -50,11 +50,16 @@ dependencies:
   fluttertoast: ^8.2.2
   carousel_slider: ^4.2.1
   flutter_quill: ^9.3.10
+  quill_pdf_converter: ^9.3.11
 #  webview_flutter: ^4.2.2
 
   path: any
   async: any
   http: any
+  printing: ^5.12.0
+  flutter_html: ^3.0.0-beta.2
+  hive: ^2.2.3
+  hive_flutter: ^1.1.0
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -226,18 +231,18 @@ flutter:
     - family: gyanko
       fonts:
         - asset: assets/fonts/gyanko-stencil.otf
-    - family: bitter
+    - family: nunito
       fonts:
-        - asset: assets/fonts/bitter/Bitter-Regular.ttf
-    - family: bitter-bold
+        - asset: assets/fonts/non/Nunito-Regular.ttf
+    - family: nunito-bold
       fonts:
-        - asset: assets/fonts/bitter/Bitter-Bold.ttf
-    - family: bitter-exbold
+        - asset: assets/fonts/non/Nunito-Bold.ttf
+    - family: nunito-exbold
       fonts:
-        - asset: assets/fonts/bitter/Bitter-ExtraBold.ttf
-    - family: bitter-thin
+        - asset: assets/fonts/non/Nunito-ExtraBold.ttf
+    - family: nunito-thin
       fonts:
-        - asset: assets/fonts/bitter/Bitter-Thin.ttf
+        - asset: assets/fonts/non/Nunito-Light.ttf
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in

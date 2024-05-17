@@ -1,6 +1,9 @@
+import 'package:diginote/layout/home_layout.dart';
+import 'package:diginote/shared/components/constants.dart';
 import 'package:diginote/shared/network/local/cache_helper.dart';
 import 'package:diginote/shared/network/remote/dio_helper.dart';
 import 'package:diginote/shared/styles/Themes.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -14,24 +17,30 @@ void main() async {
   // await Future.delayed(const Duration(milliseconds: 750));
   // if main() is async and there is await down here it will wait for it to finish before launching app
   WidgetsFlutterBinding.ensureInitialized();
-  await AppCubit().initializeCamera();
+
   Bloc.observer = MyBlocObserver();
   DioHelper.init();
+  DioHelper2.init();
 
   await CacheHelper.init();
   Widget widget;
   bool onBoarding = CacheHelper.getData(key: 'onBoarding') ?? false;
-  // token = CacheHelper.getData(key: 'token') ?? 'null';
-  // if (kDebugMode) {
-  //   print(token);
-  // }
-
+  token = CacheHelper.getData(key: 'token') ?? 'null';
+  if (kDebugMode) {
+    print(token);
+  }
+  await AppCubit().initializeCamera();
   if(onBoarding != false)
   {
-    widget = BlocProvider(
+    if (token != 'null'){
+      widget = BlocProvider(
+      create: (context) => AppCubit()..createDatabase(),
+      child: HomeLayout(),
+    );}
+    else{ widget = BlocProvider(
       create: (context) => AppCubit()..createDatabase(),
       child: LoginScreen(),
-    );
+    );}
   }else
   {
     widget = const OnBoardingScreen();

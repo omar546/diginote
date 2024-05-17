@@ -1,12 +1,18 @@
+import 'dart:convert';
+
 import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:printing/printing.dart';
+import 'package:quill_pdf_converter/quill_pdf_converter.dart';
 import '../shared/components/components.dart';
 import '../shared/cubit/cubit.dart';
 import '../shared/cubit/states.dart';
 import '../shared/network/remote/dio_helper.dart';
 import '../shared/styles/styles.dart';
+import 'package:pdf/pdf.dart';
+import 'package:pdf/widgets.dart' as pw;
 
 class HomeLayout extends StatelessWidget {
   HomeLayout({super.key});
@@ -111,6 +117,7 @@ class HomeLayout extends StatelessWidget {
                                           cubit.insertIntoDatabase(
                                           title:
                                           cubit.responseValue,
+                                          ptitle:cubit.responseValue,
                                           time: TimeOfDay.now().format(context),
                                           date: DateFormat.yMMMd()
                                               .format(DateTime.now()))
@@ -125,6 +132,32 @@ class HomeLayout extends StatelessWidget {
                         ),
                         Row(
                           children: [
+                            Visibility(
+                              visible: !cubit.isBottomSheetShown &&
+                                  cubit.currentIndex == 2,
+                              child: IconButton(
+                                  onPressed: () async {
+                                    final pdfDocument = pw.Document();
+                                    final pdfWidgets =
+                                    await AppCubit.get(context).quillController.document.toDelta().toPdf();
+                                    pdfDocument.addPage(
+                                      pw.MultiPage(
+                                        maxPages: 200,
+                                        pageFormat: PdfPageFormat.a4,
+                                        build: (context) {
+                                          return pdfWidgets;
+                                        },
+                                      ),
+                                    );
+                                    await Printing.layoutPdf(
+                                        onLayout: (format) async => pdfDocument.save());
+                                  },
+                                  icon: Icon(
+                                    Icons.picture_as_pdf_outlined,
+                                    size: 30,
+                                    color: Styles.gumColor,
+                                  )),
+                            ),
                             Visibility(
                               visible: !cubit.isBottomSheetShown &&
                                   cubit.currentIndex == 2,
@@ -156,16 +189,20 @@ class HomeLayout extends StatelessWidget {
                                   cubit.currentIndex == 2,
                               child: IconButton(
                                   onPressed: () {
-                                    if (cubit.edittitleController.text !=
-                                            cubit.tappedTitle &&
-                                        cubit.editformKey.currentState!
-                                            .validate()) {
+                                    if (true
+                                    // cubit.edittitleController.text !=
+                                    //         cubit.tappedTitle &&
+                                    //     cubit.editformKey.currentState!
+                                    //         .validate()
+                                    ) {
                                       cubit.updateDatabase(
                                           oldId: cubit.tappedId,
                                           time: TimeOfDay.now().format(context),
                                           date: DateFormat.yMMMd()
                                               .format(DateTime.now()),
-                                          title: cubit.edittitleController.text);
+
+                                          title: jsonEncode(cubit.quillController.document.toDelta().toJson()),
+                                      ptitle: cubit.quillController.document.toPlainText());
                                     }
                                     cubit.changeBottomNavBarState(0);
                                   },
@@ -200,6 +237,7 @@ class HomeLayout extends StatelessWidget {
                                 cubit
                                     .insertIntoDatabase(
                                   title: titleController.text,
+                                  ptitle:titleController.text,
                                   // date: dateController.text,
 
                                   date:
@@ -351,6 +389,7 @@ class HomeLayout extends StatelessWidget {
                         visible: (!(cubit.isBottomSheetShown) &&
                             (cubit.currentIndex != 4 && cubit.currentIndex != 2 )),
                         child: FloatingActionButton(
+                          shape: const CircleBorder(),
                           backgroundColor: Styles.gumColor,
                           onPressed: () async {
                             if (cubit.currentIndex == 0) {
@@ -361,6 +400,8 @@ class HomeLayout extends StatelessWidget {
                                       cubit.insertIntoDatabase(
                                           title:
                                           cubit.responseValue,
+                                          ptitle:
+                                          cubit.responseValue,
                                           time: TimeOfDay.now().format(context),
                                           date: DateFormat.yMMMd()
                                               .format(DateTime.now())));
@@ -369,29 +410,32 @@ class HomeLayout extends StatelessWidget {
                           child: const Icon(
                             Icons.camera,
                             size: 55,
+                            color: Colors.white,
                           ),
                         )),
                   ),
                   Visibility(
                     visible: (cubit.isBottomSheetShown),
                     child: FloatingActionButton(
+                      shape: const CircleBorder(),
                       backgroundColor:
                           Theme.of(context).scaffoldBackgroundColor,
                       child: const Icon(
                         Icons.check_circle,
                         color: Styles.gumColor,
                         size: 40,
+
                       ),
                       onPressed: () {
                         if (cubit.isBottomSheetShown) {
                           if (formKey.currentState!.validate()) {
                             cubit
                                 .insertIntoDatabase(
-                              title: titleController.text.replaceAll("'", "''").replaceAll('"', '""'),
-                              // date: dateController.text,
+                              title: '[{""insert"":""${titleController.text.replaceAll("'", "''").replaceAll('"', '""')}\\n""}]'
+                              ,ptitle: titleController.text.replaceAll("'", "''").replaceAll('"', '""'),
+
 
                               date: DateFormat.yMMMd().format(DateTime.now()),
-                              // time: timeController.text,
                               time: TimeOfDay.now().format(context),
                             )
                                 .then(

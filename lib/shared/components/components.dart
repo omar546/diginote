@@ -133,12 +133,12 @@ Widget buildTaskItem({required Map model, context, required index}) =>
                                       ),
                                       children: [
                                         TextSpan(
-                                          text: '${model['title'].replaceAll('""', '"').replaceAll("''", "'").split('\n')[0]+'\n'}',
-                                          style: const TextStyle(fontFamily:'bitter-bold'),
+                                          text: '${model['ptitle'].replaceAll('""', '"').replaceAll("''", "'").split('\n')[0]+'\n'}',
+                                          style: const TextStyle(fontFamily:'nunito-bold'),
                                         ),
                                         TextSpan(
-                                          text: '\n${model['title'].replaceAll('""', '"').replaceAll("''", "'").split('\n').sublist(1).join('\n')}',
-                                          style: const TextStyle(fontFamily:'bitter'),
+                                          text: '\n${model['ptitle'].replaceAll('""', '"').replaceAll("''", "'").split('\n').sublist(1).join('\n')}',
+                                          style: const TextStyle(fontFamily:'nunito'),
 
                                         ),
                                       ],
@@ -159,7 +159,7 @@ Widget buildTaskItem({required Map model, context, required index}) =>
                                     '${model['date']}',
                                     style: TextStyle(
                                       fontSize: 10,
-                                      fontFamily: 'bitter',
+                                      fontFamily: 'nunito',
                                       color: Theme.of(context).inputDecorationTheme.prefixIconColor ?? Colors.black,),
                                   ),
                                   const SizedBox(width: 10,),
@@ -167,7 +167,7 @@ Widget buildTaskItem({required Map model, context, required index}) =>
                                     '${model['time']}',
                                     style: TextStyle(
                                       fontSize: 10,
-                                      fontFamily: 'bitter',
+                                      fontFamily: 'nunito',
                                       color: Theme.of(context).inputDecorationTheme.prefixIconColor ?? Colors.black,),
                                   ),
                                 ],

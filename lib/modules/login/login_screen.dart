@@ -27,8 +27,8 @@ class LoginScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (BuildContext context) => ShopLoginCubit(ShopLoginInitialState()),
-      child: BlocConsumer<ShopLoginCubit, ShopLoginStates>(
+      create: (BuildContext context) => NoteLoginCubit(ShopLoginInitialState()),
+      child: BlocConsumer<NoteLoginCubit, NoteLoginStates>(
         listener: (context, state) {
           if (state is ShopLoginSuccessState) {
             if (state.loginModel.status ?? false) {
@@ -135,10 +135,10 @@ class LoginScreen extends StatelessWidget {
                           label: 'Password',
                           controller: passwordController,
                           type: TextInputType.visiblePassword,
-                          suffix: ShopLoginCubit.get(context).suffix,
+                          suffix: NoteLoginCubit.get(context).suffix,
                           onSubmit: (value) {
                             if (formKey.currentState!.validate()) {
-                              ShopLoginCubit.get(context).userLogin(
+                              NoteLoginCubit.get(context).userLogin(
                                 email: emailController.text,
                                 password: passwordController.text,
                               );
@@ -157,9 +157,9 @@ class LoginScreen extends StatelessWidget {
                             }
                           },
                           prefix: Icons.password_rounded,
-                          isPassword: ShopLoginCubit.get(context).isPassword,
+                          isPassword: NoteLoginCubit.get(context).isPassword,
                           suffixPressed: () {
-                            ShopLoginCubit.get(context)
+                            NoteLoginCubit.get(context)
                                 .changePasswordVisibility();
                           },
                         ),
@@ -174,12 +174,11 @@ class LoginScreen extends StatelessWidget {
                                   context: context,
                                   text: "LOGIN",
                                   onPressed: () {
-
-                                    // if (formKey.currentState!.validate()) {
-                                    //   NoteLoginCubit.get(context).userLogin(
-                                    //       email: emailController.text,
-                                    //       password: passwordController.text);
-                                    // }
+                                    if (formKey.currentState!.validate()) {
+                                      NoteLoginCubit.get(context).userLogin(
+                                          email: emailController.text,
+                                          password: passwordController.text);
+                                    }
                                     navigateAndFinish(context, HomeLayout());
                                   }),
                               fallback: (context) =>
