@@ -4,15 +4,12 @@ import 'package:conditional_builder_null_safety/conditional_builder_null_safety.
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import 'package:printing/printing.dart';
-import 'package:quill_pdf_converter/quill_pdf_converter.dart';
 import '../shared/components/components.dart';
 import '../shared/cubit/cubit.dart';
 import '../shared/cubit/states.dart';
 import '../shared/network/remote/dio_helper.dart';
 import '../shared/styles/styles.dart';
-import 'package:pdf/pdf.dart';
-import 'package:pdf/widgets.dart' as pw;
+
 
 class HomeLayout extends StatelessWidget {
   HomeLayout({super.key});
@@ -152,24 +149,37 @@ class HomeLayout extends StatelessWidget {
                               visible: !cubit.isBottomSheetShown &&
                                   cubit.currentIndex == 2,
                               child: IconButton(
-                                  onPressed: () async {
-                                    final pdfDocument = pw.Document();
-                                    final pdfWidgets =
-                                    await AppCubit.get(context).quillController.document.toDelta().toPdf();
-                                    pdfDocument.addPage(
-                                      pw.MultiPage(
-                                        maxPages: 200,
-                                        pageFormat: PdfPageFormat.a4,
-                                        build: (context) {
-                                          return pdfWidgets;
-                                        },
-                                      ),
-                                    );
-                                    await Printing.layoutPdf(
-                                        onLayout: (format) async => pdfDocument.save());
+                                  onPressed: () {
+
                                   },
                                   icon: Icon(
                                     Icons.picture_as_pdf_outlined,
+                                    size: 30,
+                                    color: Styles.gumColor,
+                                  )),
+                            ),
+                            Visibility(
+                              visible: !cubit.isBottomSheetShown &&
+                                  cubit.currentIndex == 2,
+                              child: IconButton(
+                                  onPressed: () {
+                                    cubit.FormaterVisbilityC();
+                                  },
+                                  icon: Icon(
+                                    Icons.content_paste_go_rounded,
+                                    size: 30,
+                                    color: cubit.formaterC ? Styles.greyColor : Styles.gumColor,
+                                  )),
+                            ),
+                            Visibility(
+                              visible: !cubit.isBottomSheetShown &&
+                                  cubit.currentIndex == 2 && cubit.formaterC,
+                              child: IconButton(
+                                  onPressed: () {
+                                    cubit.selectAll();
+                                  },
+                                  icon: const Icon(
+                                    Icons.select_all,
                                     size: 30,
                                     color: Styles.gumColor,
                                   )),

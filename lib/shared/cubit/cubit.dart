@@ -1,7 +1,8 @@
-
 import 'package:camera/camera.dart';
+// import 'package:delta_to_html/delta_to_html.dart';
 import 'package:diginote/modules/loadingScreen.dart';
 import 'package:flutter/foundation.dart';
+// import 'package:flutter_html_to_pdf/flutter_html_to_pdf.dart';
 import 'package:flutter_quill/flutter_quill.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:diginote/modules/CameraScreen.dart';
@@ -20,11 +21,12 @@ import '../../modules/showEditScreen.dart';
 import 'states.dart';
 
 class AppCubit extends Cubit<AppStates> {
-
   QuillController quillController = QuillController.basic();
 
-bool formaterB = true;
-bool formaterA = false;
+
+  bool formaterC = false;
+  bool formaterB = false;
+  bool formaterA = false;
   var editformKey = GlobalKey<FormState>();
   var searchController = TextEditingController();
   var edittitleController = TextEditingController();
@@ -102,8 +104,7 @@ bool formaterA = false;
 
   Future<String> upload(File imageFile) async {
     // open a bytestream
-    var stream =
-        http.ByteStream(DelegatingStream.typed(imageFile.openRead()));
+    var stream = http.ByteStream(DelegatingStream.typed(imageFile.openRead()));
     // get file length
     var length = await imageFile.length();
 
@@ -237,12 +238,15 @@ bool formaterA = false;
   }) {
     return database.transaction(
       (Transaction txn) async {
-        txn
-            .rawInsert(
+        txn.rawInsert(
           'INSERT INTO tasks(title,ptitle, date, time) VALUES(?, ?, ?,?)',
-          ['[{\"insert\":\"${title.replaceAll("'", "''").replaceAll('"', '""').replaceAll('\n', '\\n')}\\n\"}]',ptitle.replaceAll("'", "''").replaceAll('"', '""'), date, time],
-        )
-            .then(
+          [
+            '[{\"insert\":\"${title.replaceAll("'", "''").replaceAll('"', '""').replaceAll('\n', '\\n')}\\n\"}]',
+            ptitle.replaceAll("'", "''").replaceAll('"', '""'),
+            date,
+            time
+          ],
+        ).then(
           (value) {
             filteredTasks = [];
             searchController.clear();
@@ -267,34 +271,16 @@ bool formaterA = false;
         values.forEach(
           (element) {
             //sego sort algo :)
-              newTasks.add(element);
-              newTasks.sort(
-                (b, a) => a['id'].compareTo(b['id']),
-              );
-
+            newTasks.add(element);
+            newTasks.sort(
+              (b, a) => a['id'].compareTo(b['id']),
+            );
           },
         );
         emit(AppGetDatabaseState());
       },
     );
   }
-
-  // void updateDatabase({
-  //   required int id,
-  //   required String title,
-  //   required String date,
-  //   required String time,
-  // }) {
-  //   database.rawUpdate(
-  //     'UPDATE tasks SET title = ?, date = ?, time = ? WHERE id = ?',
-  //     [title, date, time, id],
-  //   ).then(
-  //     (value) {
-  //       getFromDatabase(database);
-  //       emit(AppUpdateDatabaseState());
-  //     },
-  //   );
-  // }
 
   Future<void> updateDatabase({
     required int oldId,
@@ -307,7 +293,12 @@ bool formaterA = false;
     await database.transaction((txn) async {
       int newId = await txn.rawInsert(
         'INSERT INTO tasks(title,ptitle, date, time) VALUES(?, ?, ?,?)',
-        [title.replaceAll("'", "''").replaceAll('\\"', '""'),ptitle.replaceAll("'", "''").replaceAll('"', '""'), date, time],
+        [
+          title.replaceAll("'", "''").replaceAll('\\"', '""'),
+          ptitle.replaceAll("'", "''").replaceAll('"', '""'),
+          date,
+          time
+        ],
       );
 
       // Delete the old row
@@ -340,14 +331,30 @@ bool formaterA = false;
     emit(AppChangeBottomSheetState());
   }
 
-  void FormaterVisbilityA(){
+  void FormaterVisbilityA() {
     formaterA = !formaterA;
-    if(formaterA==true){formaterB =false;}
+    if (formaterA == true) {
+      formaterB = false;
+      formaterC = false;
+    }
     emit(FormattingState());
   }
-  void FormaterVisbilityB(){
+
+  void FormaterVisbilityB() {
     formaterB = !formaterB;
-    if(formaterB==true){formaterA =false;}
+    if (formaterB == true) {
+      formaterA = false;
+      formaterC = false;
+    }
+    emit(FormattingState());
+  }
+
+  void FormaterVisbilityC() {
+    formaterC = !formaterC;
+    if (formaterC == true) {
+      formaterA = false;
+      formaterB = false;
+    }
     emit(FormattingState());
   }
 
@@ -377,5 +384,42 @@ bool formaterA = false;
       },
     );
   }
+
+  void hideFormatter() {
+    formaterB = false;
+    formaterA = false;
+    formaterC = false;
+    emit(FormattingState());
+  }
+  void selectAll() {
+    final docLength = quillController.document.length;
+    final selection = TextSelection(baseOffset: 0, extentOffset: docLength);
+    quillController.updateSelection(selection,ChangeSource.local);
+  }
+  // Future<void> export() async {
+  //   try {
+  //     final htmlString = await DeltaToHTML.encodeJson(AppCubit.get(context).quillController.document.toDelta().toJson());
+  //     var targetPath = "/storage/emulated/0/Download";
+  //     var targetFileName = "example_pdf_file";
+  //
+  //     // Show loading indicator while generating PDF
+  //
+  //
+  //     var generatedPdfFile = await FlutterHtmlToPdf.convertFromHtmlContent(
+  //       htmlString,
+  //       targetPath,
+  //       targetFileName,
+  //     );
+  //     changeBottomNavBarState(0);
+  //
+  //
+  //     // Handle successful PDF generation (e.g., show a success message)
+  //   } on Exception catch (e) {
+  //     // Handle the exception (e.g., show a snackbar to the user)
+  //     if (kDebugMode) {
+  //       print("Error generating PDF: $e");
+  //     }
+  //   }
+  // }
 
 }

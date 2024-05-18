@@ -27,6 +27,7 @@ class _ShowEditScreenState extends State<ShowEditScreen> {
    @override
    void initState() {
      super.initState();
+     AppCubit.get(context).hideFormatter();
      // Set the initial title to the edittitleController when the widget initializes
      // AppCubit.get(context).quillController = QuillController(document: Document()..insert(0, AppCubit.get(context).tappedTitle), selection: TextSelection.collapsed(offset:AppCubit.get(context).tappedTitle.length));
      AppCubit.get(context).quillController = QuillController(
@@ -53,10 +54,47 @@ class _ShowEditScreenState extends State<ShowEditScreen> {
           child: Column(
               children: [
                 Visibility(
+                  visible: AppCubit.get(context).formaterC,
+                  child: QuillToolbar.simple(
+                    configurations: QuillSimpleToolbarConfigurations(
+                      showClearFormat: false,
+                      showLeftAlignment: false,
+                      showListBullets: false,
+                      showJustifyAlignment: false,
+                      showIndent: false,
+                      showCenterAlignment: false,
+                      showLink: false,
+                      showListNumbers: false,
+                      showListCheck: false,
+                      showSuperscript: false,
+                      showSubscript: false,
+                      showBoldButton: false,
+                      showItalicButton: false,
+                      showUnderLineButton: false,
+                      showDividers: false,
+                      showRightAlignment:false,
+                      showCodeBlock: false,
+                      showFontFamily: false,
+                      showInlineCode: false,
+                      showHeaderStyle: false,
+                      showAlignmentButtons: true,
+                      showQuote: false,
+                      showStrikeThrough: false,
+                      showFontSize: false,
+                      showBackgroundColorButton: false,
+                      showColorButton: false,
+                      showSearchButton: false,
+                      controller: AppCubit.get(context).quillController,
+                      sharedConfigurations: const QuillSharedConfigurations(
+                        locale: Locale('en'),
+                      ),
+                    ),
+                  ),
+                ),
+                Visibility(
                   visible: AppCubit.get(context).formaterB,
                   child: QuillToolbar.simple(
                     configurations: QuillSimpleToolbarConfigurations(
-                      multiRowsDisplay: true,
                       showSuperscript: false,
                       showSubscript: false,
                       showBoldButton: false,
@@ -89,7 +127,6 @@ class _ShowEditScreenState extends State<ShowEditScreen> {
                   visible: AppCubit.get(context).formaterA,
                   child: QuillToolbar.simple(
                     configurations: QuillSimpleToolbarConfigurations(
-                      multiRowsDisplay: true,
                       showListNumbers: false,
                       showListBullets: false,
                       showListCheck: false,
@@ -127,7 +164,7 @@ class _ShowEditScreenState extends State<ShowEditScreen> {
                     padding: const EdgeInsets.symmetric(horizontal: 30.0),
                     child: QuillEditor.basic(
                       configurations: QuillEditorConfigurations(
-
+                        enableSelectionToolbar: false,
                         scrollPhysics: BouncingScrollPhysics(),
                         controller: AppCubit.get(context).quillController,
                         sharedConfigurations: const QuillSharedConfigurations(
