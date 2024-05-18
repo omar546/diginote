@@ -110,8 +110,8 @@ flutter_native_splash:
   # The branding property allows you to specify an image used as branding in the splash screen.
   # It must be a png file. It is supported for Android, iOS and the Web.  For Android 12,
   # see the Android 12 section below.
-  color: "#fffdfa"
-  image: assets/splash.png
+#  color: "#fffdfa"
+#  image: assets/splash.png
 
   # To position the branding image at the bottom of the screen you can use bottom, bottomRight,
   # and bottomLeft. The default values is bottom if not specified or specified something else.
@@ -121,10 +121,10 @@ flutter_native_splash:
   # and image when the device is in dark mode. If they are not specified, the app will use the
   # parameters from above. If the image_dark parameter is specified, color_dark or
   # background_image_dark must be specified.  color_dark and background_image_dark cannot both be
-  # set.
-  color_dark: "#1f1f1f"
-  image_dark: assets/splash.png
-  #  color_dark: "#070606"
+#  # set.
+#  color_dark: "#1f1f1f"
+#  image_dark: assets/splash.png
+#  #  color_dark: "#070606"
   #background_image_dark: "assets/dark-background.png"
   #image_dark: assets/splash-invert.png
   #branding_dark: assets/dart_dark.png
@@ -143,19 +143,19 @@ flutter_native_splash:
   #image: assets/android12splash.png
 
   # Splash screen background color.
-  #color: "#42a5f5"
+  color: "#fffdfa"
 
   # App icon background color.
   #icon_background_color: "#111111"
 
   # The branding property allows you to specify an image used as branding in the splash screen.
-  #branding: assets/dart.png
+  branding: assets/splash.png
 
   # The image_dark, color_dark, icon_background_color_dark, and branding_dark set values that
   # apply when the device is in dark mode. If they are not specified, the app will use the
   # parameters from above.
   #image_dark: assets/android12splash-invert.png
-  #color_dark: "#042a49"
+  color_dark: "#1f1f1f"
   #icon_background_color_dark: "#eeeeee"
 
   # The android, ios and web parameters can be used to disable generating a splash screen on a given
