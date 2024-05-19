@@ -57,6 +57,11 @@ class _ShowEditScreenState extends State<ShowEditScreen> {
                   visible: AppCubit.get(context).formaterC,
                   child: QuillToolbar.simple(
                     configurations: QuillSimpleToolbarConfigurations(
+                      color: Theme.of(context)
+                          .scaffoldBackgroundColor,
+                      showRedo: false,
+                      showUndo: false,
+                      multiRowsDisplay: false,
                       showClearFormat: false,
                       showLeftAlignment: false,
                       showListBullets: false,
@@ -74,13 +79,11 @@ class _ShowEditScreenState extends State<ShowEditScreen> {
                       showDividers: false,
                       showRightAlignment:false,
                       showCodeBlock: false,
-                      showFontFamily: false,
                       showInlineCode: false,
                       showHeaderStyle: false,
                       showAlignmentButtons: true,
                       showQuote: false,
                       showStrikeThrough: false,
-                      showFontSize: false,
                       showBackgroundColorButton: false,
                       showColorButton: false,
                       showSearchButton: false,
@@ -91,12 +94,30 @@ class _ShowEditScreenState extends State<ShowEditScreen> {
                     ),
                   ),
                 ),
+                SizedBox(height: 20,),
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 30.0),
+                    child: QuillEditor.basic(
+                      configurations: QuillEditorConfigurations(
+                        enableSelectionToolbar: false,
+                        scrollPhysics: BouncingScrollPhysics(),
+                        controller: AppCubit.get(context).quillController,
+                        sharedConfigurations: const QuillSharedConfigurations(
+                          locale: Locale('en'),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(height: 20),
                 Visibility(
                   visible: AppCubit.get(context).formaterB,
                   child: QuillToolbar.simple(
                     configurations: QuillSimpleToolbarConfigurations(
-                      showSuperscript: false,
-                      showSubscript: false,
+                      color: Theme.of(context)
+                          .scaffoldBackgroundColor,
+                      multiRowsDisplay: false,
                       showBoldButton: false,
                       showItalicButton: false,
                       showUnderLineButton: false,
@@ -106,12 +127,10 @@ class _ShowEditScreenState extends State<ShowEditScreen> {
                       showClipboardCopy: false,
                       showRightAlignment:false,
                       showCodeBlock: false,
-                      showFontFamily: false,
                       showInlineCode: false,
                       showHeaderStyle: false,
                       showAlignmentButtons: true,
-                      showQuote: false,
-                      showStrikeThrough: false,
+                      showFontFamily: false,
                       showFontSize: false,
                       showBackgroundColorButton: false,
                       showColorButton: false,
@@ -127,6 +146,9 @@ class _ShowEditScreenState extends State<ShowEditScreen> {
                   visible: AppCubit.get(context).formaterA,
                   child: QuillToolbar.simple(
                     configurations: QuillSimpleToolbarConfigurations(
+                      color: Theme.of(context)
+                          .scaffoldBackgroundColor,
+                      multiRowsDisplay: false,
                       showListNumbers: false,
                       showListBullets: false,
                       showListCheck: false,
@@ -136,10 +158,9 @@ class _ShowEditScreenState extends State<ShowEditScreen> {
                       showClipboardCopy: false,
                       showRightAlignment:false,
                       showCodeBlock: false,
-                      showFontFamily: true,
+                      showFontFamily: false,
                       showInlineCode: false,
                       showHeaderStyle: false,
-                      showAlignmentButtons: true,
                       showQuote: false,
                       showIndent: false,
                       showStrikeThrough: false,
@@ -151,6 +172,7 @@ class _ShowEditScreenState extends State<ShowEditScreen> {
                       showLink: false,
                       showSubscript: false,
                       showSuperscript: false,
+                      showFontSize: false,
                       controller: AppCubit.get(context).quillController,
                       sharedConfigurations: const QuillSharedConfigurations(
                         locale: Locale('en'),
@@ -158,56 +180,8 @@ class _ShowEditScreenState extends State<ShowEditScreen> {
                     ),
                   ),
                 ),
-                SizedBox(height: 55,),
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 30.0),
-                    child: QuillEditor.basic(
-                      configurations: QuillEditorConfigurations(
-                        enableSelectionToolbar: false,
-                        scrollPhysics: BouncingScrollPhysics(),
-                        controller: AppCubit.get(context).quillController,
-                        sharedConfigurations: const QuillSharedConfigurations(
-                          locale: Locale('en'),
-                        ),
-                      ),
-                    ),
-                  ),
-                )
               ],
           ),
-
-          // Form(
-          //   key: AppCubit.get(context).editformKey,
-          //   child: Column(
-          //     mainAxisSize: MainAxisSize.min,
-          //     children: [
-          //       Row(
-          //         mainAxisAlignment: MainAxisAlignment.center,
-          //         children: [
-          //           Text(AppCubit.get(context).tappedDate,style: const TextStyle(color: Colors.grey,fontSize: 12),),
-          //           const SizedBox(width: 10,),
-          //           Text(AppCubit.get(context).tappedTime,style: const TextStyle(color: Colors.grey,fontSize: 12),),
-          //         ],),
-          //       const SizedBox(
-          //           height: 35.0,
-          //           width: double.infinity),
-          //       buildTextField(
-          //         context: context,
-          //         labelText: 'Title',
-          //         controller: AppCubit.get(context).edittitleController,
-          //         validate: (String? value) {
-          //           if (value == null ||
-          //               value.isEmpty) {
-          //             return 'Please type a title';
-          //           }
-          //           return null; // Return null to indicate the input is valid
-          //         },
-          //         type: TextInputType.multiline,
-          //       ),
-          //     ],
-          //   ),
-          // ),
         ),
       ),
     );

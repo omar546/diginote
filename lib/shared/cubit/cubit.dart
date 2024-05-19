@@ -335,7 +335,6 @@ class AppCubit extends Cubit<AppStates> {
     formaterA = !formaterA;
     if (formaterA == true) {
       formaterB = false;
-      formaterC = false;
     }
     emit(FormattingState());
   }
@@ -344,17 +343,12 @@ class AppCubit extends Cubit<AppStates> {
     formaterB = !formaterB;
     if (formaterB == true) {
       formaterA = false;
-      formaterC = false;
     }
     emit(FormattingState());
   }
 
   void FormaterVisbilityC() {
     formaterC = !formaterC;
-    if (formaterC == true) {
-      formaterA = false;
-      formaterB = false;
-    }
     emit(FormattingState());
   }
 
