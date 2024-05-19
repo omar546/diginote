@@ -31,7 +31,8 @@ class _ShowEditScreenState extends State<ShowEditScreen> {
      // Set the initial title to the edittitleController when the widget initializes
      // AppCubit.get(context).quillController = QuillController(document: Document()..insert(0, AppCubit.get(context).tappedTitle), selection: TextSelection.collapsed(offset:AppCubit.get(context).tappedTitle.length));
      AppCubit.get(context).quillController = QuillController(
-       document: Document.fromJson(
+       document: 
+       Document.fromJson(
            jsonDecode(
                AppCubit.get(context).tappedTitle.replaceAll("''", "'").replaceAll('""', '\\"')
            )),
@@ -118,6 +119,9 @@ class _ShowEditScreenState extends State<ShowEditScreen> {
                       color: Theme.of(context)
                           .scaffoldBackgroundColor,
                       multiRowsDisplay: false,
+                      showSubscript: false,
+                      showSuperscript: false,
+                      showQuote: false,
                       showBoldButton: false,
                       showItalicButton: false,
                       showUnderLineButton: false,
