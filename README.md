@@ -1,4 +1,4 @@
-# 🚧 diginote 🚧
+# 🚧 DIGINOTE 🚧
 
 a Flutter Notes app with Handwriting Recognition/digitalization features.
 
