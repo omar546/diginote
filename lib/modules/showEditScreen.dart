@@ -95,6 +95,7 @@ class _ShowEditScreenState extends State<ShowEditScreen> {
                       child: QuillToolbar.simple(
                         configurations: QuillSimpleToolbarConfigurations(
                           color: Theme.of(context).scaffoldBackgroundColor,
+                          showFontFamily: false,
                           showRedo: false,
                           showUndo: false,
                           multiRowsDisplay: false,
