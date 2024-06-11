@@ -51,6 +51,7 @@ dependencies:
   carousel_slider: ^4.2.1
   flutter_quill: ^9.3.10
   quill_pdf_converter: ^9.3.11
+  flutter_quill_extensions: ^9.3.12
 #  webview_flutter: ^4.2.2
 
   path: any

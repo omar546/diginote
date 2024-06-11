@@ -1,8 +1,6 @@
 import 'package:camera/camera.dart';
-// import 'package:delta_to_html/delta_to_html.dart';
 import 'package:diginote/modules/loadingScreen.dart';
 import 'package:flutter/foundation.dart';
-// import 'package:flutter_html_to_pdf/flutter_html_to_pdf.dart';
 import 'package:flutter_quill/flutter_quill.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:diginote/modules/CameraScreen.dart';

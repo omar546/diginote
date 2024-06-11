@@ -134,7 +134,7 @@ Widget buildTaskItem({required Map model, context, required index}) =>
                                       children: [
                                         TextSpan(
                                           text: '${model['ptitle'].replaceAll('""', '"').replaceAll("''", "'").split('\n')[0]+'\n'}',
-                                          style: const TextStyle(fontFamily:'nunito-bold'),
+                                          style: const TextStyle(fontFamily:'nunito-exbold'),
                                         ),
                                         TextSpan(
                                           text: '\n${model['ptitle'].replaceAll('""', '"').replaceAll("''", "'").split('\n').sublist(1).join('\n')}',
