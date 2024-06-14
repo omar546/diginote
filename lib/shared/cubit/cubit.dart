@@ -380,7 +380,9 @@ class AppCubit extends Cubit<AppStates> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Settings'),
+          backgroundColor:Theme.of(context)
+              .scaffoldBackgroundColor.withOpacity(0.95) ,
+          title: const Text('Settings',style: TextStyle(color: Styles.gumColor),),
           content: Row(mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
             children: [
