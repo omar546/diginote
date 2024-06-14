@@ -1,5 +1,6 @@
 import 'package:camera/camera.dart';
 import 'package:diginote/modules/loadingScreen.dart';
+import 'package:diginote/shared/styles/styles.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_quill/flutter_quill.dart';
 import 'package:image_picker/image_picker.dart';
@@ -374,7 +375,7 @@ class AppCubit extends Cubit<AppStates> {
     emit(FormattingState());
   }
 
-  void showPrompt(BuildContext context) {
+  void showSettingPrompt(BuildContext context) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -383,7 +384,7 @@ class AppCubit extends Cubit<AppStates> {
           content: Row(mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
             children: [
-              IconButton(onPressed: () {
+              IconButton(tooltip:"Ping",onPressed: () {
                 DioHelper.getData(url: 'test').then((value){
                   showToast(message: value.data['text'], state: ToastStates.SUCCESS);
 
@@ -391,9 +392,9 @@ class AppCubit extends Cubit<AppStates> {
                 if (kDebugMode) {
                   print(error);
                 }});
-              }, icon: const Icon(Icons.network_check),),
-              IconButton(onPressed: () { }, icon: const Icon(Icons.mode_night_rounded),),
-        IconButton(onPressed: () {  }, icon: const Icon(Icons.logout_rounded),)
+              }, icon: const Icon(Icons.network_check,color: Styles.gumColor,),),
+              IconButton(tooltip:"Theme",onPressed: () { }, icon: const Icon(Icons.mode_night_rounded,color: Styles.gumColor,),),
+        IconButton(tooltip:"Logout",onPressed: () {  }, icon: const Icon(Icons.logout_rounded,color: Styles.gumColor,),)
             ],
           ),
         );

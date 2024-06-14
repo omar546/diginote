@@ -81,7 +81,7 @@ class HomeLayout extends StatelessWidget {
                               ),
                             IconButton(
                               onPressed: () {
-                                cubit.showPrompt(context);
+                                cubit.showSettingPrompt(context);
                               },
                               icon: const Icon(Icons.more_horiz_rounded, size: 30),
                               color: Styles.gumColor,
