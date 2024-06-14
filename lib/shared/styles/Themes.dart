@@ -1,7 +1,6 @@
 import 'package:diginote/shared/styles/styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
 MaterialColor customGum = const MaterialColor(0xFF8C52FF, {
   50: Color(0xFFE0C7FF),
   100: Color(0xFFD3AFFF),

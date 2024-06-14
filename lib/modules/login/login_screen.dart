@@ -1,6 +1,7 @@
 import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
 import 'package:diginote/layout/home_layout.dart';
 import 'package:diginote/shared/styles/styles.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -27,10 +28,10 @@ class LoginScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (BuildContext context) => NoteLoginCubit(ShopLoginInitialState()),
+      create: (BuildContext context) => NoteLoginCubit(NoteLoginInitialState()),
       child: BlocConsumer<NoteLoginCubit, NoteLoginStates>(
         listener: (context, state) {
-          if (state is ShopLoginSuccessState) {
+          if (state is NoteLoginSuccessState) {
             if (state.loginModel.status ?? false) {
               if (kDebugMode) {
                 print(state.loginModel.message);
@@ -180,7 +181,7 @@ class LoginScreen extends StatelessWidget {
                         ),
                         Center(
                           child: ConditionalBuilder(
-                              condition: state is! ShopLoginLoadingState,
+                              condition: state is! NoteLoginLoadingState,
                               builder: (context) => customButton(
                                   widthRatio: 0.6,
                                   context: context,
@@ -212,6 +213,12 @@ class LoginScreen extends StatelessWidget {
                             ),
                           ],
                         ),
+                        Row(mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Checkbox(shape:CircleBorder(),onChanged: (f){NoteLoginCubit.get(context).changeAgreement();}, value: NoteLoginCubit.get(context).agreement,),
+                            Expanded(child: Text('By checking, you agree on using your data to improve our model',softWrap: true,maxLines: 4,))
+                          ],
+                        )
                       ],
                     ),
                   ),

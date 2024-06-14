@@ -65,6 +65,7 @@ class _ShowEditScreenState extends State<ShowEditScreen> {
   @override
   void initState() {
     super.initState();
+
     AppCubit.get(context).hideFormatter();
     AppCubit.get(context).quillController = QuillController(
       document: Document.fromJson(jsonDecode(
@@ -76,6 +77,7 @@ class _ShowEditScreenState extends State<ShowEditScreen> {
       )),
       selection: const TextSelection.collapsed(offset: 0),
     );
+    AppCubit.get(context).quillController.readOnly = AppCubit.get(context).editorLocked;
   }
 
   @override
@@ -142,6 +144,8 @@ class _ShowEditScreenState extends State<ShowEditScreen> {
                         child: QuillEditor.basic(
                           configurations: QuillEditorConfigurations(
                             enableSelectionToolbar: false,
+                            autoFocus: true,
+                            showCursor: !AppCubit.get(context).editorLocked,
                             scrollPhysics: BouncingScrollPhysics(),
                             embedBuilders: kIsWeb
                                 ? FlutterQuillEmbeds.editorWebBuilders()

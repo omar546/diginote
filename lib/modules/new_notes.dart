@@ -16,17 +16,17 @@ class NewNotesScreen extends StatelessWidget {
       listener: (context, state) {},
       builder: (context, state) {
         var cubit = AppCubit.get(context);
-        var tasks = cubit.newTasks; // Use newTasks instead of ftasks
-        var ftasks = cubit.filteredTasks;
+        var notes = cubit.newNotes; // Use newTasks instead of fnotes
+        var fnotes = cubit.filteredNotes;
 
         if (cubit.sortAscending) {
-          tasks.sort((a, b) => b['id'].compareTo(a['id']));
+          notes.sort((a, b) => b['id'].compareTo(a['id']));
         } else {
-          tasks.sort((a, b) => a['id'].compareTo(b['id']));
+          notes.sort((a, b) => a['id'].compareTo(b['id']));
         }
 
         return ConditionalBuilder(
-          condition: tasks.isEmpty,
+          condition: notes.isEmpty,
           builder: (context) => Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -36,44 +36,44 @@ class NewNotesScreen extends StatelessWidget {
             ),
           ),
           fallback: (context) => ConditionalBuilder(
-            condition: ftasks.isEmpty,
+            condition: fnotes.isEmpty,
             builder: (context) => ListView.separated(
               physics: const BouncingScrollPhysics(),
               itemBuilder: (context, index) => GestureDetector(
                 onTap: () {
-                  cubit.tappedTitle = tasks[index]['title'];
-                  cubit.tappedTime = tasks[index]['time'];
-                  cubit.tappedDate = tasks[index]['date'];
-                  cubit.tappedId = tasks[index]['id'];
+                  cubit.tappedTitle = notes[index]['title'];
+                  cubit.tappedTime = notes[index]['time'];
+                  cubit.tappedDate = notes[index]['date'];
+                  cubit.tappedId = notes[index]['id'];
                   cubit.changeBottomNavBarState(2);
                 },
-                child: buildTaskItem(
-                  model: tasks[index],
+                child: buildNoteItem(
+                  model: notes[index],
                   context: context,
                   index: 0,
                 ),
               ),
               separatorBuilder: (context, index) => const SizedBox(height: 1),
-              itemCount: tasks.length,
+              itemCount: notes.length,
             ),
             fallback: (context) => ListView.separated(
               physics: const BouncingScrollPhysics(),
               itemBuilder: (context, index) => GestureDetector(
                 onTap: () {
-                  cubit.tappedTitle = ftasks[index]['title'];
-                  cubit.tappedTime = ftasks[index]['time'];
-                  cubit.tappedDate = ftasks[index]['date'];
-                  cubit.tappedId = ftasks[index]['id'];
+                  cubit.tappedTitle = fnotes[index]['title'];
+                  cubit.tappedTime = fnotes[index]['time'];
+                  cubit.tappedDate = fnotes[index]['date'];
+                  cubit.tappedId = fnotes[index]['id'];
                   cubit.changeBottomNavBarState(2);
                 },
-                child: buildTaskItem(
-                  model: ftasks[index],
+                child: buildNoteItem(
+                  model: fnotes[index],
                   context: context,
                   index: 0,
                 ),
               ),
               separatorBuilder: (context, index) => const SizedBox(height: 1),
-              itemCount: ftasks.length,
+              itemCount: fnotes.length,
             ),
           ),
         );

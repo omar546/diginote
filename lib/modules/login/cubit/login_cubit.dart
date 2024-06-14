@@ -14,13 +14,14 @@ class NoteLoginCubit extends Cubit<NoteLoginStates>{
 static NoteLoginCubit get(context) => BlocProvider.of(context);
 
 late LoginModel loginModel;
+  bool agreement = false;
 
 void userLogin({
   required String email,
   required String password,
 })
 {
-  emit(ShopLoginLoadingState());
+  emit(NoteLoginLoadingState());
 
   DioHelper2.postData(url: LOGIN, data:
   {
@@ -31,12 +32,12 @@ void userLogin({
       print(value.data);
     }
     loginModel = LoginModel.formJson(value.data);
-    emit(ShopLoginSuccessState(loginModel));
+    emit(NoteLoginSuccessState(loginModel));
   }).catchError((error){
     if (kDebugMode) {
       print(error.toString());
     }
-    emit(ShopLoginErrorState(error.toString()));
+    emit(NoteLoginErrorState(error.toString()));
   });
 }
   IconData suffix = Icons.visibility_outlined;
@@ -47,7 +48,11 @@ void userLogin({
     isPassword = !isPassword;
     suffix = isPassword ? Icons.visibility_outlined : Icons.visibility_off_outlined ;
 
-    emit(ShopChangePasswordVisibilityState());
+    emit(NoteChangePasswordVisibilityState());
+  }
+  void changeAgreement(){
+    agreement = !agreement;
+    emit(NoteChangeAgreement());
   }
 
 

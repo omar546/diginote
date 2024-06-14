@@ -21,11 +21,11 @@ class HomeLayout extends StatelessWidget {
   bool notSheeting = true;
   bool _doubleTapped = false;
 
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-
         // If bottom sheet is not showing
         if (!_doubleTapped && notSheeting) {
           // On first back press, show a toast and set a flag
@@ -61,8 +61,9 @@ class HomeLayout extends StatelessWidget {
 
             return Scaffold(
               key: scaffoldKey,
-              appBar: cubit.currentIndex ==4
-                  ? null
+              appBar: cubit.currentIndex == 4 || cubit.currentIndex == 3
+                  ? AppBar(elevation: 0,
+                automaticallyImplyLeading: false,title:Center(child: Text("Categories",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 25,color: Styles.gumColor))))
                   :AppBar(
                 elevation: 0,
                 automaticallyImplyLeading: false,
@@ -83,7 +84,7 @@ class HomeLayout extends StatelessWidget {
                               onPressed: () {
                                 cubit.showPrompt(context);
                               },
-                              icon: const Icon(Icons.logout_rounded, size: 30),
+                              icon: const Icon(Icons.more_horiz_rounded, size: 30),
                               color: Styles.gumColor,
                             ),
                           ],
@@ -104,7 +105,7 @@ class HomeLayout extends StatelessWidget {
                     ? [
                         Visibility(
                           visible: !cubit.isBottomSheetShown &&
-                              cubit.currentIndex != 2,
+                              cubit.currentIndex != 2  && cubit.currentIndex != 3,
                           child: IconButton(
                               onPressed: () async {
                                 cubit.toggleFlashLight();
@@ -117,7 +118,7 @@ class HomeLayout extends StatelessWidget {
                         ),
                         Visibility(
                           visible: !cubit.isBottomSheetShown &&
-                              cubit.currentIndex != 2,
+                              cubit.currentIndex != 2 && cubit.currentIndex != 3,
                           child: IconButton(
                               onPressed: () async {
                                 if (cubit.currentIndex == 0) {
@@ -160,7 +161,7 @@ class HomeLayout extends StatelessWidget {
                             ),
                             Visibility(
                               visible: !cubit.isBottomSheetShown &&
-                                  cubit.currentIndex == 2,
+                                  cubit.currentIndex == 2 && !cubit.editorLocked,
                               child: IconButton(
                                   onPressed: () {
                                     cubit.FormaterVisbilityC();
@@ -173,7 +174,7 @@ class HomeLayout extends StatelessWidget {
                             ),
                             Visibility(
                               visible: !cubit.isBottomSheetShown &&
-                                  cubit.currentIndex == 2 && cubit.formaterC,
+                                  cubit.currentIndex == 2 && cubit.formaterC && !cubit.editorLocked,
                               child: IconButton(
                                   onPressed: () {
                                     cubit.selectAll();
@@ -186,7 +187,7 @@ class HomeLayout extends StatelessWidget {
                             ),
                             Visibility(
                               visible: !cubit.isBottomSheetShown &&
-                                  cubit.currentIndex == 2,
+                                  cubit.currentIndex == 2 && !cubit.editorLocked,
                               child: IconButton(
                                   onPressed: () {
                                     cubit.FormaterVisbilityB();
@@ -199,7 +200,7 @@ class HomeLayout extends StatelessWidget {
                             ),
                             Visibility(
                               visible: !cubit.isBottomSheetShown &&
-                                  cubit.currentIndex == 2,
+                                  cubit.currentIndex == 2 && !cubit.editorLocked,
                               child: IconButton(
                                   onPressed: () {
                                     cubit.FormaterVisbilityA();
@@ -212,7 +213,7 @@ class HomeLayout extends StatelessWidget {
                             ),
                             Visibility(
                               visible: !cubit.isBottomSheetShown &&
-                                  cubit.currentIndex == 2,
+                                  cubit.currentIndex == 2 && !cubit.editorLocked,
                               child: IconButton(
                                   onPressed: () {
                                     if (true
@@ -228,12 +229,25 @@ class HomeLayout extends StatelessWidget {
                                               .format(DateTime.now()),
 
                                           title: jsonEncode(cubit.quillController.document.toDelta().toJson()),
-                                      ptitle: cubit.quillController.document.toPlainText());
+                                          ptitle: cubit.quillController.document.toPlainText());
                                     }
-                                    cubit.changeBottomNavBarState(0);
+                                    // cubit.changeBottomNavBarState(0);
+                                    cubit.hideFormatter();
                                   },
                                   icon: const Icon(
                                     Icons.check_rounded,
+                                    size: 30,
+                                    color: Styles.gumColor,
+                                  )),
+                            ),
+                            Visibility(
+                              visible: !cubit.isBottomSheetShown &&
+                                  cubit.currentIndex == 2 && cubit.editorLocked,
+                              child: IconButton(
+                                  onPressed: () {cubit.showEditor();},
+
+                                  icon: const Icon(
+                                    Icons.mode_edit_outlined,
                                     size: 30,
                                     color: Styles.gumColor,
                                   )),
@@ -243,12 +257,7 @@ class HomeLayout extends StatelessWidget {
                       ]
                     : [
                         IconButton(
-                          onPressed: () {
-                            DioHelper.getData(url: 'test').then((value){
-                              showToast(message: value.data['text'], state: ToastStates.SUCCESS);
-
-                            }).catchError((error) {showToast(message: 'Offline', state: ToastStates.ERROR);
-                            print(error);});
+                          onPressed: () {cubit.changeBottomNavBarState(3);
                           },
                           icon: const Icon(
                             Icons.category_outlined,
@@ -349,7 +358,7 @@ class HomeLayout extends StatelessWidget {
                           color: Styles.gumColor,
                         )
                       ],
-                title: (cubit.isBottomSheetShown || cubit.currentIndex > 0)
+                title: (cubit.isBottomSheetShown || (cubit.currentIndex > 0))
                     ? null
                     : Container(
                         height: 40,
@@ -416,7 +425,7 @@ class HomeLayout extends StatelessWidget {
                     padding: const EdgeInsets.only(left: 30.0),
                     child: Visibility(
                         visible: (!(cubit.isBottomSheetShown) &&
-                            (cubit.currentIndex != 4 && cubit.currentIndex != 2 )),
+                            (cubit.currentIndex != 4 && cubit.currentIndex != 2 && cubit.currentIndex != 3 )),
                         child: FloatingActionButton(
                           shape: const CircleBorder(),
                           backgroundColor: Styles.gumColor,

@@ -55,8 +55,185 @@ Widget buildTextField({
     ),
   );
 }
+Widget buildCategoryItem({required Map model, context, required index}) =>
+    GestureDetector(
+      onLongPress:() {
+        Clipboard.setData(ClipboardData(text: model['title'].replaceAll('""', '"').replaceAll("''", "'")));
+        showToast(message: 'Copied',state: ToastStates.SUCCESS);},
+      child: Dismissible(
+        direction: DismissDirection.endToStart,
+        background: Container(
+          alignment: AlignmentDirectional.centerEnd,
+          color: Theme.of(context).scaffoldBackgroundColor,
+          child: Padding(
+            padding: const EdgeInsets.only(right: 30),
+            child: CircleAvatar(
+              backgroundColor: Colors.red,
+              child: Icon(
+                Icons.delete_forever_rounded,
+                color: Theme.of(context).scaffoldBackgroundColor,
+              ),
+            ),
+          ),
+        ),
+        onDismissed: (direction) {
+          AppCubit.get(context).deleteDatabase(id: model['id']);
+        },
+        key: Key(model['id'].toString()),
+        child: Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    constraints: BoxConstraints(
+                        maxWidth: MediaQuery.of(context).size.width * 0.85),
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        width: 1,
+                        color: Theme.of(context).inputDecorationTheme.prefixIconColor?.withOpacity(0.5) ?? Colors.black,
+                      ),
+                      borderRadius: BorderRadius.circular(15.0),
+                      color: Theme.of(context).inputDecorationTheme.suffixIconColor ?? Colors.black,
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          SizedBox(
+                            // width: MediaQuery.of(context).size.width * 0.85,
+                            // child: Text('${model['title']}',
+                            //     textAlign: TextAlign.left,
+                            //     overflow: TextOverflow.ellipsis,
+                            //     maxLines: 5,
+                            //     style: const TextStyle(
+                            //         fontFamily: 'Thunder',
+                            //         fontSize: 20,
+                            //         height: 1.1,
+                            //         letterSpacing: 2,
+                            //         color: Styles.whiteColor)),
+                            child: Row(mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Flexible(
+                                  child: RichText(
+                                    textAlign: TextAlign.left,
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 6,
+                                    text: TextSpan(
+                                      style: TextStyle(
+                                        fontSize: 15,
+                                        height: 1.1,
+                                        letterSpacing: 2,
+                                        color: Theme.of(context).textTheme.bodyMedium?.color,
+                                      ),
+                                      children: [
+                                        TextSpan(
+                                          text: '${model['ptitle'].replaceAll('""', '"').replaceAll("''", "'").split('\n')[0]+'\n'}',
+                                          style: const TextStyle(fontFamily:'nunito-exbold'),
+                                        ),
+                                        TextSpan(
+                                          text: '\n${model['ptitle'].replaceAll('""', '"').replaceAll("''", "'").split('\n').sublist(1).join('\n')}',
+                                          style: const TextStyle(fontFamily:'nunito'),
 
-Widget buildTaskItem({required Map model, context, required index}) =>
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 30,
+                          ),
+                          Center(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    '${model['date']}',
+                                    style: TextStyle(
+                                      fontSize: 10,
+                                      fontFamily: 'nunito',
+                                      color: Theme.of(context).inputDecorationTheme.prefixIconColor ?? Colors.black,),
+                                  ),
+                                  const SizedBox(width: 10,),
+                                  Text(
+                                    '${model['time']}',
+                                    style: TextStyle(
+                                      fontSize: 10,
+                                      fontFamily: 'nunito',
+                                      color: Theme.of(context).inputDecorationTheme.prefixIconColor ?? Colors.black,),
+                                  ),
+                                ],
+                              )),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              // const SizedBox(
+              //   width: 10,
+              // ),
+              // Visibility(
+              //   visible: index == 0 || index == 2,
+              //   child: IconButton(
+              //       splashRadius: 20,
+              //       onPressed: () {
+              //         AppCubit.get(context).updateDatabase(
+              //           status: 'done',
+              //           id: model['id'],
+              //         );
+              //       },
+              //       icon: const Icon(
+              //         Icons.check_circle_outline_rounded,
+              //         color: Styles.greyColor,
+              //         size: 25,
+              //       )),
+              // ),
+              // Visibility(
+              //   visible: index == 0 || index == 1,
+              //   child: IconButton(
+              //       splashRadius: 20,
+              //       onPressed: () {
+              //         AppCubit.get(context).updateDatabase(
+              //           status: 'archive',
+              //           id: model['id'],
+              //         );
+              //       },
+              //       icon: const Icon(
+              //         Icons.archive_outlined,
+              //         color: Styles.greyColor,
+              //         size: 25,
+              //       )),
+              // ),
+              // Visibility(
+              //   visible: index == 1 || index == 2,
+              //   child: IconButton(
+              //       splashRadius: 20,
+              //       onPressed: () {
+              //         AppCubit.get(context).updateDatabase(
+              //           status: 'new',
+              //           id: model['id'],
+              //         );
+              //       },
+              //       icon: const Icon(
+              //         Icons.hide_source_rounded,
+              //         color: Styles.greyColor,
+              //         size: 25,
+              //       )),
+              // ),
+            ],
+          ),
+        ),
+      ),
+    );
+Widget buildNoteItem({required Map model, context, required index}) =>
     GestureDetector(
         onLongPress:() {
           Clipboard.setData(ClipboardData(text: model['title'].replaceAll('""', '"').replaceAll("''", "'")));
