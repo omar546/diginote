@@ -215,8 +215,8 @@ class LoginScreen extends StatelessWidget {
                         ),
                         Row(mainAxisAlignment: MainAxisAlignment.start,
                           children: [
-                            Checkbox(shape:CircleBorder(),onChanged: (f){NoteLoginCubit.get(context).changeAgreement();}, value: NoteLoginCubit.get(context).agreement,),
-                            Expanded(child: Text('By checking, you agree on using your data to improve our model',softWrap: true,maxLines: 4,))
+                            Checkbox(shape:const CircleBorder(),onChanged: (f){NoteLoginCubit.get(context).changeAgreement();}, value: NoteLoginCubit.get(context).agreement,),
+                            const Expanded(child: Text('By checking, you agree on using your data to improve our model',softWrap: true,maxLines: 4,))
                           ],
                         )
                       ],

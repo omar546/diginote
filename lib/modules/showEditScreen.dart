@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:diginote/shared/cubit/cubit.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -27,15 +26,15 @@ class _ShowEditScreenState extends State<ShowEditScreen> {
     final imageUrl = await showDialog<String>(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('Enter Image URL'),
-        content: TextField(
+        title: const Text('Enter Image URL'),
+        content: const TextField(
           autofocus: true,
           decoration: InputDecoration(hintText: 'https://example.com/image.jpg'),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text('Cancel'),
+            child: const Text('Cancel'),
           ),
           TextButton(
             onPressed: () {
@@ -44,7 +43,7 @@ class _ShowEditScreenState extends State<ShowEditScreen> {
                 Navigator.pop(context, enteredUrl);
               }
             },
-            child: Text('Insert'),
+            child: const Text('Insert'),
           ),
         ],
       ),
@@ -135,7 +134,7 @@ class _ShowEditScreenState extends State<ShowEditScreen> {
                         ),
                       ),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 20,
                     ),
                     Expanded(
@@ -146,7 +145,7 @@ class _ShowEditScreenState extends State<ShowEditScreen> {
                             enableSelectionToolbar: false,
                             autoFocus: true,
                             showCursor: !AppCubit.get(context).editorLocked,
-                            scrollPhysics: BouncingScrollPhysics(),
+                            scrollPhysics: const BouncingScrollPhysics(),
                             embedBuilders: kIsWeb
                                 ? FlutterQuillEmbeds.editorWebBuilders()
                                 : FlutterQuillEmbeds.editorBuilders(),
@@ -159,7 +158,7 @@ class _ShowEditScreenState extends State<ShowEditScreen> {
                         ),
                       ),
                     ),
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
                     Visibility(
                       visible: AppCubit.get(context).formaterB,
                       child: QuillToolbar.simple(

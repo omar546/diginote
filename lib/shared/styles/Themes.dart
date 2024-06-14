@@ -74,7 +74,7 @@ ThemeData darkTheme = ThemeData(
       bodySmall: TextStyle(
           color: Styles.greyColor.withOpacity(0.5), fontFamily: 'nunito'),
     ),
-    iconTheme: IconThemeData(color: Styles.greyColor),
+    iconTheme: const IconThemeData(color: Styles.greyColor),
     inputDecorationTheme: const InputDecorationTheme(
         prefixIconColor: Styles.greyColor,
         suffixIconColor: Styles.lightBlackColor,

@@ -87,7 +87,9 @@ class AppCubit extends Cubit<AppStates> {
 
       isFlashOn = !isFlashOn;
       emit(AppCameraFlashState());
-    } catch (e) {}
+    } catch (e) {if (kDebugMode) {
+      print(e);
+    }}
   }
 
   String textfromimage = "";
@@ -123,13 +125,17 @@ class AppCubit extends Cubit<AppStates> {
 
     // send
     var response = await request.send();
-    print(response.statusCode);
+    if (kDebugMode) {
+      print(response.statusCode);
+    }
 
     // listen for response
     response.stream.transform(utf8.decoder).listen((value) async {
       textfromimage = extractText(value);
       emit(CameraPictureTaken());
-      print(textfromimage);
+      if (kDebugMode) {
+        print(textfromimage);
+      }
     });
     return textfromimage;
   }
@@ -153,7 +159,9 @@ class AppCubit extends Cubit<AppStates> {
         changeBottomNavBarState(4);
         responseValue = await upload(File(imagePath));
       } catch (e) {
-        print('Error uploading image: $e');
+        if (kDebugMode) {
+          print('Error uploading image: $e');
+        }
       }
     } else {
       if (kDebugMode) {
@@ -305,7 +313,7 @@ class AppCubit extends Cubit<AppStates> {
   }) async {
     // Insert a new row with updated data
     await database.transaction((txn) async {
-      int newId = await txn.rawInsert(
+      await txn.rawInsert(
         'INSERT INTO tasks(title,ptitle, date, time) VALUES(?, ?, ?,?)',
         [
           title.replaceAll("'", "''").replaceAll('\\"', '""'),
@@ -380,7 +388,9 @@ class AppCubit extends Cubit<AppStates> {
                   showToast(message: value.data['text'], state: ToastStates.SUCCESS);
 
                 }).catchError((error) {showToast(message: 'Offline', state: ToastStates.ERROR);
-                print(error);});
+                if (kDebugMode) {
+                  print(error);
+                }});
               }, icon: const Icon(Icons.network_check),),
               IconButton(onPressed: () { }, icon: const Icon(Icons.mode_night_rounded),),
         IconButton(onPressed: () {  }, icon: const Icon(Icons.logout_rounded),)

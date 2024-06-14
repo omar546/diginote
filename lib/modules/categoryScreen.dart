@@ -1,8 +1,6 @@
 import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
 import 'package:diginote/shared/styles/styles.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../shared/components/components.dart';
@@ -26,7 +24,7 @@ class CategoryScreen extends StatelessWidget {
           children: [
           ConditionalBuilder(
           condition: categories.isEmpty,
-          builder: (context) => Center(
+          builder: (context) => const Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -69,8 +67,8 @@ class CategoryScreen extends StatelessWidget {
                                   borderRadius: BorderRadius.circular(15.0),
                                   color: Theme.of(context).inputDecorationTheme.suffixIconColor ?? Colors.black,
                                 ),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(10.0),
+                                child: const Padding(
+                                  padding: EdgeInsets.all(10.0),
                                   child: Column(
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     children: [
@@ -110,8 +108,8 @@ class CategoryScreen extends StatelessWidget {
                                   borderRadius: BorderRadius.circular(15.0),
                                   color: Theme.of(context).inputDecorationTheme.suffixIconColor ?? Colors.black,
                                 ),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(10.0),
+                                child: const Padding(
+                                  padding: EdgeInsets.all(10.0),
                                   child: Column(
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     children: [
@@ -127,7 +125,7 @@ class CategoryScreen extends StatelessWidget {
                                 ),
                               ),
                             ),
-                            SizedBox(height: 50,)
+                            const SizedBox(height: 50,)
                           ]),
                     ])),
           ],

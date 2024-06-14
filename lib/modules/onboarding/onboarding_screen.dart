@@ -58,7 +58,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
       appBar: AppBar(backgroundColor: Colors.transparent,shadowColor: Colors.transparent,
         leading: customTextButton(
             onPressed: () {
-              navigateTo(context, AboutUs());
+              navigateTo(context, const AboutUs());
             },
             text: 'About Us'),leadingWidth: 90,
         actions: [

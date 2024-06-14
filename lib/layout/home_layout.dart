@@ -7,7 +7,6 @@ import 'package:intl/intl.dart';
 import '../shared/components/components.dart';
 import '../shared/cubit/cubit.dart';
 import '../shared/cubit/states.dart';
-import '../shared/network/remote/dio_helper.dart';
 import '../shared/styles/styles.dart';
 
 
@@ -63,7 +62,7 @@ class HomeLayout extends StatelessWidget {
               key: scaffoldKey,
               appBar: cubit.currentIndex == 4 || cubit.currentIndex == 3
                   ? AppBar(elevation: 0,
-                automaticallyImplyLeading: false,title:Center(child: Text("Categories",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 25,color: Styles.gumColor))))
+                automaticallyImplyLeading: false,title:const Center(child: Text("Categories",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 25,color: Styles.gumColor))))
                   :AppBar(
                 elevation: 0,
                 automaticallyImplyLeading: false,
@@ -153,7 +152,7 @@ class HomeLayout extends StatelessWidget {
                                   onPressed: () {
 
                                   },
-                                  icon: Icon(
+                                  icon: const Icon(
                                     Icons.picture_as_pdf_outlined,
                                     size: 30,
                                     color: Styles.gumColor,
