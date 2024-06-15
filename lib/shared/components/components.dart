@@ -58,9 +58,7 @@ Widget buildTextField({
 }
 Widget buildCategoryItem({required Map model, context, required index}) =>
     GestureDetector(
-      onLongPress:() {
-        Clipboard.setData(ClipboardData(text: model['title'].replaceAll('""', '"').replaceAll("''", "'")));
-        showToast(message: 'Copied',state: ToastStates.SUCCESS);},
+      onLongPress:() {},
       child: Dismissible(
         direction: DismissDirection.endToStart,
         background: Container(
@@ -78,7 +76,7 @@ Widget buildCategoryItem({required Map model, context, required index}) =>
           ),
         ),
         onDismissed: (direction) {
-          AppCubit.get(context).deleteDatabase(id: model['id']);
+          AppCubit.get(context).deleteCategory(id: model['id']);
         },
         key: Key(model['id'].toString()),
         child: Padding(
@@ -106,17 +104,6 @@ Widget buildCategoryItem({required Map model, context, required index}) =>
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           SizedBox(
-                            // width: MediaQuery.of(context).size.width * 0.85,
-                            // child: Text('${model['title']}',
-                            //     textAlign: TextAlign.left,
-                            //     overflow: TextOverflow.ellipsis,
-                            //     maxLines: 5,
-                            //     style: const TextStyle(
-                            //         fontFamily: 'Thunder',
-                            //         fontSize: 20,
-                            //         height: 1.1,
-                            //         letterSpacing: 2,
-                            //         color: Styles.whiteColor)),
                             child: Row(mainAxisAlignment: MainAxisAlignment.start,
                               children: [
                                 Flexible(

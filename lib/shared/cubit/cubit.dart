@@ -1,8 +1,8 @@
 import 'package:camera/camera.dart';
 import 'package:diginote/modules/loadingScreen.dart';
-import 'package:diginote/shared/styles/Themes.dart';
 import 'package:diginote/shared/styles/styles.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:flutter_quill/flutter_quill.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:diginote/modules/CameraScreen.dart';
@@ -90,9 +90,11 @@ class AppCubit extends Cubit<AppStates> {
 
       isFlashOn = !isFlashOn;
       emit(AppCameraFlashState());
-    } catch (e) {if (kDebugMode) {
-      print(e);
-    }}
+    } catch (e) {
+      if (kDebugMode) {
+        print(e);
+      }
+    }
   }
 
   String textfromimage = "";
@@ -206,7 +208,6 @@ class AppCubit extends Cubit<AppStates> {
     const LoadingScreen(),
   ];
 
-
   Future<void> changeBottomNavBarState(index) async {
     if (index > 4) {
       index = 0;
@@ -220,7 +221,6 @@ class AppCubit extends Cubit<AppStates> {
   List<Map> newNotes = [];
   List<Map> newCategories = [];
 
-
   void createDatabase() {
     openDatabase(
       'todo.db',
@@ -230,7 +230,7 @@ class AppCubit extends Cubit<AppStates> {
             'CREATE TABLE tasks (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT,ptitle TEXT, date TEXT,time TEXT)');
         await db.execute(
             'CREATE TABLE categories (id INTEGER PRIMARY KEY AUTOINCREMENT, category TEXT,color TEXT)');
-        },
+      },
       onOpen: (database) {
         getFromDatabase(database);
       },
@@ -289,16 +289,16 @@ class AppCubit extends Cubit<AppStates> {
           },
         );
         emit(AppGetDatabaseState());
-        },
+      },
     );
     database.rawQuery('Select * FROM categories').then(
-          (values) {
+      (values) {
         values.forEach(
-              (element) {
+          (element) {
             //sego sort algo :)
-                newCategories.add(element);
-                newCategories.sort(
-                  (b, a) => a['id'].compareTo(b['id']),
+            newCategories.add(element);
+            newCategories.sort(
+              (b, a) => a['id'].compareTo(b['id']),
             );
           },
         );
@@ -346,6 +346,14 @@ class AppCubit extends Cubit<AppStates> {
       },
     );
   }
+  void deleteCategory({required int id}) {
+    database.rawDelete('DELETE FROM categories WHERE id = ?', [id]).then(
+          (value) {
+        getFromDatabase(database);
+        emit(AppDeleteDatabaseState());
+      },
+    );
+  }
 
   var isBottomSheetShown = false;
 
@@ -382,43 +390,131 @@ class AppCubit extends Cubit<AppStates> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          backgroundColor:Theme.of(context)
-              .scaffoldBackgroundColor.withOpacity(0.95) ,
-          title: const Text('Settings',style: TextStyle(color: Styles.gumColor),),
-          content: Row(mainAxisAlignment: MainAxisAlignment.center,
+          backgroundColor:
+              Theme.of(context).scaffoldBackgroundColor.withOpacity(0.95),
+          title: const Text(
+            'Settings',
+            style: TextStyle(color: Styles.gumColor),
+          ),
+          content: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
             children: [
-              IconButton(tooltip:"Ping",onPressed: () {
-                DioHelper.getData(url: 'test').then((value){
-                  showToast(message: value.data['text'], state: ToastStates.SUCCESS);
-
-                }).catchError((error) {showToast(message: 'Offline', state: ToastStates.ERROR);
-                if (kDebugMode) {
-                  print(error);
-                }});
-              }, icon: const Icon(Icons.network_check,color: Styles.gumColor,),),
-              IconButton(tooltip:"Theme",onPressed: () { }, icon: const Icon(Icons.mode_night_rounded,color: Styles.gumColor,),),
-        IconButton(tooltip:"Logout",onPressed: () {  }, icon: const Icon(Icons.logout_rounded,color: Styles.gumColor,),)
+              IconButton(
+                tooltip: "Ping",
+                onPressed: () {
+                  DioHelper.getData(url: 'test').then((value) {
+                    showToast(
+                        message: value.data['text'],
+                        state: ToastStates.SUCCESS);
+                  }).catchError((error) {
+                    showToast(message: 'Offline', state: ToastStates.ERROR);
+                    if (kDebugMode) {
+                      print(error);
+                    }
+                  });
+                },
+                icon: const Icon(
+                  Icons.network_check,
+                  color: Styles.gumColor,
+                ),
+              ),
+              IconButton(
+                tooltip: "Theme",
+                onPressed: () {},
+                icon: const Icon(
+                  Icons.mode_night_rounded,
+                  color: Styles.gumColor,
+                ),
+              ),
+              IconButton(
+                tooltip: "Logout",
+                onPressed: () {},
+                icon: const Icon(
+                  Icons.logout_rounded,
+                  color: Styles.gumColor,
+                ),
+              )
             ],
           ),
         );
       },
     );
   }
+
+  Color catColor = Styles.greyColor;
+  void changeColor(Color color) {
+    catColor = color;
+    emit(CategoryColor());
+  }
+
   void showCategoryPrompt(BuildContext context) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          backgroundColor:Theme.of(context)
-              .scaffoldBackgroundColor.withOpacity(0.95) ,
-          title: const Text('Add Category',style: TextStyle(color: Styles.gumColor),),
+          backgroundColor:
+              Theme.of(context).scaffoldBackgroundColor.withOpacity(0.95),
+          title: const Text(
+            'Add Category',
+            style: TextStyle(color: Styles.gumColor),
+          ),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              customForm(context: context, controller: addCategoryController, type: TextInputType.text, label: 'Name',suffix: Icons.color_lens_rounded,suffixPressed: (){},),
+              customForm(
+                context: context,
+                controller: addCategoryController,
+                type: TextInputType.text,
+                label: 'Name',
+                suffix: Icons.color_lens_rounded,
+                suffixPressed: () {
+                  showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: const Text('Pick a color'),
+                          content: SingleChildScrollView(
+                            child: ColorPicker(
+                                paletteType: PaletteType.hueWheel,
+                                pickerColor: catColor,
+                                onColorChanged: changeColor),
+                          ),
+                          actions: <Widget>[
+                            ElevatedButton(style:ElevatedButton.styleFrom(backgroundColor: Styles.gumColor,foregroundColor:Styles.whiteColor),
+                                onPressed: () {
+                                  insertIntoCategories(name: addCategoryController.text,color: catColor.toHexString());
+                                  Navigator.of(context).pop();
+                                }, child: const Text('Ok!'))
+                          ],
+                        );
+                      });
+                },
+              ),
             ],
           ),
+        );
+      },
+    );
+  }
+
+  Future insertIntoCategories({
+    required String name,
+    required String color,
+  }) {
+    return database.transaction(
+          (Transaction txn) async {
+        txn.rawInsert(
+          'INSERT INTO categories(category,color) VALUES(?, ?)',
+          [
+            name,color
+          ],
+        ).then(
+              (value) {
+            // filteredCategories = [];
+            emit(AppInsertDatabaseState());
+            getFromDatabase(database);
+          },
         );
       },
     );
@@ -432,15 +528,17 @@ class AppCubit extends Cubit<AppStates> {
     quillController.readOnly = editorLocked;
     emit(FormattingState());
   }
+
   void showEditor() {
     editorLocked = false;
     quillController.readOnly = editorLocked;
     emit(FormattingState());
   }
+
   void selectAll() {
     final docLength = quillController.document.length;
     final selection = TextSelection(baseOffset: 0, extentOffset: docLength);
-    quillController.updateSelection(selection,ChangeSource.local);
+    quillController.updateSelection(selection, ChangeSource.local);
   }
   // Future<void> export() async {
   //   try {
@@ -467,5 +565,4 @@ class AppCubit extends Cubit<AppStates> {
   //     }
   //   }
   // }
-
 }

@@ -35,6 +35,7 @@ class CameraError extends AppStates{}
 
 class AppFilterTasksState extends AppStates{}
 class AppPopping extends AppStates{}
+class CategoryColor extends AppStates{}
 
 
 
