@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import '../shared/components/components.dart';
@@ -255,14 +256,17 @@ class HomeLayout extends StatelessWidget {
                         )
                       ]
                     : [
-                        IconButton(
-                          onPressed: () {cubit.changeBottomNavBarState(3);
-                          },
-                          icon: const Icon(
-                            Icons.category_outlined,
-                            size: 30,
+                        GestureDetector(
+                        onLongPress:(){cubit.changeBottomNavBarState(3);},
+                          child: IconButton(
+                            onPressed: () {
+                            },
+                            icon: const Icon(
+                              Icons.category_outlined,
+                              size: 30,
+                            ),
+                            color: Styles.gumColor,
                           ),
-                          color: Styles.gumColor,
                         ),
                         IconButton(
                           onPressed: () {

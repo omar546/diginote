@@ -89,14 +89,14 @@ Widget buildCategoryItem({required Map model, context, required index}) =>
                 children: [
                   Container(
                     constraints: BoxConstraints(
-                        maxWidth: MediaQuery.of(context).size.width * 0.85),
+                        maxWidth: MediaQuery.of(context).size.width * 0.75),
                     decoration: BoxDecoration(
                       border: Border.all(
                         width: 1,
                         color: Theme.of(context).inputDecorationTheme.prefixIconColor?.withOpacity(0.5) ?? Colors.black,
                       ),
                       borderRadius: BorderRadius.circular(15.0),
-                      color: Theme.of(context).inputDecorationTheme.suffixIconColor ?? Colors.black,
+                      color: hexToColor(model['color']),
                     ),
                     child: Padding(
                       padding: const EdgeInsets.all(10.0),
@@ -104,114 +104,26 @@ Widget buildCategoryItem({required Map model, context, required index}) =>
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           SizedBox(
-                            child: Row(mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Flexible(
-                                  child: RichText(
-                                    textAlign: TextAlign.left,
-                                    overflow: TextOverflow.ellipsis,
-                                    maxLines: 6,
-                                    text: TextSpan(
-                                      style: TextStyle(
-                                        fontSize: 15,
-                                        height: 1.1,
-                                        letterSpacing: 2,
-                                        color: Theme.of(context).textTheme.bodyMedium?.color,
-                                      ),
-                                      children: [
-                                        TextSpan(
-                                          text: '${model['category']}',
-                                          style: const TextStyle(fontFamily:'nunito-exbold'),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                                CircleAvatar(backgroundColor: hexToColor(model['color']),)
-                              ],
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 30,
-                          ),
-                          Center(
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
+                            child: Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: Row(mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Text(
-                                    '${model['date']}',
-                                    style: TextStyle(
-                                      fontSize: 10,
-                                      fontFamily: 'nunito',
-                                      color: Theme.of(context).inputDecorationTheme.prefixIconColor ?? Colors.black,),
-                                  ),
-                                  const SizedBox(width: 10,),
-                                  Text(
-                                    '${model['time']}',
-                                    style: TextStyle(
-                                      fontSize: 10,
-                                      fontFamily: 'nunito',
-                                      color: Theme.of(context).inputDecorationTheme.prefixIconColor ?? Colors.black,),
+                                  Padding(
+                                    padding: const EdgeInsets.all(10.0),
+                                    child: Text('${model['category']}', style: TextStyle(
+                                      fontWeight: FontWeight.bold,fontSize: 20,color:hexToColor(model['color']).computeLuminance()<0.5 ? Styles.whiteColor :  Styles.blackColor
+                                    ),),
                                   ),
                                 ],
-                              )),
+                              ),
+                            ),
+                          ),
                         ],
                       ),
                     ),
                   ),
                 ],
               ),
-              // const SizedBox(
-              //   width: 10,
-              // ),
-              // Visibility(
-              //   visible: index == 0 || index == 2,
-              //   child: IconButton(
-              //       splashRadius: 20,
-              //       onPressed: () {
-              //         AppCubit.get(context).updateDatabase(
-              //           status: 'done',
-              //           id: model['id'],
-              //         );
-              //       },
-              //       icon: const Icon(
-              //         Icons.check_circle_outline_rounded,
-              //         color: Styles.greyColor,
-              //         size: 25,
-              //       )),
-              // ),
-              // Visibility(
-              //   visible: index == 0 || index == 1,
-              //   child: IconButton(
-              //       splashRadius: 20,
-              //       onPressed: () {
-              //         AppCubit.get(context).updateDatabase(
-              //           status: 'archive',
-              //           id: model['id'],
-              //         );
-              //       },
-              //       icon: const Icon(
-              //         Icons.archive_outlined,
-              //         color: Styles.greyColor,
-              //         size: 25,
-              //       )),
-              // ),
-              // Visibility(
-              //   visible: index == 1 || index == 2,
-              //   child: IconButton(
-              //       splashRadius: 20,
-              //       onPressed: () {
-              //         AppCubit.get(context).updateDatabase(
-              //           status: 'new',
-              //           id: model['id'],
-              //         );
-              //       },
-              //       icon: const Icon(
-              //         Icons.hide_source_rounded,
-              //         color: Styles.greyColor,
-              //         size: 25,
-              //       )),
-              // ),
             ],
           ),
         ),
