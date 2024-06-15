@@ -1,5 +1,6 @@
 import 'package:camera/camera.dart';
 import 'package:diginote/modules/loadingScreen.dart';
+import 'package:diginote/shared/styles/Themes.dart';
 import 'package:diginote/shared/styles/styles.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_quill/flutter_quill.dart';
@@ -31,6 +32,7 @@ class AppCubit extends Cubit<AppStates> {
   var editformKey = GlobalKey<FormState>();
   var searchController = TextEditingController();
   var edittitleController = TextEditingController();
+  var addCategoryController = TextEditingController();
   String tappedTitle = "";
   String tappedTime = "";
   String tappedDate = "";
@@ -397,6 +399,24 @@ class AppCubit extends Cubit<AppStates> {
               }, icon: const Icon(Icons.network_check,color: Styles.gumColor,),),
               IconButton(tooltip:"Theme",onPressed: () { }, icon: const Icon(Icons.mode_night_rounded,color: Styles.gumColor,),),
         IconButton(tooltip:"Logout",onPressed: () {  }, icon: const Icon(Icons.logout_rounded,color: Styles.gumColor,),)
+            ],
+          ),
+        );
+      },
+    );
+  }
+  void showCategoryPrompt(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor:Theme.of(context)
+              .scaffoldBackgroundColor.withOpacity(0.95) ,
+          title: const Text('Add Category',style: TextStyle(color: Styles.gumColor),),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              customForm(context: context, controller: addCategoryController, type: TextInputType.text, label: 'Name',suffix: Icons.color_lens_rounded,suffixPressed: (){},),
             ],
           ),
         );

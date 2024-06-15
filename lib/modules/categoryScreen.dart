@@ -55,7 +55,7 @@ class CategoryScreen extends StatelessWidget {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             GestureDetector(
-                              onTap: (){},
+                              onTap: (){cubit.showCategoryPrompt(context);},
                               child: Container(
                                 constraints: BoxConstraints(
                                     maxWidth: MediaQuery.of(context).size.width * 0.55),

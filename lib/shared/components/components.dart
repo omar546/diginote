@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_quill/flutter_quill.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 import '../cubit/cubit.dart';
@@ -132,18 +133,14 @@ Widget buildCategoryItem({required Map model, context, required index}) =>
                                       ),
                                       children: [
                                         TextSpan(
-                                          text: '${model['ptitle'].replaceAll('""', '"').replaceAll("''", "'").split('\n')[0]+'\n'}',
+                                          text: '${model['category']}',
                                           style: const TextStyle(fontFamily:'nunito-exbold'),
-                                        ),
-                                        TextSpan(
-                                          text: '\n${model['ptitle'].replaceAll('""', '"').replaceAll("''", "'").split('\n').sublist(1).join('\n')}',
-                                          style: const TextStyle(fontFamily:'nunito'),
-
                                         ),
                                       ],
                                     ),
                                   ),
                                 ),
+                                CircleAvatar(backgroundColor: hexToColor(model['color']),)
                               ],
                             ),
                           ),
@@ -458,7 +455,7 @@ Widget customForm({
   bool isPassword = false,
   dynamic validate,
   required String label,
-  required IconData prefix,
+  IconData? prefix,
   IconData? suffix,
   dynamic suffixPressed,
   bool isClickable = true,
@@ -482,7 +479,7 @@ Widget customForm({
           ? IconButton(
         onPressed: suffixPressed,
         icon: Icon(
-          suffix,
+          suffix,color: Styles.gumColor,
         ),
       )
           : null,
