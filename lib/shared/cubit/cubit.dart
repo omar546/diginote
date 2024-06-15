@@ -346,9 +346,10 @@ class AppCubit extends Cubit<AppStates> {
       },
     );
   }
+
   void deleteCategory({required int id}) {
     database.rawDelete('DELETE FROM categories WHERE id = ?', [id]).then(
-          (value) {
+      (value) {
         getFromDatabase(database);
         emit(AppDeleteDatabaseState());
       },
@@ -473,19 +474,35 @@ class AppCubit extends Cubit<AppStates> {
                       context: context,
                       builder: (BuildContext context) {
                         return AlertDialog(
+                          titleTextStyle: TextStyle(color: Styles.gumColor),
+                          backgroundColor: Theme.of(context)
+                              .scaffoldBackgroundColor
+                              .withOpacity(0.95),
                           title: const Text('Pick a color'),
                           content: SingleChildScrollView(
-                            child: ColorPicker(
-                                paletteType: PaletteType.hueWheel,
-                                pickerColor: catColor,
-                                onColorChanged: changeColor),
+                            child: ClipRect(
+                              child: Align(
+                                alignment: Alignment.topCenter,
+                                heightFactor: 0.85,
+                                child: ColorPicker(
+                                    paletteType: PaletteType.hueWheel,
+                                    pickerColor: catColor,
+                                    onColorChanged: changeColor),
+                              ),
+                            ),
                           ),
                           actions: <Widget>[
-                            ElevatedButton(style:ElevatedButton.styleFrom(backgroundColor: Styles.gumColor,foregroundColor:Styles.whiteColor),
+                            ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                    backgroundColor: Styles.gumColor,
+                                    foregroundColor: Styles.whiteColor),
                                 onPressed: () {
-                                  insertIntoCategories(name: addCategoryController.text,color: catColor.toHexString());
+                                  insertIntoCategories(
+                                      name: addCategoryController.text,
+                                      color: catColor.toHexString());
                                   Navigator.of(context).pop();
-                                }, child: const Text('Ok!'))
+                                },
+                                child: const Text('Ok!'))
                           ],
                         );
                       });
@@ -503,14 +520,12 @@ class AppCubit extends Cubit<AppStates> {
     required String color,
   }) {
     return database.transaction(
-          (Transaction txn) async {
+      (Transaction txn) async {
         txn.rawInsert(
           'INSERT INTO categories(category,color) VALUES(?, ?)',
-          [
-            name,color
-          ],
+          [name, color],
         ).then(
-              (value) {
+          (value) {
             // filteredCategories = [];
             emit(AppInsertDatabaseState());
             getFromDatabase(database);

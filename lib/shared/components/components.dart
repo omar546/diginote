@@ -132,7 +132,7 @@ Widget buildCategoryItem({required Map model, context, required index}) =>
 Widget buildNoteItem({required Map model, context, required index}) =>
     GestureDetector(
         onLongPress:() {
-          Clipboard.setData(ClipboardData(text: model['title'].replaceAll('""', '"').replaceAll("''", "'")));
+          Clipboard.setData(ClipboardData(text: model['ptitle'].replaceAll('""', '"').replaceAll("''", "'").replaceAll('￼', ''),));
           showToast(message: 'Copied',state: ToastStates.SUCCESS);},
         child: Dismissible(
         direction: DismissDirection.endToStart,
@@ -206,11 +206,11 @@ Widget buildNoteItem({required Map model, context, required index}) =>
                                       ),
                                       children: [
                                         TextSpan(
-                                          text: '${model['ptitle'].replaceAll('""', '"').replaceAll("''", "'").split('\n')[0]+'\n'}',
+                                          text: '${model['ptitle'].replaceAll('""', '"').replaceAll("''", "'").replaceAll("￼", "🖼️").split('\n')[0]+'\n'}',
                                           style: const TextStyle(fontFamily:'nunito-exbold'),
                                         ),
                                         TextSpan(
-                                          text: '\n${model['ptitle'].replaceAll('""', '"').replaceAll("''", "'").split('\n').sublist(1).join('\n')}',
+                                          text: '\n${model['ptitle'].replaceAll('""', '"').replaceAll("''", "'").replaceAll("￼", "🖼️").split('\n').sublist(1).join('\n')}',
                                           style: const TextStyle(fontFamily:'nunito'),
 
                                         ),
