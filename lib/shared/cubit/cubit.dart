@@ -1,5 +1,6 @@
 import 'package:camera/camera.dart';
 import 'package:diginote/modules/loadingScreen.dart';
+import 'package:diginote/modules/login/login_screen.dart';
 import 'package:diginote/shared/styles/styles.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
@@ -20,6 +21,7 @@ import '../../modules/new_notes.dart';
 import '../../modules/showEditScreen.dart';
 import '../components/components.dart';
 import '../network/remote/dio_helper.dart';
+import '../styles/Themes.dart';
 import 'states.dart';
 
 class AppCubit extends Cubit<AppStates> {
@@ -392,7 +394,7 @@ class AppCubit extends Cubit<AppStates> {
       builder: (BuildContext context) {
         return AlertDialog(
           backgroundColor:
-              Theme.of(context).scaffoldBackgroundColor.withOpacity(0.95),
+              Theme.of(context).scaffoldBackgroundColor,
           title: const Text(
             'Settings',
             style: TextStyle(color: Styles.gumColor),
@@ -422,7 +424,7 @@ class AppCubit extends Cubit<AppStates> {
               ),
               IconButton(
                 tooltip: "Theme",
-                onPressed: () {},
+                onPressed: () {context.read<ThemeCubit>().toggleTheme();},
                 icon: const Icon(
                   Icons.mode_night_rounded,
                   color: Styles.gumColor,
@@ -430,7 +432,7 @@ class AppCubit extends Cubit<AppStates> {
               ),
               IconButton(
                 tooltip: "Logout",
-                onPressed: () {},
+                onPressed: () {navigateAndFinish(context, LoginScreen());},
                 icon: const Icon(
                   Icons.logout_rounded,
                   color: Styles.gumColor,

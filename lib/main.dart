@@ -60,12 +60,17 @@ const MyApp(this.startWidget, {super.key});
   @override
   Widget build(BuildContext context)
   {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      themeMode: ThemeMode.system,
-      theme: lightTheme,
-      darkTheme: darkTheme,
-      home: startWidget,
+    return BlocProvider(
+        create: (context) => ThemeCubit(),
+        child: BlocBuilder<ThemeCubit, ThemeData>(
+        builder: (context, theme) {
+      return MaterialApp(
+        debugShowCheckedModeBanner: false,
+        theme: theme,
+        home: startWidget,
+      );
+        },
+        ),
     );
   }
 }
