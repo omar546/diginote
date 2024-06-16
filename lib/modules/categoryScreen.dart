@@ -62,7 +62,7 @@ class CategoryScreen extends StatelessWidget {
                                 onTap: (){cubit.showCategoryPrompt(context);},
                                 child: Container(
                                   constraints: BoxConstraints(
-                                      maxWidth: MediaQuery.of(context).size.width * 0.55),
+                                      maxWidth: MediaQuery.sizeOf(context).width * 0.55),
                                   decoration: BoxDecoration(
                                     border: Border.all(
                                       width: 1,
@@ -103,7 +103,7 @@ class CategoryScreen extends StatelessWidget {
                                 onTap: (){cubit.changeBottomNavBarState(0);},
                                 child: Container(
                                   constraints: BoxConstraints(
-                                      maxWidth: MediaQuery.of(context).size.width * 0.55),
+                                      maxWidth: MediaQuery.sizeOf(context).width * 0.55),
                                   decoration: BoxDecoration(
                                     border: Border.all(
                                       width: 1,

@@ -89,7 +89,7 @@ Widget buildCategoryItem({required Map model, context, required index}) =>
                 children: [
                   Container(
                     constraints: BoxConstraints(
-                        maxWidth: MediaQuery.of(context).size.width * 0.75),
+                        maxWidth: MediaQuery.sizeOf(context).width * 0.75),
                     decoration: BoxDecoration(
                       border: Border.all(
                         width: 1,
@@ -164,7 +164,7 @@ Widget buildNoteItem({required Map model, context, required index}) =>
                 children: [
                   Container(
                     constraints: BoxConstraints(
-                        maxWidth: MediaQuery.of(context).size.width * 0.85),
+                        maxWidth: MediaQuery.sizeOf(context).width * 0.85),
                     decoration: BoxDecoration(
                       border: Border.all(
                         width: 1,
@@ -179,17 +179,6 @@ Widget buildNoteItem({required Map model, context, required index}) =>
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           SizedBox(
-                            // width: MediaQuery.of(context).size.width * 0.85,
-                            // child: Text('${model['title']}',
-                            //     textAlign: TextAlign.left,
-                            //     overflow: TextOverflow.ellipsis,
-                            //     maxLines: 5,
-                            //     style: const TextStyle(
-                            //         fontFamily: 'Thunder',
-                            //         fontSize: 20,
-                            //         height: 1.1,
-                            //         letterSpacing: 2,
-                            //         color: Styles.whiteColor)),
                             child: Row(mainAxisAlignment: MainAxisAlignment.start,
                               children: [
                                 Flexible(
@@ -328,7 +317,7 @@ Widget customButton(
       required final VoidCallback onPressed}) {
   return SizedBox(
     height: height,
-    width: MediaQuery.of(context).size.width * widthRatio,
+    width: MediaQuery.sizeOf(context).width * widthRatio,
     child: ElevatedButton(
       style: ElevatedButton.styleFrom(
           shape: const StadiumBorder(), backgroundColor: Styles.gumColor),
