@@ -6,7 +6,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../shared/components/components.dart';
 import '../shared/cubit/cubit.dart';
 import '../shared/cubit/states.dart';
-import '../shared/styles/Themes.dart';
 
 class NewNotesScreen extends StatelessWidget {
   const NewNotesScreen({Key? key}) : super(key: key);
@@ -52,6 +51,9 @@ class NewNotesScreen extends StatelessWidget {
                                     cubit.tappedTime = notes[index]['time'];
                                     cubit.tappedDate = notes[index]['date'];
                                     cubit.tappedId = notes[index]['id'];
+                                    cubit.tappedCat = notes[index]['category'];
+                                    print(cubit.tappedCat);
+                                    cubit.tappedColor = notes[index]['color'];
                                     cubit.changeBottomNavBarState(2);
                                   },
                                   child: buildNoteItem(

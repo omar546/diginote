@@ -27,13 +27,9 @@ class CategoryScreen extends StatelessWidget {
             Expanded(
               child: ConditionalBuilder(
               condition: categories.isEmpty,
-              builder: (context) => const Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                  ],
+              builder: (context) => const SizedBox(
                 ),
-              ),fallback: (context) =>
+              fallback: (context) =>
                 ListView.separated(
                       physics: const BouncingScrollPhysics(),
                       itemBuilder: (context, index) => GestureDetector(

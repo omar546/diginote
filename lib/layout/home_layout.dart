@@ -1,9 +1,11 @@
 import 'dart:convert';
 
 import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_quill/flutter_quill.dart';
 import 'package:intl/intl.dart';
 import '../shared/components/components.dart';
 import '../shared/cubit/cubit.dart';
@@ -67,7 +69,7 @@ class HomeLayout extends StatelessWidget {
                   :AppBar(
                 elevation: 0,
                 automaticallyImplyLeading: false,
-                leadingWidth: 100,
+                leadingWidth: cubit.currentIndex==2 ? MediaQuery.sizeOf(context).width*0.4:MediaQuery.sizeOf(context).width*0.25,
                 leading: cubit.isBottomSheetShown
                     ? null
                     : (cubit.currentIndex == 0)
@@ -90,17 +92,42 @@ class HomeLayout extends StatelessWidget {
                           ],
                         )
                         : Row(
+                          mainAxisSize: MainAxisSize.min, // Adjusted mainAxisSize
                           children: [
                             IconButton(
-                                onPressed: () {
-                                  cubit.changeBottomNavBarState(0);
-                                },
-                                icon:
-                                    const Icon(Icons.arrow_back_rounded, size: 30),
-                                color: Styles.gumColor,
+                              onPressed: () {
+                                cubit.changeBottomNavBarState(0);
+                              },
+                              icon: const Icon(Icons.arrow_back_rounded, size: 30),
+                              color: Styles.gumColor,
+                            ),
+                            Visibility(
+                              visible: cubit.currentIndex == 2,
+                              child: GestureDetector(
+                                onTap: (){cubit.showCategoryUpdatePrompt(context);},
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                      Icons.folder,
+                                      size: 20,
+                                      color: hexToColor(cubit.tappedColor),
+                                    ),
+                                    const SizedBox(width: 2),
+                                    Text(
+                                      cubit.tappedCat,
+                                      style: const TextStyle(fontSize: 10),
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ],
+                                ),
                               ),
+                            ),
                           ],
                         ),
+
+
                 actions: (cubit.isBottomSheetShown || cubit.currentIndex > 0)
                     ? [
                         Visibility(
@@ -222,7 +249,7 @@ class HomeLayout extends StatelessWidget {
                                     //     cubit.editformKey.currentState!
                                     //         .validate()
                                     ) {
-                                      cubit.updateDatabase(
+                                      cubit.updateDatabase(category:cubit.tappedCat,color:cubit.tappedColor,
                                           oldId: cubit.tappedId,
                                           time: TimeOfDay.now().format(context),
                                           date: DateFormat.yMMMd()

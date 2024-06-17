@@ -236,6 +236,7 @@ Widget buildNoteItem({required Map model, context, required index}) =>
                                           fontFamily: 'nunito',
                                           color: Theme.of(context).inputDecorationTheme.prefixIconColor ?? Colors.black,),
                                       ),
+                                      const Spacer(), CircleAvatar(backgroundColor: hexToColor(model['color']),radius: 5,)
                                     ],
                                   )),
                             ],

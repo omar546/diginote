@@ -1,12 +1,14 @@
 import 'package:camera/camera.dart';
+import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
 import 'package:diginote/modules/loadingScreen.dart';
 import 'package:diginote/modules/login/login_screen.dart';
 import 'package:diginote/shared/styles/styles.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:flutter_quill/flutter_quill.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:diginote/modules/CameraScreen.dart';
+import 'package:diginote/modules/cameraScreen.dart';
 import 'package:path/path.dart';
 import 'package:async/async.dart';
 import 'dart:io';
@@ -38,6 +40,8 @@ class AppCubit extends Cubit<AppStates> {
   String tappedTitle = "";
   String tappedTime = "";
   String tappedDate = "";
+  String tappedCat = "";
+  String tappedColor = "";
   var tappedId = 0;
   bool flashflag = false;
   String imagePath = "";
@@ -229,7 +233,7 @@ class AppCubit extends Cubit<AppStates> {
       version: 1,
       onCreate: (db, version) async {
         await db.execute(
-            'CREATE TABLE tasks (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT,ptitle TEXT, date TEXT,time TEXT)');
+            'CREATE TABLE tasks (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT,ptitle TEXT, date TEXT,time TEXT,category TEXT,color TEXT)');
         await db.execute(
             'CREATE TABLE categories (id INTEGER PRIMARY KEY AUTOINCREMENT, category TEXT,color TEXT)');
       },
@@ -253,7 +257,7 @@ class AppCubit extends Cubit<AppStates> {
     return database.transaction(
       (Transaction txn) async {
         txn.rawInsert(
-          'INSERT INTO tasks(title,ptitle, date, time) VALUES(?, ?, ?,?)',
+          'INSERT INTO tasks(title,ptitle, date, time,category,color) VALUES(?, ?, ?,?,"uncategorized","#d2d2d2")',
           [
             '[{\"insert\":\"${title.replaceAll("'", "''").replaceAll('"', '""').replaceAll('\n', '\\n')}\\n\"}]',
             ptitle.replaceAll("'", "''").replaceAll('"', '""'),
@@ -315,16 +319,20 @@ class AppCubit extends Cubit<AppStates> {
     required String ptitle,
     required String date,
     required String time,
+    required String category,
+    required String color,
   }) async {
     // Insert a new row with updated data
     await database.transaction((txn) async {
       await txn.rawInsert(
-        'INSERT INTO tasks(title,ptitle, date, time) VALUES(?, ?, ?,?)',
+        'INSERT INTO tasks(title,ptitle, date, time,category,color) VALUES(?, ?, ?,?,?,?)',
         [
           title.replaceAll("'", "''").replaceAll('\\"', '""'),
           ptitle.replaceAll("'", "''").replaceAll('"', '""'),
           date,
-          time
+          time,
+          category,
+          color
         ],
       );
 
@@ -445,11 +453,54 @@ class AppCubit extends Cubit<AppStates> {
     );
   }
 
-  Color catColor = Styles.greyColor;
-  void changeColor(Color color) {
-    catColor = color;
-    emit(CategoryColor());
-  }
+  // void showCategoryUpdatePrompt(BuildContext context) {
+  //   showDialog(
+  //     context: context,
+  //     builder: (BuildContext context) {
+  //       return AlertDialog(
+  //         scrollable: true,
+  //         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+  //         title: Text(
+  //           'Category',
+  //           style: TextStyle(color: Styles.gumColor),
+  //         ),
+  //         content: newCategories.isEmpty
+  //             ? Center(
+  //           child: Text(
+  //             'Long press category Icon on home to add categories',
+  //             textAlign: TextAlign.center,
+  //             maxLines: 5,
+  //           ),
+  //         )
+  //             : Container(
+  //           constraints: BoxConstraints(maxHeight: 400), // Example constraint
+  //           child: ListView.separated(
+  //             physics: BouncingScrollPhysics(),
+  //             separatorBuilder: (context, index) => SizedBox(height: 1),
+  //             itemCount: newCategories.length,
+  //             itemBuilder: (context, index) {
+  //               return GestureDetector(
+  //                 onTap: () {
+  //                   // Handle onTap
+  //                 },
+  //                 child: Transform.scale(
+  //                   scale: 0.5,
+  //                   child: buildCategoryItem(
+  //                     model: newCategories[index],
+  //                     context: context,
+  //                     index: index,
+  //                   ),
+  //                 ),
+  //               );
+  //             },
+  //           ),
+  //         ),
+  //       );
+  //     },
+  //   );
+  // }
+
+
 
   void showCategoryPrompt(BuildContext context) {
     showDialog(
@@ -457,7 +508,7 @@ class AppCubit extends Cubit<AppStates> {
       builder: (BuildContext context) {
         return AlertDialog(
           backgroundColor:
-              Theme.of(context).scaffoldBackgroundColor.withOpacity(0.95),
+          Theme.of(context).scaffoldBackgroundColor.withOpacity(0.95),
           title: const Text(
             'Add Category',
             style: TextStyle(color: Styles.gumColor),
@@ -516,6 +567,13 @@ class AppCubit extends Cubit<AppStates> {
       },
     );
   }
+  Color catColor = Styles.greyColor;
+  void changeColor(Color color) {
+    catColor = color;
+    emit(CategoryColor());
+  }
+
+
 
   Future insertIntoCategories({
     required String name,
