@@ -106,7 +106,7 @@ class HomeLayout extends StatelessWidget {
                                 onTap: (){cubit.showCategoryUpdatePrompt(context);},
                                 child: Row(
                                   mainAxisSize: MainAxisSize.min,
-                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
                                     Icon(
                                       Icons.folder,
@@ -115,9 +115,9 @@ class HomeLayout extends StatelessWidget {
                                     ),
                                     const SizedBox(width: 2),
                                     Text(
-                                      cubit.tappedCat,
-                                      style: const TextStyle(fontSize: 10),
-                                      overflow: TextOverflow.ellipsis,
+                                      cubit.tappedCat.length > 13 ? '${cubit.tappedCat.substring(0, 11)}...' : cubit.tappedCat,
+                                      style: TextStyle(fontSize: 10,color: Theme.of(context).textTheme.bodyMedium?.color ),
+                                      overflow: TextOverflow.ellipsis,maxLines: 1,
                                     ),
                                   ],
                                 ),
