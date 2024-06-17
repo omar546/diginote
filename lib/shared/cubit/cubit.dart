@@ -2,11 +2,8 @@ import 'package:camera/camera.dart';
 import 'package:diginote/modules/loadingScreen.dart';
 import 'package:diginote/modules/login/login_screen.dart';
 import 'package:diginote/shared/styles/styles.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
-import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_quill/flutter_quill.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:diginote/modules/cameraScreen.dart';
@@ -386,7 +383,7 @@ class AppCubit extends Cubit<AppStates> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            titleTextStyle: TextStyle(color: Styles.gumColor),
+            titleTextStyle: const TextStyle(color: Styles.gumColor),
             backgroundColor: Theme.of(context)
                 .scaffoldBackgroundColor
                 .withOpacity(0.95),
@@ -530,16 +527,16 @@ class AppCubit extends Cubit<AppStates> {
         return AlertDialog(
             scrollable: true,
             backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-            title: Row(
+            title: const Row(
               children: [
-                const Text(
+                Text(
                   'Categories',
                   style: TextStyle(color: Styles.gumColor),
                 ),
                 SizedBox(
                   width: 5,
                 ),
-                const Icon(
+                Icon(
                   Icons.swipe,
                   color: Styles.gumColor,
                   size: 20,
@@ -617,16 +614,16 @@ class AppCubit extends Cubit<AppStates> {
         return AlertDialog(
             scrollable: true,
             backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-            title: Row(
+            title: const Row(
               children: [
-                const Text(
+                Text(
                   'Categories',
                   style: TextStyle(color: Styles.gumColor),
                 ),
                 SizedBox(
                   width: 5,
                 ),
-                const Icon(
+                Icon(
                   Icons.swipe,
                   color: Styles.gumColor,
                   size: 20,
@@ -708,7 +705,7 @@ class AppCubit extends Cubit<AppStates> {
                       context: context,
                       builder: (BuildContext context) {
                         return AlertDialog(
-                          titleTextStyle: TextStyle(color: Styles.gumColor),
+                          titleTextStyle: const TextStyle(color: Styles.gumColor),
                           backgroundColor: Theme.of(context)
                               .scaffoldBackgroundColor
                               .withOpacity(0.95),
@@ -774,7 +771,7 @@ class AppCubit extends Cubit<AppStates> {
                       context: context,
                       builder: (BuildContext context) {
                         return AlertDialog(
-                          titleTextStyle: TextStyle(color: Styles.gumColor),
+                          titleTextStyle: const TextStyle(color: Styles.gumColor),
                           backgroundColor: Theme.of(context)
                               .scaffoldBackgroundColor
                               .withOpacity(0.95),
