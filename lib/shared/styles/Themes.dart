@@ -1,6 +1,21 @@
+import 'package:bloc/bloc.dart';
 import 'package:diginote/shared/styles/styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
+enum AppTheme { Light, Dark }
+
+class ThemeCubit extends Cubit<ThemeData> {
+  ThemeCubit() : super(lightTheme);
+
+  void toggleTheme() {
+    if (state == lightTheme) {
+      emit(darkTheme);
+    } else {
+      emit(lightTheme);
+    }
+  }
+}
 
 MaterialColor customGum = const MaterialColor(0xFF8C52FF, {
   50: Color(0xFFE0C7FF),
@@ -22,7 +37,7 @@ ThemeData lightTheme = ThemeData(
       type: BottomNavigationBarType.fixed,
       selectedItemColor: Styles.gumColor,
       unselectedItemColor: Styles.greyColor,
-      selectedLabelStyle: TextStyle(fontFamily: 'bitter'),
+      selectedLabelStyle: TextStyle(fontFamily: 'nunito'),
     ),
     appBarTheme: const AppBarTheme(
       iconTheme: IconThemeData(color: Styles.gumColor),
@@ -38,14 +53,14 @@ ThemeData lightTheme = ThemeData(
     primarySwatch: customGum,
     textTheme: TextTheme(
       bodyMedium:
-      const TextStyle(color: Styles.blackColor, fontFamily: 'bitter-bold'),
+      const TextStyle(color: Styles.blackColor,),
       bodySmall: TextStyle(
-          color: Styles.blackColor.withOpacity(0.5), fontFamily: 'bitter'),
+          color: Styles.blackColor.withOpacity(0.5), fontFamily: 'nunito'),
     ),
     inputDecorationTheme: InputDecorationTheme(
       prefixIconColor: Styles.lightBlackColor,
       suffixIconColor: Styles.greyColor.withOpacity(0.5),
-      labelStyle: TextStyle(color: Styles.blackColor),
+      labelStyle: const TextStyle(color: Styles.blackColor),
     )
 );
 ThemeData darkTheme = ThemeData(
@@ -55,7 +70,7 @@ ThemeData darkTheme = ThemeData(
       type: BottomNavigationBarType.fixed,
       selectedItemColor: Styles.gumColor,
       unselectedItemColor: Styles.greyColor,
-      selectedLabelStyle: TextStyle(fontFamily: 'bitter'),
+      selectedLabelStyle: TextStyle(fontFamily: 'nunito'),
     ),
     appBarTheme: const AppBarTheme(
       iconTheme: IconThemeData(color: Styles.whiteColor),
@@ -71,10 +86,11 @@ ThemeData darkTheme = ThemeData(
     primarySwatch: customGum,
     textTheme: TextTheme(
       bodyMedium: const TextStyle(
-          color: Styles.whiteColor, fontFamily: 'bitter-bold'),
+          color: Styles.whiteColor,),
       bodySmall: TextStyle(
-          color: Styles.greyColor.withOpacity(0.5), fontFamily: 'bitter'),
+          color: Styles.greyColor.withOpacity(0.5), fontFamily: 'nunito'),
     ),
+    iconTheme: const IconThemeData(color: Styles.greyColor),
     inputDecorationTheme: const InputDecorationTheme(
         prefixIconColor: Styles.greyColor,
         suffixIconColor: Styles.lightBlackColor,

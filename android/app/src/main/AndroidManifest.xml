@@ -2,7 +2,7 @@
     <uses-permission android:name="android.permission.CAMERA"/>
     <uses-permission android:name="android.permission.INTERNET"/>
     <application
-        android:label="diginotefromtodo"
+        android:label="DIGINOTE"
         android:name="${applicationName}"
         android:icon="@mipmap/launcher_icon">
         <activity

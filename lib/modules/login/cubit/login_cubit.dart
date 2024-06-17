@@ -4,38 +4,41 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 
 import '../../../models/login_model.dart';
+import '../../../shared/network/end_points.dart';
+import '../../../shared/network/remote/dio_helper.dart';
 import 'login_states.dart';
 
-class ShopLoginCubit extends Cubit<ShopLoginStates>{
-  ShopLoginCubit(super.initialState);
+class NoteLoginCubit extends Cubit<NoteLoginStates>{
+  NoteLoginCubit(super.initialState);
 
-static ShopLoginCubit get(context) => BlocProvider.of(context);
+static NoteLoginCubit get(context) => BlocProvider.of(context);
 
 late LoginModel loginModel;
+  bool agreement = false;
 
 void userLogin({
   required String email,
   required String password,
 })
 {
-  emit(ShopLoginLoadingState());
-  //
-  // DioHelper.postData(url: LOGIN, data:
-  // {
-  //  'email':email,
-  //   'password':password,
-  // }).then((value){
-  //   if (kDebugMode) {
-  //     print(value.data);
-  //   }
-  //   loginModel = LoginModel.formJson(value.data);
-  //   emit(ShopLoginSuccessState(loginModel));
-  // }).catchError((error){
-  //   if (kDebugMode) {
-  //     print(error.toString());
-  //   }
-  //   emit(ShopLoginErrorState(error.toString()));
-  // });
+  emit(NoteLoginLoadingState());
+
+  DioHelper2.postData(url: LOGIN, data:
+  {
+   'email':email,
+    'password':password,
+  }).then((value){
+    if (kDebugMode) {
+      print(value.data);
+    }
+    loginModel = LoginModel.formJson(value.data);
+    emit(NoteLoginSuccessState(loginModel));
+  }).catchError((error){
+    if (kDebugMode) {
+      print(error.toString());
+    }
+    emit(NoteLoginErrorState(error.toString()));
+  });
 }
   IconData suffix = Icons.visibility_outlined;
   bool isPassword = true;
@@ -45,7 +48,11 @@ void userLogin({
     isPassword = !isPassword;
     suffix = isPassword ? Icons.visibility_outlined : Icons.visibility_off_outlined ;
 
-    emit(ShopChangePasswordVisibilityState());
+    emit(NoteChangePasswordVisibilityState());
+  }
+  void changeAgreement(){
+    agreement = !agreement;
+    emit(NoteChangeAgreement());
   }
 
 

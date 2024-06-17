@@ -1,11 +1,9 @@
 import 'package:diginote/modules/register/cubit/register_states.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 
 import '../../../models/login_model.dart';
-import '../../../shared/network/end_points.dart';
 
 class ShopRegisterCubit extends Cubit<ShopRegisterStates>{
   ShopRegisterCubit(super.initialState);

@@ -1,15 +1,15 @@
+import 'dart:convert';
+
 import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_quill/flutter_quill.dart';
 import 'package:intl/intl.dart';
-import 'package:torch_light/torch_light.dart';
 import '../shared/components/components.dart';
 import '../shared/cubit/cubit.dart';
 import '../shared/cubit/states.dart';
-import '../shared/network/remote/dio_helper.dart';
 import '../shared/styles/styles.dart';
+
 
 class HomeLayout extends StatelessWidget {
   HomeLayout({super.key});
@@ -21,11 +21,11 @@ class HomeLayout extends StatelessWidget {
   bool notSheeting = true;
   bool _doubleTapped = false;
 
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-
         // If bottom sheet is not showing
         if (!_doubleTapped && notSheeting) {
           // On first back press, show a toast and set a flag
@@ -61,34 +61,77 @@ class HomeLayout extends StatelessWidget {
 
             return Scaffold(
               key: scaffoldKey,
-              appBar: cubit.currentIndex ==4
-                  ? null
+              appBar: cubit.currentIndex == 4 || cubit.currentIndex == 3
+                  ? AppBar(elevation: 0,
+                automaticallyImplyLeading: false,title:const Center(child: Text("Categories",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 25,color: Styles.gumColor))))
                   :AppBar(
                 elevation: 0,
                 automaticallyImplyLeading: false,
+                leadingWidth: cubit.currentIndex==2 ? MediaQuery.sizeOf(context).width*0.4:MediaQuery.sizeOf(context).width*0.25,
                 leading: cubit.isBottomSheetShown
                     ? null
                     : (cubit.currentIndex == 0)
-                        ? IconButton(
-                            onPressed: () {
-                              AppCubit.get(context).toggleSortingOrder();
-                            },
-                            icon: const Icon(Icons.sort_rounded, size: 30),
-                            color: Styles.gumColor,
-                          )
-                        : IconButton(
-                            onPressed: () {
-                              cubit.changeBottomNavBarState(0);
-                            },
-                            icon:
-                                const Icon(Icons.arrow_back_rounded, size: 30),
-                            color: Styles.gumColor,
-                          ),
+                        ? Row(
+                  children: [
+                            IconButton(
+                                onPressed: () {
+                                  AppCubit.get(context).toggleSortingOrder();
+                                },
+                                icon: const Icon(Icons.sort_rounded, size: 30),
+                                color: Styles.gumColor,
+                              ),
+                            IconButton(
+                              onPressed: () {
+                                cubit.showSettingPrompt(context);
+                              },
+                              icon: const Icon(Icons.more_horiz_rounded, size: 30),
+                              color: Styles.gumColor,
+                            ),
+                          ],
+                        )
+                        : Row(
+                          mainAxisSize: MainAxisSize.min, // Adjusted mainAxisSize
+                          children: [
+                            IconButton(
+                              onPressed: () {
+                                cubit.filteredNotes=[];
+                                cubit.changeBottomNavBarState(0);
+                              },
+                              icon: const Icon(Icons.arrow_back_rounded, size: 30),
+                              color: Styles.gumColor,
+                            ),
+                            Visibility(
+                              visible: cubit.currentIndex == 2,
+                              child: GestureDetector(
+                                onTap: (){cubit.showCategoryUpdatePrompt(context);},
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                      Icons.folder,
+                                      size: 20,
+                                      color: hexToColor(cubit.tappedColor),
+                                    ),
+                                    const SizedBox(width: 2),
+                                    Text(
+                                      cubit.tappedCat,
+                                      style: const TextStyle(fontSize: 10),
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+
+
                 actions: (cubit.isBottomSheetShown || cubit.currentIndex > 0)
                     ? [
                         Visibility(
                           visible: !cubit.isBottomSheetShown &&
-                              cubit.currentIndex != 2,
+                              cubit.currentIndex != 2  && cubit.currentIndex != 3,
                           child: IconButton(
                               onPressed: () async {
                                 cubit.toggleFlashLight();
@@ -101,7 +144,7 @@ class HomeLayout extends StatelessWidget {
                         ),
                         Visibility(
                           visible: !cubit.isBottomSheetShown &&
-                              cubit.currentIndex != 2,
+                              cubit.currentIndex != 2 && cubit.currentIndex != 3,
                           child: IconButton(
                               onPressed: () async {
                                 if (cubit.currentIndex == 0) {
@@ -114,6 +157,7 @@ class HomeLayout extends StatelessWidget {
                                           cubit.insertIntoDatabase(
                                           title:
                                           cubit.responseValue,
+                                          ptitle:cubit.responseValue,
                                           time: TimeOfDay.now().format(context),
                                           date: DateFormat.yMMMd()
                                               .format(DateTime.now()))
@@ -126,45 +170,129 @@ class HomeLayout extends StatelessWidget {
                                 color: Styles.gumColor,
                               )),
                         ),
-                        Visibility(
-                          visible: !cubit.isBottomSheetShown &&
-                              cubit.currentIndex == 2,
-                          child: IconButton(
-                              onPressed: () {
-                                if (cubit.edittitleController.text !=
-                                        cubit.tappedTitle &&
-                                    cubit.editformKey.currentState!
-                                        .validate()) {
-                                  cubit.updateDatabase(
-                                      oldId: cubit.tappedId,
-                                      time: TimeOfDay.now().format(context),
-                                      date: DateFormat.yMMMd()
-                                          .format(DateTime.now()),
-                                      title: cubit.edittitleController.text);
-                                }
-                                cubit.changeBottomNavBarState(0);
-                              },
-                              icon: const Icon(
-                                Icons.check_circle,
-                                size: 30,
-                                color: Styles.gumColor,
-                              )),
+                        Row(
+                          children: [
+                            Visibility(
+                              visible: !cubit.isBottomSheetShown &&
+                                  cubit.currentIndex == 2,
+                              child: IconButton(
+                                  onPressed: () {
+
+                                  },
+                                  icon: const Icon(
+                                    Icons.picture_as_pdf_outlined,
+                                    size: 30,
+                                    color: Styles.gumColor,
+                                  )),
+                            ),
+                            Visibility(
+                              visible: !cubit.isBottomSheetShown &&
+                                  cubit.currentIndex == 2 && !cubit.editorLocked,
+                              child: IconButton(
+                                  onPressed: () {
+                                    cubit.FormaterVisbilityC();
+                                  },
+                                  icon: Icon(
+                                    Icons.content_paste_go_rounded,
+                                    size: 30,
+                                    color: cubit.formaterC ? Styles.greyColor : Styles.gumColor,
+                                  )),
+                            ),
+                            Visibility(
+                              visible: !cubit.isBottomSheetShown &&
+                                  cubit.currentIndex == 2 && cubit.formaterC && !cubit.editorLocked,
+                              child: IconButton(
+                                  onPressed: () {
+                                    cubit.selectAll();
+                                  },
+                                  icon: const Icon(
+                                    Icons.select_all,
+                                    size: 30,
+                                    color: Styles.gumColor,
+                                  )),
+                            ),
+                            Visibility(
+                              visible: !cubit.isBottomSheetShown &&
+                                  cubit.currentIndex == 2 && !cubit.editorLocked,
+                              child: IconButton(
+                                  onPressed: () {
+                                    cubit.FormaterVisbilityB();
+                                  },
+                                  icon: Icon(
+                                    Icons.short_text_rounded,
+                                    size: 30,
+                                    color: cubit.formaterB ? Styles.greyColor : Styles.gumColor,
+                                  )),
+                            ),
+                            Visibility(
+                              visible: !cubit.isBottomSheetShown &&
+                                  cubit.currentIndex == 2 && !cubit.editorLocked,
+                              child: IconButton(
+                                  onPressed: () {
+                                    cubit.FormaterVisbilityA();
+                                  },
+                                  icon: Icon(
+                                    Icons.text_format_rounded,
+                                    size: 30,
+                                    color: cubit.formaterA ? Styles.greyColor : Styles.gumColor,
+                                  )),
+                            ),
+                            Visibility(
+                              visible: !cubit.isBottomSheetShown &&
+                                  cubit.currentIndex == 2 && !cubit.editorLocked,
+                              child: IconButton(
+                                  onPressed: () {
+                                    if (true
+                                    // cubit.edittitleController.text !=
+                                    //         cubit.tappedTitle &&
+                                    //     cubit.editformKey.currentState!
+                                    //         .validate()
+                                    ) {
+                                      cubit.updateDatabase(category:cubit.tappedCat,color:cubit.tappedColor,
+                                          time: TimeOfDay.now().format(context),
+                                          date: DateFormat.yMMMd()
+                                              .format(DateTime.now()),
+
+                                          title: jsonEncode(cubit.quillController.document.toDelta().toJson()),
+                                          ptitle: cubit.quillController.document.toPlainText());
+                                    }
+                                    // cubit.changeBottomNavBarState(0);
+                                    cubit.hideFormatter();
+                                  },
+                                  icon: const Icon(
+                                    Icons.check_rounded,
+                                    size: 30,
+                                    color: Styles.gumColor,
+                                  )),
+                            ),
+                            Visibility(
+                              visible: !cubit.isBottomSheetShown &&
+                                  cubit.currentIndex == 2 && cubit.editorLocked,
+                              child: IconButton(
+                                  onPressed: () {cubit.showEditor();},
+
+                                  icon: const Icon(
+                                    Icons.mode_edit_outlined,
+                                    size: 30,
+                                    color: Styles.gumColor,
+                                  )),
+                            ),
+                          ],
                         )
                       ]
                     : [
-                        IconButton(
-                          onPressed: () {
-                            DioHelper.getData(url: 'test').then((value){
-                              showToast(message: value.data['text'], state: ToastStates.SUCCESS);
-
-                            }).catchError((error) {showToast(message: 'Offline', state: ToastStates.ERROR);
-                            print(error);});
-                          },
-                          icon: const Icon(
-                            Icons.online_prediction_rounded,
-                            size: 30,
+                        GestureDetector(
+                        onLongPress:(){cubit.changeBottomNavBarState(3);},
+                          child: IconButton(
+                            onPressed: () {
+                              cubit.showCategoryFilterPrompt(context);
+                            },
+                            icon: Icon(
+                              (cubit.notFiltered) ? Icons.category_outlined : Icons.category_rounded,
+                              size: 30,
+                            ),
+                            color: Styles.gumColor,
                           ),
-                          color: Styles.gumColor,
                         ),
                         IconButton(
                           onPressed: () {
@@ -173,6 +301,7 @@ class HomeLayout extends StatelessWidget {
                                 cubit
                                     .insertIntoDatabase(
                                   title: titleController.text,
+                                  ptitle:titleController.text,
                                   // date: dateController.text,
 
                                   date:
@@ -258,7 +387,7 @@ class HomeLayout extends StatelessWidget {
                           color: Styles.gumColor,
                         )
                       ],
-                title: (cubit.isBottomSheetShown || cubit.currentIndex > 0)
+                title: (cubit.isBottomSheetShown || (cubit.currentIndex > 0))
                     ? null
                     : Container(
                         height: 40,
@@ -271,38 +400,41 @@ class HomeLayout extends StatelessWidget {
                                   .suffixIconColor ??
                               Colors.black, // Text color for dark theme,
                         ),
-                        child: TextField(
-                          textAlignVertical: TextAlignVertical.center,
-                          style: TextStyle(
-                              color:
-                                  Theme.of(context).textTheme.bodyMedium?.color,
-                              fontSize: 13),
-                          controller: cubit.searchController,
-                          decoration: InputDecoration(
-                            prefixIcon: Icon(
-                              Icons.search_rounded,
-                              color: Theme.of(context)
-                                      .inputDecorationTheme
-                                      .prefixIconColor
-                                      ?.withOpacity(0.5) ??
-                                  Colors.black,
+                        child: Padding(
+                          padding: const EdgeInsets.only(right: 8.0),
+                          child: TextField(
+                            textAlignVertical: TextAlignVertical.center,
+                            style: TextStyle(
+                                color:
+                                    Theme.of(context).textTheme.bodyMedium?.color,
+                                fontSize: 13),
+                            controller: cubit.searchController,
+                            decoration: InputDecoration(
+                              prefixIcon: Icon(
+                                Icons.search_rounded,
+                                color: Theme.of(context)
+                                        .inputDecorationTheme
+                                        .prefixIconColor
+                                        ?.withOpacity(0.5) ??
+                                    Colors.black,
+                              ),
+                              hintText: 'Search',
+                              hintStyle: TextStyle(
+                                color: Theme.of(context)
+                                        .inputDecorationTheme
+                                        .prefixIconColor
+                                        ?.withOpacity(0.5) ??
+                                    Colors.black,
+                                fontSize: 13,
+                              ),
+                              border: InputBorder.none,
+                              contentPadding: const EdgeInsets.only(bottom: 8),
                             ),
-                            hintText: 'Search',
-                            hintStyle: TextStyle(
-                              color: Theme.of(context)
-                                      .inputDecorationTheme
-                                      .prefixIconColor
-                                      ?.withOpacity(0.5) ??
-                                  Colors.black,
-                              fontSize: 13,
-                            ),
-                            border: InputBorder.none,
-                            contentPadding: EdgeInsets.only(bottom: 8),
+                            onChanged: (query) {
+                              // Perform filtering whenever the text changes
+                              cubit.searchFilterNotes(query);
+                            },
                           ),
-                          onChanged: (query) {
-                            // Perform filtering whenever the text changes
-                            cubit.filterTasks(query);
-                          },
                         ),
                       ),
               ),
@@ -322,8 +454,9 @@ class HomeLayout extends StatelessWidget {
                     padding: const EdgeInsets.only(left: 30.0),
                     child: Visibility(
                         visible: (!(cubit.isBottomSheetShown) &&
-                            (cubit.currentIndex != 4 && cubit.currentIndex != 2 )),
+                            (cubit.currentIndex != 4 && cubit.currentIndex != 2 && cubit.currentIndex != 3 )),
                         child: FloatingActionButton(
+                          shape: const CircleBorder(),
                           backgroundColor: Styles.gumColor,
                           onPressed: () async {
                             if (cubit.currentIndex == 0) {
@@ -334,6 +467,8 @@ class HomeLayout extends StatelessWidget {
                                       cubit.insertIntoDatabase(
                                           title:
                                           cubit.responseValue,
+                                          ptitle:
+                                          cubit.responseValue,
                                           time: TimeOfDay.now().format(context),
                                           date: DateFormat.yMMMd()
                                               .format(DateTime.now())));
@@ -342,29 +477,32 @@ class HomeLayout extends StatelessWidget {
                           child: const Icon(
                             Icons.camera,
                             size: 55,
+                            color: Colors.white,
                           ),
                         )),
                   ),
                   Visibility(
                     visible: (cubit.isBottomSheetShown),
                     child: FloatingActionButton(
+                      shape: const CircleBorder(),
                       backgroundColor:
                           Theme.of(context).scaffoldBackgroundColor,
                       child: const Icon(
                         Icons.check_circle,
                         color: Styles.gumColor,
                         size: 40,
+
                       ),
                       onPressed: () {
                         if (cubit.isBottomSheetShown) {
                           if (formKey.currentState!.validate()) {
                             cubit
                                 .insertIntoDatabase(
-                              title: titleController.text.replaceAll("'", "''").replaceAll('"', '""'),
-                              // date: dateController.text,
+                              title: titleController.text
+                              ,ptitle: titleController.text,
+
 
                               date: DateFormat.yMMMd().format(DateTime.now()),
-                              // time: timeController.text,
                               time: TimeOfDay.now().format(context),
                             )
                                 .then(

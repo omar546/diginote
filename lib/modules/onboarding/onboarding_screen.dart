@@ -1,3 +1,4 @@
+import 'package:diginote/modules/onboarding/about.dart';
 import 'package:diginote/shared/styles/styles.dart';
 import 'package:flutter/material.dart';
 
@@ -55,6 +56,11 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(backgroundColor: Colors.transparent,shadowColor: Colors.transparent,
+        leading: customTextButton(
+            onPressed: () {
+              navigateTo(context, const AboutUs());
+            },
+            text: 'About Us'),leadingWidth: 90,
         actions: [
           customTextButton(
               onPressed: () {

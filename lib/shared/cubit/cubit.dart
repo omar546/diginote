@@ -1,8 +1,13 @@
 import 'package:camera/camera.dart';
 import 'package:diginote/modules/loadingScreen.dart';
+import 'package:diginote/modules/login/login_screen.dart';
+import 'package:diginote/shared/styles/styles.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+import 'package:flutter_quill/flutter_quill.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:diginote/modules/CameraScreen.dart';
+import 'package:diginote/modules/cameraScreen.dart';
+import 'package:intl/intl.dart';
 import 'package:path/path.dart';
 import 'package:async/async.dart';
 import 'dart:io';
@@ -13,17 +18,29 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sqflite/sqflite.dart';
 
 import '../../modules/categoryScreen.dart';
-import '../../modules/new_tasks.dart';
+import '../../modules/new_notes.dart';
 import '../../modules/showEditScreen.dart';
+import '../components/components.dart';
+import '../network/remote/dio_helper.dart';
+import '../styles/Themes.dart';
 import 'states.dart';
 
 class AppCubit extends Cubit<AppStates> {
+  QuillController quillController = QuillController.basic();
+
+  bool editorLocked = true;
+  bool formaterC = false;
+  bool formaterB = false;
+  bool formaterA = false;
   var editformKey = GlobalKey<FormState>();
   var searchController = TextEditingController();
   var edittitleController = TextEditingController();
+  var addCategoryController = TextEditingController();
   String tappedTitle = "";
   String tappedTime = "";
   String tappedDate = "";
+  String tappedCat = "";
+  String tappedColor = "";
   var tappedId = 0;
   bool flashflag = false;
   String imagePath = "";
@@ -32,17 +49,34 @@ class AppCubit extends Cubit<AppStates> {
   var currentIndex = 0;
   bool sortAscending = true; // Initial sorting order
 
-  List<Map> filteredTasks = [];
+  List<Map> filteredNotes = [];
+  bool notFiltered = true;
 
-  void filterTasks(String query) {
+  void searchFilterNotes(String query) {
     // If the query is empty, show all tasks
     if (query.isEmpty) {
-      filteredTasks = newTasks;
+      filteredNotes = newNotes;
     } else {
       // Filter tasks based on the query
-      filteredTasks = newTasks.where((task) {
+      filteredNotes = newNotes.where((note) {
         // Check if the task title contains the query (case-insensitive)
-        return task['title'].toLowerCase().contains(query.toLowerCase());
+        return note['title'].toLowerCase().contains(query.toLowerCase());
+      }).toList();
+    }
+    emit(AppFilterTasksState());
+  }
+
+  void catFilterNotes(String query) {
+    // If the query is empty, show all tasks
+    if (query.isEmpty) {
+      filteredNotes = newNotes;
+      notFiltered =true;
+    } else {
+      // Filter tasks based on the query
+      notFiltered =false;
+      filteredNotes = newNotes.where((note) {
+        // Check if the task title contains the query (case-insensitive)
+        return note['category'] == (query);
       }).toList();
     }
     emit(AppFilterTasksState());
@@ -78,7 +112,11 @@ class AppCubit extends Cubit<AppStates> {
 
       isFlashOn = !isFlashOn;
       emit(AppCameraFlashState());
-    } catch (e) {}
+    } catch (e) {
+      if (kDebugMode) {
+        print(e);
+      }
+    }
   }
 
   String textfromimage = "";
@@ -95,8 +133,7 @@ class AppCubit extends Cubit<AppStates> {
 
   Future<String> upload(File imageFile) async {
     // open a bytestream
-    var stream =
-        new http.ByteStream(DelegatingStream.typed(imageFile.openRead()));
+    var stream = http.ByteStream(DelegatingStream.typed(imageFile.openRead()));
     // get file length
     var length = await imageFile.length();
 
@@ -104,10 +141,10 @@ class AppCubit extends Cubit<AppStates> {
     var uri = Uri.parse("https://example-pre-reader.onrender.com/upload/");
 
     // create multipart request
-    var request = new http.MultipartRequest("POST", uri);
+    var request = http.MultipartRequest("POST", uri);
 
     // multipart that takes file
-    var multipartFile = new http.MultipartFile('file', stream, length,
+    var multipartFile = http.MultipartFile('file', stream, length,
         filename: basename(imageFile.path));
 
     // add file to multipart
@@ -115,13 +152,17 @@ class AppCubit extends Cubit<AppStates> {
 
     // send
     var response = await request.send();
-    print(response.statusCode);
+    if (kDebugMode) {
+      print(response.statusCode);
+    }
 
     // listen for response
     response.stream.transform(utf8.decoder).listen((value) async {
       textfromimage = extractText(value);
       emit(CameraPictureTaken());
-      print(textfromimage);
+      if (kDebugMode) {
+        print(textfromimage);
+      }
     });
     return textfromimage;
   }
@@ -145,7 +186,9 @@ class AppCubit extends Cubit<AppStates> {
         changeBottomNavBarState(4);
         responseValue = await upload(File(imagePath));
       } catch (e) {
-        print('Error uploading image: $e');
+        if (kDebugMode) {
+          print('Error uploading image: $e');
+        }
       }
     } else {
       if (kDebugMode) {
@@ -180,28 +223,27 @@ class AppCubit extends Cubit<AppStates> {
   }
 
   List<Widget> screens = [
-    NewNotesScreen(),
-    CameraScreen(),
-    ShowEditScreen(),
+    const NewNotesScreen(),
+    const CameraScreen(),
+    const ShowEditScreen(),
     const CategoryScreen(),
     const LoadingScreen(),
   ];
-
-  List<String> titles = ['New Notes', 'Loading', 'Camera'];
 
   Future<void> changeBottomNavBarState(index) async {
     if (index > 4) {
       index = 0;
     }
     currentIndex = index;
+    filteredNotes = [];
+    notFiltered=true;
     await cameraController?.setFlashMode(FlashMode.off);
     emit(AppChangeNavBarState());
   }
 
   late Database database;
-  List<Map> newTasks = [];
-  List<Map> doneTasks = [];
-  List<Map> archivedTasks = [];
+  List<Map> newNotes = [];
+  List<Map> newCategories = [];
 
   void createDatabase() {
     openDatabase(
@@ -209,7 +251,11 @@ class AppCubit extends Cubit<AppStates> {
       version: 1,
       onCreate: (db, version) async {
         await db.execute(
-            'CREATE TABLE tasks (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, date TEXT,time TEXT ,status TEXT)');
+            'CREATE TABLE tasks (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT,ptitle TEXT, date TEXT,time TEXT,category TEXT,color TEXT)');
+        await db.execute(
+            'CREATE TABLE categories (id INTEGER PRIMARY KEY AUTOINCREMENT, category TEXT,color TEXT)');
+        await db.execute(
+            'INSERT INTO categories(category,color) VALUES("uncategorized", "#d2d2d2")');
       },
       onOpen: (database) {
         getFromDatabase(database);
@@ -224,18 +270,24 @@ class AppCubit extends Cubit<AppStates> {
 
   Future insertIntoDatabase({
     required String title,
+    required String ptitle,
     required String date,
     required String time,
   }) {
     return database.transaction(
       (Transaction txn) async {
-        txn
-            .rawInsert(
-          'INSERT INTO tasks(title, date, time,status) VALUES("$title",  "$date", "$time", "new")',
-        )
-            .then(
+        txn.rawInsert(
+          'INSERT INTO tasks(title,ptitle, date, time,category,color) VALUES(?, ?, ?,?,"uncategorized","#d2d2d2")',
+          [
+            '[{\"insert\":\"${title.replaceAll("'", "''").replaceAll('"', '""').replaceAll('\n', '\\n')}\\n\"}]',
+            ptitle.replaceAll("'", "''").replaceAll('"', '""'),
+            date,
+            time
+          ],
+        ).then(
           (value) {
-            filteredTasks = [];
+            filteredNotes = [];
+            notFiltered=true;
             searchController.clear();
             emit(AppInsertDatabaseState());
             changeBottomNavBarState(0);
@@ -247,9 +299,8 @@ class AppCubit extends Cubit<AppStates> {
   }
 
   void getFromDatabase(database) {
-    newTasks = [];
-    doneTasks = [];
-    archivedTasks = [];
+    newNotes = [];
+    newCategories = [];
 
     emit(AppGetDatabaseLoadingState());
 
@@ -258,22 +309,24 @@ class AppCubit extends Cubit<AppStates> {
         values.forEach(
           (element) {
             //sego sort algo :)
-            if (element['status'] == 'new') {
-              newTasks.add(element);
-              newTasks.sort(
-                (b, a) => a['id'].compareTo(b['id']),
-              );
-            } else if (element['status'] == 'done') {
-              doneTasks.add(element);
-              doneTasks.sort(
-                (b, a) => a['id'].compareTo(b['id']),
-              );
-            } else {
-              archivedTasks.add(element);
-              archivedTasks.sort(
-                (b, a) => a['id'].compareTo(b['id']),
-              );
-            }
+            newNotes.add(element);
+            newNotes.sort(
+              (b, a) => a['id'].compareTo(b['id']),
+            );
+          },
+        );
+        emit(AppGetDatabaseState());
+      },
+    );
+    database.rawQuery('Select * FROM categories').then(
+      (values) {
+        values.forEach(
+          (element) {
+            //sego sort algo :)
+            newCategories.add(element);
+            newCategories.sort(
+              (b, a) => a['id'].compareTo(b['id']),
+            );
           },
         );
         emit(AppGetDatabaseState());
@@ -281,50 +334,91 @@ class AppCubit extends Cubit<AppStates> {
     );
   }
 
-  // void updateDatabase({
-  //   required int id,
-  //   required String title,
-  //   required String date,
-  //   required String time,
-  // }) {
-  //   database.rawUpdate(
-  //     'UPDATE tasks SET title = ?, date = ?, time = ? WHERE id = ?',
-  //     [title, date, time, id],
-  //   ).then(
-  //     (value) {
-  //       getFromDatabase(database);
-  //       emit(AppUpdateDatabaseState());
-  //     },
-  //   );
-  // }
-
   Future<void> updateDatabase({
-    required int oldId,
     required String title,
+    required String ptitle,
     required String date,
     required String time,
+    required String category,
+    required String color,
   }) async {
     // Insert a new row with updated data
     await database.transaction((txn) async {
       int newId = await txn.rawInsert(
-        'INSERT INTO tasks(title, date, time, status) VALUES(?, ?, ?, "new")',
-        [title, date, time],
+        'INSERT INTO tasks(title,ptitle, date, time,category,color) VALUES(?, ?, ?,?,?,?)',
+        [
+          title.replaceAll("'", "''").replaceAll('\\"', '""'),
+          ptitle.replaceAll("'", "''").replaceAll('"', '""'),
+          date,
+          time,
+          category,
+          color
+        ],
       );
 
       // Delete the old row
-      await txn.rawDelete('DELETE FROM tasks WHERE id = ?', [oldId]);
-      filteredTasks = [];
+      await txn.rawDelete('DELETE FROM tasks WHERE id = ?', [tappedId]);
+      filteredNotes = [];
+      notFiltered=true;
       searchController.clear();
+      tappedId = newId;
       getFromDatabase(database);
       emit(AppUpdateDatabaseState());
     });
 
     // Return null to satisfy the Future<void> return type
-    return null;
+    return;
   }
 
   void deleteDatabase({required int id}) {
     database.rawDelete('DELETE FROM tasks WHERE id = ?', [id]).then(
+      (value) {
+        getFromDatabase(database);
+        emit(AppDeleteDatabaseState());
+      },
+    );
+  }
+  void deleteAllByCategory({required int id,required String cat,required BuildContext context}) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            titleTextStyle: const TextStyle(color: Styles.gumColor),
+            backgroundColor: Theme.of(context)
+                .scaffoldBackgroundColor
+                .withOpacity(0.95),
+            title: const Text('Delete all notes under this category?'),
+            actions: <Widget>[
+              Center(
+                child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: Styles.gumColor,
+                        foregroundColor: Styles.whiteColor),
+                    onPressed: () {
+                      database.delete('tasks',where: 'category = ?',whereArgs:[cat]);
+                      database.rawDelete('DELETE FROM categories WHERE id = ?', [id]).then(
+                            (value) {
+                              if(cat=='uncategorized'){
+                                database.rawInsert('INSERT INTO categories(category,color) VALUES("uncategorized", "#d2d2d2")');
+                              }
+                          getFromDatabase(database);
+                          emit(AppDeleteDatabaseState());
+
+                        },
+                      ).then((v){
+                        Navigator.of(context).pop();
+                      });}
+                    ,
+                    child: const Text('Yes!')),
+              )
+            ],
+          );
+        });
+  }
+
+  void deleteCategory({required int id,required String cat}) {
+    database.update('tasks',{'category':'uncategorized','color':'#d2d2d2'},where: 'category = ?',whereArgs:[cat]);
+    database.rawDelete('DELETE FROM categories WHERE id = ?', [id]).then(
       (value) {
         getFromDatabase(database);
         emit(AppDeleteDatabaseState());
@@ -340,4 +434,452 @@ class AppCubit extends Cubit<AppStates> {
     isBottomSheetShown = showing;
     emit(AppChangeBottomSheetState());
   }
+
+  void FormaterVisbilityA() {
+    formaterA = !formaterA;
+    if (formaterA == true) {
+      formaterB = false;
+    }
+    emit(FormattingState());
+  }
+
+  void FormaterVisbilityB() {
+    formaterB = !formaterB;
+    if (formaterB == true) {
+      formaterA = false;
+    }
+    emit(FormattingState());
+  }
+
+  void FormaterVisbilityC() {
+    formaterC = !formaterC;
+    emit(FormattingState());
+  }
+
+  void showSettingPrompt(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          title: const Text(
+            'Settings',
+            style: TextStyle(color: Styles.gumColor),
+          ),
+          content: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              IconButton(
+                tooltip: "Ping",
+                onPressed: () {
+                  DioHelper.getData(url: 'test').then((value) {
+                    showToast(
+                        message: value.data['text'],
+                        state: ToastStates.SUCCESS);
+                  }).catchError((error) {
+                    showToast(message: 'Offline', state: ToastStates.ERROR);
+                    if (kDebugMode) {
+                      print(error);
+                    }
+                  });
+                },
+                icon: const Icon(
+                  Icons.network_check,
+                  color: Styles.gumColor,
+                ),
+              ),
+              IconButton(
+                tooltip: "Theme",
+                onPressed: () {
+                  context.read<ThemeCubit>().toggleTheme();
+                  Navigator.of(context).pop();
+                },
+                icon: const Icon(
+                  Icons.mode_night_rounded,
+                  color: Styles.gumColor,
+                ),
+              ),
+              IconButton(
+                tooltip: "Logout",
+                onPressed: () {
+                  navigateAndFinish(context, LoginScreen());
+                },
+                icon: const Icon(
+                  Icons.logout_rounded,
+                  color: Styles.gumColor,
+                ),
+              )
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  var selectedCat;
+  var selectedColor;
+
+  void showCategoryUpdatePrompt(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+            scrollable: true,
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+            title: const Row(
+              children: [
+                Text(
+                  'Categories',
+                  style: TextStyle(color: Styles.gumColor),
+                ),
+                SizedBox(
+                  width: 5,
+                ),
+                Icon(
+                  Icons.swipe,
+                  color: Styles.gumColor,
+                  size: 20,
+                )
+              ],
+            ),
+            content: newCategories.length == 1
+                ? const Center(
+                    child: Text(
+                      'Long press category Icon on home to add categories',
+                      textAlign: TextAlign.center,
+                      maxLines: 5,
+                    ),
+                  )
+                : SingleChildScrollView(
+                    child: ConstrainedBox(
+                        constraints: const BoxConstraints(maxHeight: 700),
+                        child: SizedBox(
+                          width: double.maxFinite,
+                          child: newCategories.isEmpty
+                              ? const Center(
+                                  child: Text(
+                                    'Long press category Icon on home to add categories',
+                                    textAlign: TextAlign.center,
+                                    maxLines: 5,
+                                  ),
+                                )
+                              : SizedBox(
+                                  height:
+                                      MediaQuery.sizeOf(context).height * 0.1,
+                                  child: ListView.builder(
+                                    scrollDirection: Axis.horizontal,
+                                    shrinkWrap: true,
+                                    itemCount: newCategories.length,
+                                    itemBuilder: (context, index) {
+                                      var category = newCategories[index];
+                                      return GestureDetector(
+                                        onTap: () {
+                                          tappedCat = category['category'];
+                                          tappedColor = category['color'];
+
+                                          updateDatabase(
+                                              category: category['category'],
+                                              color: category['color'],
+                                              time: TimeOfDay.now()
+                                                  .format(context),
+                                              date: DateFormat.yMMMd()
+                                                  .format(DateTime.now()),
+                                              title: jsonEncode(quillController
+                                                  .document
+                                                  .toDelta()
+                                                  .toJson()),
+                                              ptitle: quillController.document
+                                                  .toPlainText());
+                                          Navigator.of(context).pop();
+                                        },
+                                        child: buildMenuCategoryItem(
+                                          model: category,
+                                          context: context,
+                                          index: index,
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ),
+                        ))));
+      },
+    );
+  }
+
+  void showCategoryFilterPrompt(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+            scrollable: true,
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+            title: const Row(
+              children: [
+                Text(
+                  'Categories',
+                  style: TextStyle(color: Styles.gumColor),
+                ),
+                SizedBox(
+                  width: 5,
+                ),
+                Icon(
+                  Icons.swipe,
+                  color: Styles.gumColor,
+                  size: 20,
+                )
+              ],
+            ),
+            content: newCategories.length == 1
+                ? const Center(
+                    child: Text(
+                      'Long press category Icon on home to add categories',
+                      textAlign: TextAlign.center,
+                      maxLines: 5,
+                    ),
+                  )
+                : SingleChildScrollView(
+                    child: ConstrainedBox(
+                        constraints: const BoxConstraints(maxHeight: 700),
+                        child: SizedBox(
+                          width: double.maxFinite,
+                          child: newCategories.isEmpty
+                              ? const Center(
+                                  child: Text(
+                                    'Long press category Icon on home to add categories',
+                                    textAlign: TextAlign.center,
+                                    maxLines: 5,
+                                  ),
+                                )
+                              : SizedBox(
+                                  height:
+                                      MediaQuery.sizeOf(context).height * 0.1,
+                                  child: ListView.builder(
+                                    scrollDirection: Axis.horizontal,
+                                    shrinkWrap: true,
+                                    itemCount: newCategories.length,
+                                    itemBuilder: (context, index) {
+                                      var category = newCategories[index];
+                                      return GestureDetector(
+                                        onTap: () {
+                                          catFilterNotes(
+                                              category['category']);
+                                          Navigator.of(context).pop();
+                                        },
+                                        child: buildMenuCategoryItem(
+                                          model: category,
+                                          context: context,
+                                          index: index,
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ),
+                        ))));
+      },
+    );
+  }
+
+  void showCategoryPrompt(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor:
+              Theme.of(context).scaffoldBackgroundColor.withOpacity(0.95),
+          title: const Text(
+            'Add Category',
+            style: TextStyle(color: Styles.gumColor),
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              customForm(
+                context: context,
+                controller: addCategoryController,
+                type: TextInputType.text,
+                label: 'Name',
+                suffix: Icons.color_lens_rounded,
+                suffixPressed: () {
+                  showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          titleTextStyle: const TextStyle(color: Styles.gumColor),
+                          backgroundColor: Theme.of(context)
+                              .scaffoldBackgroundColor
+                              .withOpacity(0.95),
+                          title: const Text('Pick a color'),
+                          content: SingleChildScrollView(
+                            child: ClipRect(
+                              child: Align(
+                                alignment: Alignment.topCenter,
+                                heightFactor: 0.85,
+                                child: ColorPicker(
+                                    paletteType: PaletteType.hueWheel,
+                                    pickerColor: catColor,
+                                    onColorChanged: changeColor),
+                              ),
+                            ),
+                          ),
+                          actions: <Widget>[
+                            ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                    backgroundColor: Styles.gumColor,
+                                    foregroundColor: Styles.whiteColor),
+                                onPressed: () {
+                                  insertIntoCategories(
+                                      name: addCategoryController.text,
+                                      color: catColor.toHexString());
+                                  Navigator.of(context).pop();
+                                },
+                                child: const Text('Ok!'))
+                          ],
+                        );
+                      });
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+  void showCategoryValueUpdatePrompt({required int id,required String cat,required BuildContext context}) {
+    addCategoryController.text=cat;
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor:
+          Theme.of(context).scaffoldBackgroundColor.withOpacity(0.95),
+          title: const Text(
+            'Edit Category',
+            style: TextStyle(color: Styles.gumColor),
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              customForm(
+                context: context,
+                controller: addCategoryController,
+                type: TextInputType.text,
+                label: 'Name',
+                suffix: Icons.color_lens_rounded,
+                suffixPressed: () {
+                  showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          titleTextStyle: const TextStyle(color: Styles.gumColor),
+                          backgroundColor: Theme.of(context)
+                              .scaffoldBackgroundColor
+                              .withOpacity(0.95),
+                          title: const Text('Pick a color'),
+                          content: SingleChildScrollView(
+                            child: ClipRect(
+                              child: Align(
+                                alignment: Alignment.topCenter,
+                                heightFactor: 0.85,
+                                child: ColorPicker(
+                                    paletteType: PaletteType.hueWheel,
+                                    pickerColor: catColor,
+                                    onColorChanged: changeColor),
+                              ),
+                            ),
+                          ),
+                          actions: <Widget>[
+                            ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                    backgroundColor: Styles.gumColor,
+                                    foregroundColor: Styles.whiteColor),
+                                onPressed: () {
+                                  database.update('tasks', {'category':addCategoryController.text,'color':catColor.toHexString()},where: 'category = ?',whereArgs: [cat]);
+                                  database.update('categories', {'category':addCategoryController.text,'color':catColor.toHexString()},where: 'id = ?',whereArgs: [id]);
+                                  emit(AppInsertDatabaseState());
+                                  getFromDatabase(database);
+                                  Navigator.of(context).pop();
+                                },
+                                child: const Text('Ok!'))
+                          ],
+                        );
+                      });
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+  Color catColor = Styles.greyColor;
+  void changeColor(Color color) {
+    catColor = color;
+    emit(CategoryColor());
+  }
+
+  Future insertIntoCategories({
+    required String name,
+    required String color,
+  }) {
+    return database.transaction(
+      (Transaction txn) async {
+        txn.rawInsert(
+          'INSERT INTO categories(category,color) VALUES(?, ?)',
+          [name, color],
+        ).then(
+          (value) {
+            emit(AppInsertDatabaseState());
+            getFromDatabase(database);
+          },
+        );
+      },
+    );
+  }
+
+  void hideFormatter() {
+    formaterB = false;
+    formaterA = false;
+    formaterC = false;
+    editorLocked = true;
+    quillController.readOnly = editorLocked;
+    emit(FormattingState());
+  }
+
+  void showEditor() {
+    editorLocked = false;
+    quillController.readOnly = editorLocked;
+    emit(FormattingState());
+  }
+
+  void selectAll() {
+    final docLength = quillController.document.length;
+    final selection = TextSelection(baseOffset: 0, extentOffset: docLength);
+    quillController.updateSelection(selection, ChangeSource.local);
+  }
+  // Future<void> export() async {
+  //   try {
+  //     final htmlString = await DeltaToHTML.encodeJson(AppCubit.get(context).quillController.document.toDelta().toJson());
+  //     var targetPath = "/storage/emulated/0/Download";
+  //     var targetFileName = "example_pdf_file";
+  //
+  //     // Show loading indicator while generating PDF
+  //
+  //
+  //     var generatedPdfFile = await FlutterHtmlToPdf.convertFromHtmlContent(
+  //       htmlString,
+  //       targetPath,
+  //       targetFileName,
+  //     );
+  //     changeBottomNavBarState(0);
+  //
+  //
+  //     // Handle successful PDF generation (e.g., show a success message)
+  //   } on Exception catch (e) {
+  //     // Handle the exception (e.g., show a snackbar to the user)
+  //     if (kDebugMode) {
+  //       print("Error generating PDF: $e");
+  //     }
+  //   }
+  // }
 }

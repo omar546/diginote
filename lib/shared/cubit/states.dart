@@ -1,4 +1,3 @@
-import 'package:camera/camera.dart';
 
 abstract class AppStates{}
 
@@ -28,12 +27,15 @@ class AppCameraDisposedState extends AppStates{}
 
 class AppCameraFlashState extends AppStates{}
 
+class FormattingState extends AppStates{}
+
 class CameraPictureTaken extends AppStates{}
 
 class CameraError extends AppStates{}
 
 class AppFilterTasksState extends AppStates{}
 class AppPopping extends AppStates{}
+class CategoryColor extends AppStates{}
 
 
 

@@ -18,6 +18,7 @@ class RegisterScreen extends StatelessWidget {
   var nameController = TextEditingController();
 
   var passwordController = TextEditingController();
+  var passwordController2 = TextEditingController();
 
   var phoneController = TextEditingController();
 
@@ -75,7 +76,7 @@ class RegisterScreen extends StatelessWidget {
                               height: 5.0,
                             ),
                             const Text(
-                              'Join now to browse our hot offers!',
+                              'Leverage your note taking experience!',
                               style: TextStyle(fontSize: 16),
                             ),
                             const SizedBox(
@@ -141,17 +142,6 @@ class RegisterScreen extends StatelessWidget {
                               controller: passwordController,
                               type: TextInputType.visiblePassword,
                               suffix: ShopRegisterCubit.get(context).suffix,
-                              onSubmit: (value) {
-                                if (formKey.currentState!.validate()) {
-                                  ShopRegisterCubit.get(context).userRegister(
-
-                                    email: emailController.text,
-                                    name: nameController.text,
-                                    phone: phoneController.text,
-                                    password: passwordController.text,
-                                  );
-                                }
-                              },
                               onChange: (String value) {
                                 if (kDebugMode) {
                                   print(value);
@@ -159,7 +149,7 @@ class RegisterScreen extends StatelessWidget {
                               },
                               validate: (value) {
                                 if (value!.isEmpty) {
-                                  return "forgot your password!";
+                                  return "forgot the password!";
                                 } else {
                                   return null;
                                 }
@@ -171,6 +161,43 @@ class RegisterScreen extends StatelessWidget {
                                 ShopRegisterCubit.get(context)
                                     .changePasswordVisibility();
                               },
+                            ),
+                            const SizedBox(
+                              height: 15.0,
+                            ),
+                            customForm(
+                              context: context,
+                              label: 'Re-enter Password',
+                              controller: passwordController,
+                              type: TextInputType.visiblePassword,
+                              onSubmit: (value) {
+                                if (formKey.currentState!.validate()) {
+                                  if(passwordController2.text==passwordController.text){
+                                  ShopRegisterCubit.get(context).userRegister(
+
+                                    email: emailController.text,
+                                    name: nameController.text,
+                                    phone: phoneController.text,
+                                    password: passwordController.text,
+                                  );}
+                                  else{showToast(message: 'password mismatch', state: ToastStates.ERROR);}
+                                }
+                              },
+                              onChange: (String value) {
+                                if (kDebugMode) {
+                                  print(value);
+                                }
+                              },
+                              validate: (value) {
+                                if (value!.isEmpty) {
+                                  return "please re-enter your password!";
+                                } else {
+                                  return null;
+                                }
+                              },
+                              prefix: Icons.password_rounded,
+                              isPassword:
+                              ShopRegisterCubit.get(context).isPassword,
                             ),
                             const SizedBox(
                               height: 15.0,

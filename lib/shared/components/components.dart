@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_quill/flutter_quill.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 import '../cubit/cubit.dart';
+import '../styles/Themes.dart';
 import '../styles/styles.dart';
 
 Widget buildTextField({
@@ -20,21 +23,24 @@ Widget buildTextField({
 }) {
   return Expanded(
     child: Padding(
-      padding: const EdgeInsets.only(right: 40,),
+      padding: const EdgeInsets.only(
+        right: 40,
+      ),
       child: Container(
-        decoration: BoxDecoration(
-          color: Theme.of(context).scaffoldBackgroundColor
-        ),
+        decoration:
+            BoxDecoration(color: Theme.of(context).scaffoldBackgroundColor),
         child: TextFormField(
           enabled: isClickable,
           validator: validate,
           keyboardType: type,
           minLines: 1,
-          maxLines: double.maxFinite.toInt() ,
+          maxLines: double.maxFinite.toInt(),
           onFieldSubmitted: onSubmit,
           onChanged: onChange,
           onTap: onTap,
-          style: TextStyle(color:Theme.of(context).textTheme.bodyMedium?.color, fontSize: 16),
+          style: TextStyle(
+              color: Theme.of(context).textTheme.bodyMedium?.color,
+              fontSize: 16),
           cursorColor: Styles.gumColor,
           controller: controller,
           // Set the validator function
@@ -56,12 +62,14 @@ Widget buildTextField({
   );
 }
 
-Widget buildTaskItem({required Map model, context, required index}) =>
-    GestureDetector(
-        onLongPress:() {
-          Clipboard.setData(ClipboardData(text: model['title'].replaceAll('""', '"').replaceAll("''", "'")));
-          showToast(message: 'Copied',state: ToastStates.SUCCESS);},
-        child: Dismissible(
+Widget buildCategoryItem({required Map model, context, required index}) =>
+    GestureDetector(onTap: (){
+      if(model['category']!= 'uncategorized'){
+        AppCubit.get(context).showCategoryValueUpdatePrompt(id: model['id'],context: context,cat: model['category']);
+      }
+    },
+      onLongPress: () {AppCubit.get(context).deleteAllByCategory(id: model['id'],cat:model['category'],context: context);},
+      child: Dismissible(
         direction: DismissDirection.endToStart,
         background: Container(
           alignment: AlignmentDirectional.centerEnd,
@@ -78,7 +86,10 @@ Widget buildTaskItem({required Map model, context, required index}) =>
           ),
         ),
         onDismissed: (direction) {
-          AppCubit.get(context).deleteDatabase(id: model['id']);
+          if(model['category']!='uncategorized'){
+            AppCubit.get(context).deleteCategory(id: model['id'],cat:model['category']);
+          }
+
         },
         key: Key(model['id'].toString()),
         child: Padding(
@@ -91,14 +102,18 @@ Widget buildTaskItem({required Map model, context, required index}) =>
                 children: [
                   Container(
                     constraints: BoxConstraints(
-                        maxWidth: MediaQuery.of(context).size.width * 0.85),
+                        maxWidth: MediaQuery.sizeOf(context).width * 0.75),
                     decoration: BoxDecoration(
                       border: Border.all(
                         width: 1,
-                        color: Theme.of(context).inputDecorationTheme.prefixIconColor?.withOpacity(0.5) ?? Colors.black,
+                        color: Theme.of(context)
+                                .inputDecorationTheme
+                                .prefixIconColor
+                                ?.withOpacity(0.5) ??
+                            Colors.black,
                       ),
                       borderRadius: BorderRadius.circular(15.0),
-                      color: Theme.of(context).inputDecorationTheme.suffixIconColor ?? Colors.black,
+                      color: hexToColor(model['color']),
                     ),
                     child: Padding(
                       padding: const EdgeInsets.all(10.0),
@@ -106,134 +121,259 @@ Widget buildTaskItem({required Map model, context, required index}) =>
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           SizedBox(
-                            // width: MediaQuery.of(context).size.width * 0.85,
-                            // child: Text('${model['title']}',
-                            //     textAlign: TextAlign.left,
-                            //     overflow: TextOverflow.ellipsis,
-                            //     maxLines: 5,
-                            //     style: const TextStyle(
-                            //         fontFamily: 'Thunder',
-                            //         fontSize: 20,
-                            //         height: 1.1,
-                            //         letterSpacing: 2,
-                            //         color: Styles.whiteColor)),
-                            child: Row(mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Flexible(
-                                  child: RichText(
-                                    textAlign: TextAlign.left,
-                                    overflow: TextOverflow.ellipsis,
-                                    maxLines: 6,
-                                    text: TextSpan(
+                            child: Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.all(10.0),
+                                    child: Text(
+                                      '${model['category']}',
                                       style: TextStyle(
-                                        fontSize: 15,
-                                        height: 1.1,
-                                        letterSpacing: 2,
-                                        color: Theme.of(context).textTheme.bodyMedium?.color,
-                                      ),
-                                      children: [
-                                        TextSpan(
-                                          text: '${model['title'].replaceAll('""', '"').replaceAll("''", "'").split('\n')[0]+'\n'}',
-                                          style: const TextStyle(fontFamily:'bitter-bold'),
-                                        ),
-                                        TextSpan(
-                                          text: '\n${model['title'].replaceAll('""', '"').replaceAll("''", "'").split('\n').sublist(1).join('\n')}',
-                                          style: const TextStyle(fontFamily:'bitter'),
-
-                                        ),
-                                      ],
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 20,
+                                          color: hexToColor(model['color'])
+                                                      .computeLuminance() <
+                                                  0.5
+                                              ? Styles.whiteColor
+                                              : Styles.blackColor),
                                     ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
                           ),
-                          const SizedBox(
-                            height: 30,
-                          ),
-                          Center(
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    '${model['date']}',
-                                    style: TextStyle(
-                                      fontSize: 10,
-                                      fontFamily: 'bitter',
-                                      color: Theme.of(context).inputDecorationTheme.prefixIconColor ?? Colors.black,),
-                                  ),
-                                  const SizedBox(width: 10,),
-                                  Text(
-                                    '${model['time']}',
-                                    style: TextStyle(
-                                      fontSize: 10,
-                                      fontFamily: 'bitter',
-                                      color: Theme.of(context).inputDecorationTheme.prefixIconColor ?? Colors.black,),
-                                  ),
-                                ],
-                              )),
                         ],
                       ),
                     ),
                   ),
                 ],
               ),
-              // const SizedBox(
-              //   width: 10,
-              // ),
-              // Visibility(
-              //   visible: index == 0 || index == 2,
-              //   child: IconButton(
-              //       splashRadius: 20,
-              //       onPressed: () {
-              //         AppCubit.get(context).updateDatabase(
-              //           status: 'done',
-              //           id: model['id'],
-              //         );
-              //       },
-              //       icon: const Icon(
-              //         Icons.check_circle_outline_rounded,
-              //         color: Styles.greyColor,
-              //         size: 25,
-              //       )),
-              // ),
-              // Visibility(
-              //   visible: index == 0 || index == 1,
-              //   child: IconButton(
-              //       splashRadius: 20,
-              //       onPressed: () {
-              //         AppCubit.get(context).updateDatabase(
-              //           status: 'archive',
-              //           id: model['id'],
-              //         );
-              //       },
-              //       icon: const Icon(
-              //         Icons.archive_outlined,
-              //         color: Styles.greyColor,
-              //         size: 25,
-              //       )),
-              // ),
-              // Visibility(
-              //   visible: index == 1 || index == 2,
-              //   child: IconButton(
-              //       splashRadius: 20,
-              //       onPressed: () {
-              //         AppCubit.get(context).updateDatabase(
-              //           status: 'new',
-              //           id: model['id'],
-              //         );
-              //       },
-              //       icon: const Icon(
-              //         Icons.hide_source_rounded,
-              //         color: Styles.greyColor,
-              //         size: 25,
-              //       )),
-              // ),
             ],
           ),
         ),
       ),
     );
+
+Widget buildMenuCategoryItem({required Map model, context, required int index}) {
+  return Padding(
+    padding: const EdgeInsets.all(5.0),
+    child: Column(
+      children: [
+        Icon(Icons.folder,color: hexToColor(model['color']),size: 50,),
+        Text(model['category'],style: TextStyle(fontSize: 10,overflow: TextOverflow.ellipsis),),
+      ],
+    ),
+  );
+}
+
+Widget buildNoteItem({required Map model, context, required index}) =>
+    BlocBuilder<ThemeCubit, ThemeData>(builder: (context, theme) {
+      return GestureDetector(
+        onLongPress: () {
+          Clipboard.setData(ClipboardData(
+            text: model['ptitle']
+                .replaceAll('""', '"')
+                .replaceAll("''", "'")
+                .replaceAll('￼', ''),
+          ));
+          showToast(message: 'Copied', state: ToastStates.SUCCESS);
+        },
+        child: Dismissible(
+          direction: DismissDirection.endToStart,
+          background: Container(
+            alignment: AlignmentDirectional.centerEnd,
+            color: Theme.of(context).scaffoldBackgroundColor,
+            child: Padding(
+              padding: const EdgeInsets.only(right: 30),
+              child: CircleAvatar(
+                backgroundColor: Colors.red,
+                child: Icon(
+                  Icons.delete_forever_rounded,
+                  color: Theme.of(context).scaffoldBackgroundColor,
+                ),
+              ),
+            ),
+          ),
+          onDismissed: (direction) {
+            AppCubit.get(context).deleteDatabase(id: model['id']);
+
+          },
+          key: Key(model['id'].toString()),
+          child: Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                      constraints: BoxConstraints(
+                          maxWidth: MediaQuery.sizeOf(context).width * 0.85),
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          width: 1,
+                          color: Theme.of(context)
+                                  .inputDecorationTheme
+                                  .prefixIconColor
+                                  ?.withOpacity(0.5) ??
+                              Colors.black,
+                        ),
+                        borderRadius: BorderRadius.circular(15.0),
+                        color: Theme.of(context)
+                                .inputDecorationTheme
+                                .suffixIconColor ??
+                            Colors.black,
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(10.0),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            SizedBox(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Flexible(
+                                    child: RichText(
+                                      textAlign: TextAlign.left,
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 6,
+                                      text: TextSpan(
+                                        style: TextStyle(
+                                          fontSize: 15,
+                                          height: 1.1,
+                                          letterSpacing: 2,
+                                          color: Theme.of(context)
+                                              .textTheme
+                                              .bodyMedium
+                                              ?.color,
+                                        ),
+                                        children: [
+                                          TextSpan(
+                                            text:
+                                                '${model['ptitle'].replaceAll('""', '"').replaceAll("''", "'").replaceAll("￼", "🖼️").split('\n')[0] + '\n'}',
+                                            style: const TextStyle(
+                                                fontFamily: 'nunito-exbold'),
+                                          ),
+                                          TextSpan(
+                                            text:
+                                                '\n${model['ptitle'].replaceAll('""', '"').replaceAll("''", "'").replaceAll("￼", "🖼️").split('\n').sublist(1).join('\n')}',
+                                            style: const TextStyle(
+                                                fontFamily: 'nunito'),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 30,
+                            ),
+                            Center(
+                                child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Text(
+                                  '${model['date']}',
+                                  style: TextStyle(
+                                    fontSize: 10,
+                                    fontFamily: 'nunito',
+                                    color: Theme.of(context)
+                                            .inputDecorationTheme
+                                            .prefixIconColor ??
+                                        Colors.black,
+                                  ),
+                                ),
+                                const SizedBox(
+                                  width: 10,
+                                ),
+                                Text(
+                                  '${model['time']}',
+                                  style: TextStyle(
+                                    fontSize: 10,
+                                    fontFamily: 'nunito',
+                                    color: Theme.of(context)
+                                            .inputDecorationTheme
+                                            .prefixIconColor ??
+                                        Colors.black,
+                                  ),
+                                ),
+                                const Spacer(),
+                                CircleAvatar(
+                                  backgroundColor: hexToColor(model['color']),
+                                  radius: 5,
+                                )
+                              ],
+                            )),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                // const SizedBox(
+                //   width: 10,
+                // ),
+                // Visibility(
+                //   visible: index == 0 || index == 2,
+                //   child: IconButton(
+                //       splashRadius: 20,
+                //       onPressed: () {
+                //         AppCubit.get(context).updateDatabase(
+                //           status: 'done',
+                //           id: model['id'],
+                //         );
+                //       },
+                //       icon: const Icon(
+                //         Icons.check_circle_outline_rounded,
+                //         color: Styles.greyColor,
+                //         size: 25,
+                //       )),
+                // ),
+                // Visibility(
+                //   visible: index == 0 || index == 1,
+                //   child: IconButton(
+                //       splashRadius: 20,
+                //       onPressed: () {
+                //         AppCubit.get(context).updateDatabase(
+                //           status: 'archive',
+                //           id: model['id'],
+                //         );
+                //       },
+                //       icon: const Icon(
+                //         Icons.archive_outlined,
+                //         color: Styles.greyColor,
+                //         size: 25,
+                //       )),
+                // ),
+                // Visibility(
+                //   visible: index == 1 || index == 2,
+                //   child: IconButton(
+                //       splashRadius: 20,
+                //       onPressed: () {
+                //         AppCubit.get(context).updateDatabase(
+                //           status: 'new',
+                //           id: model['id'],
+                //         );
+                //       },
+                //       icon: const Icon(
+                //         Icons.hide_source_rounded,
+                //         color: Styles.greyColor,
+                //         size: 25,
+                //       )),
+                // ),
+              ],
+            ),
+          ),
+        ),
+      );
+    });
+
 void navigateTo(context, widget) => Navigator.push(
     context,
     MaterialPageRoute(
@@ -245,17 +385,17 @@ void navigateAndFinish(context, widget) => Navigator.pushAndRemoveUntil(
     MaterialPageRoute(
       builder: (context) => widget,
     ),
-        (Route<dynamic> route) => false);
+    (Route<dynamic> route) => false);
 
 Widget customButton(
     {required final String text,
-      required BuildContext context,
-      double widthRatio = double.infinity,
-      double height = 50.0,
-      required final VoidCallback onPressed}) {
+    required BuildContext context,
+    double widthRatio = double.infinity,
+    double height = 50.0,
+    required final VoidCallback onPressed}) {
   return SizedBox(
     height: height,
-    width: MediaQuery.of(context).size.width * widthRatio,
+    width: MediaQuery.sizeOf(context).width * widthRatio,
     child: ElevatedButton(
       style: ElevatedButton.styleFrom(
           shape: const StadiumBorder(), backgroundColor: Styles.gumColor),
@@ -281,7 +421,7 @@ Widget customForm({
   bool isPassword = false,
   dynamic validate,
   required String label,
-  required IconData prefix,
+  IconData? prefix,
   IconData? suffix,
   dynamic suffixPressed,
   bool isClickable = true,
@@ -303,11 +443,12 @@ Widget customForm({
       ),
       suffixIcon: suffix != null
           ? IconButton(
-        onPressed: suffixPressed,
-        icon: Icon(
-          suffix,
-        ),
-      )
+              onPressed: suffixPressed,
+              icon: Icon(
+                suffix,
+                color: Styles.gumColor,
+              ),
+            )
           : null,
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(25.0),
