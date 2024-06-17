@@ -424,7 +424,7 @@ class AppCubit extends Cubit<AppStates> {
               ),
               IconButton(
                 tooltip: "Theme",
-                onPressed: () {context.read<ThemeCubit>().toggleTheme();},
+                onPressed: () {context.read<ThemeCubit>().toggleTheme();Navigator.of(context).pop();},
                 icon: const Icon(
                   Icons.mode_night_rounded,
                   color: Styles.gumColor,
