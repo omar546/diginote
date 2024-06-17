@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_quill/flutter_quill.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:diginote/modules/cameraScreen.dart';
@@ -380,7 +381,6 @@ class AppCubit extends Cubit<AppStates> {
       },
     );
   }
-  void updateCatValues(){}
   void deleteAllByCategory({required int id,required String cat,required BuildContext context}) {
     showDialog(
         context: context,
@@ -401,6 +401,9 @@ class AppCubit extends Cubit<AppStates> {
                       database.delete('tasks',where: 'category = ?',whereArgs:[cat]);
                       database.rawDelete('DELETE FROM categories WHERE id = ?', [id]).then(
                             (value) {
+                              if(cat=='uncategorized'){
+                                database.rawInsert('INSERT INTO categories(category,color) VALUES("uncategorized", "#d2d2d2")');
+                              }
                           getFromDatabase(database);
                           emit(AppDeleteDatabaseState());
 
@@ -745,7 +748,73 @@ class AppCubit extends Cubit<AppStates> {
       },
     );
   }
-
+  void showCategoryValueUpdatePrompt({required int id,required String cat,required BuildContext context}) {
+    addCategoryController.text=cat;
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor:
+          Theme.of(context).scaffoldBackgroundColor.withOpacity(0.95),
+          title: const Text(
+            'Edit Category',
+            style: TextStyle(color: Styles.gumColor),
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              customForm(
+                context: context,
+                controller: addCategoryController,
+                type: TextInputType.text,
+                label: 'Name',
+                suffix: Icons.color_lens_rounded,
+                suffixPressed: () {
+                  showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          titleTextStyle: TextStyle(color: Styles.gumColor),
+                          backgroundColor: Theme.of(context)
+                              .scaffoldBackgroundColor
+                              .withOpacity(0.95),
+                          title: const Text('Pick a color'),
+                          content: SingleChildScrollView(
+                            child: ClipRect(
+                              child: Align(
+                                alignment: Alignment.topCenter,
+                                heightFactor: 0.85,
+                                child: ColorPicker(
+                                    paletteType: PaletteType.hueWheel,
+                                    pickerColor: catColor,
+                                    onColorChanged: changeColor),
+                              ),
+                            ),
+                          ),
+                          actions: <Widget>[
+                            ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                    backgroundColor: Styles.gumColor,
+                                    foregroundColor: Styles.whiteColor),
+                                onPressed: () {
+                                  database.update('tasks', {'category':addCategoryController.text,'color':catColor.toHexString()},where: 'category = ?',whereArgs: [cat]);
+                                  database.update('categories', {'category':addCategoryController.text,'color':catColor.toHexString()},where: 'id = ?',whereArgs: [id]);
+                                  emit(AppInsertDatabaseState());
+                                  getFromDatabase(database);
+                                  Navigator.of(context).pop();
+                                },
+                                child: const Text('Ok!'))
+                          ],
+                        );
+                      });
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
   Color catColor = Styles.greyColor;
   void changeColor(Color color) {
     catColor = color;

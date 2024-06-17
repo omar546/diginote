@@ -63,7 +63,11 @@ Widget buildTextField({
 }
 
 Widget buildCategoryItem({required Map model, context, required index}) =>
-    GestureDetector(
+    GestureDetector(onTap: (){
+      if(model['category']!= 'uncategorized'){
+        AppCubit.get(context).showCategoryValueUpdatePrompt(id: model['id'],context: context,cat: model['category']);
+      }
+    },
       onLongPress: () {AppCubit.get(context).deleteAllByCategory(id: model['id'],cat:model['category'],context: context);},
       child: Dismissible(
         direction: DismissDirection.endToStart,
