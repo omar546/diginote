@@ -4,6 +4,7 @@ import 'package:diginote/modules/login/login_screen.dart';
 import 'package:diginote/shared/styles/styles.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:flutter_quill/flutter_quill.dart';
 import 'package:image_picker/image_picker.dart';
@@ -51,16 +52,33 @@ class AppCubit extends Cubit<AppStates> {
   bool sortAscending = true; // Initial sorting order
 
   List<Map> filteredNotes = [];
+  bool notFiltered = true;
 
-  void filterTasks(String query) {
+  void searchFilterNotes(String query) {
     // If the query is empty, show all tasks
     if (query.isEmpty) {
       filteredNotes = newNotes;
     } else {
       // Filter tasks based on the query
-      filteredNotes = newNotes.where((task) {
+      filteredNotes = newNotes.where((note) {
         // Check if the task title contains the query (case-insensitive)
-        return task['title'].toLowerCase().contains(query.toLowerCase());
+        return note['title'].toLowerCase().contains(query.toLowerCase());
+      }).toList();
+    }
+    emit(AppFilterTasksState());
+  }
+
+  void catFilterNotes(String query) {
+    // If the query is empty, show all tasks
+    if (query.isEmpty) {
+      filteredNotes = newNotes;
+      notFiltered =true;
+    } else {
+      // Filter tasks based on the query
+      notFiltered =false;
+      filteredNotes = newNotes.where((note) {
+        // Check if the task title contains the query (case-insensitive)
+        return note['category'] == (query);
       }).toList();
     }
     emit(AppFilterTasksState());
@@ -219,6 +237,8 @@ class AppCubit extends Cubit<AppStates> {
       index = 0;
     }
     currentIndex = index;
+    filteredNotes = [];
+    notFiltered=true;
     await cameraController?.setFlashMode(FlashMode.off);
     emit(AppChangeNavBarState());
   }
@@ -236,6 +256,8 @@ class AppCubit extends Cubit<AppStates> {
             'CREATE TABLE tasks (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT,ptitle TEXT, date TEXT,time TEXT,category TEXT,color TEXT)');
         await db.execute(
             'CREATE TABLE categories (id INTEGER PRIMARY KEY AUTOINCREMENT, category TEXT,color TEXT)');
+        await db.execute(
+            'INSERT INTO categories(category,color) VALUES("uncategorized", "#d2d2d2")');
       },
       onOpen: (database) {
         getFromDatabase(database);
@@ -267,6 +289,7 @@ class AppCubit extends Cubit<AppStates> {
         ).then(
           (value) {
             filteredNotes = [];
+            notFiltered=true;
             searchController.clear();
             emit(AppInsertDatabaseState());
             changeBottomNavBarState(0);
@@ -312,6 +335,7 @@ class AppCubit extends Cubit<AppStates> {
       },
     );
   }
+
   Future<void> updateDatabase({
     required String title,
     required String ptitle,
@@ -337,8 +361,9 @@ class AppCubit extends Cubit<AppStates> {
       // Delete the old row
       await txn.rawDelete('DELETE FROM tasks WHERE id = ?', [tappedId]);
       filteredNotes = [];
+      notFiltered=true;
       searchController.clear();
-      tappedId=newId;
+      tappedId = newId;
       getFromDatabase(database);
       emit(AppUpdateDatabaseState());
     });
@@ -355,8 +380,44 @@ class AppCubit extends Cubit<AppStates> {
       },
     );
   }
+  void updateCatValues(){}
+  void deleteAllByCategory({required int id,required String cat,required BuildContext context}) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            titleTextStyle: TextStyle(color: Styles.gumColor),
+            backgroundColor: Theme.of(context)
+                .scaffoldBackgroundColor
+                .withOpacity(0.95),
+            title: const Text('Delete all notes under this category?'),
+            actions: <Widget>[
+              Center(
+                child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: Styles.gumColor,
+                        foregroundColor: Styles.whiteColor),
+                    onPressed: () {
+                      database.delete('tasks',where: 'category = ?',whereArgs:[cat]);
+                      database.rawDelete('DELETE FROM categories WHERE id = ?', [id]).then(
+                            (value) {
+                          getFromDatabase(database);
+                          emit(AppDeleteDatabaseState());
 
-  void deleteCategory({required int id}) {
+                        },
+                      ).then((v){
+                        Navigator.of(context).pop();
+                      });}
+                    ,
+                    child: const Text('Yes!')),
+              )
+            ],
+          );
+        });
+  }
+
+  void deleteCategory({required int id,required String cat}) {
+    database.update('tasks',{'category':'uncategorized','color':'#d2d2d2'},where: 'category = ?',whereArgs:[cat]);
     database.rawDelete('DELETE FROM categories WHERE id = ?', [id]).then(
       (value) {
         getFromDatabase(database);
@@ -455,8 +516,10 @@ class AppCubit extends Cubit<AppStates> {
       },
     );
   }
-var selectedCat;
+
+  var selectedCat;
   var selectedColor;
+
   void showCategoryUpdatePrompt(BuildContext context) {
     showDialog(
       context: context,
@@ -470,11 +533,17 @@ var selectedCat;
                   'Categories',
                   style: TextStyle(color: Styles.gumColor),
                 ),
-                SizedBox(width: 5,),
-                const Icon(Icons.swipe,color: Styles.gumColor,size: 20,)
+                SizedBox(
+                  width: 5,
+                ),
+                const Icon(
+                  Icons.swipe,
+                  color: Styles.gumColor,
+                  size: 20,
+                )
               ],
             ),
-            content: newCategories.isEmpty
+            content: newCategories.length == 1
                 ? const Center(
                     child: Text(
                       'Long press category Icon on home to add categories',
@@ -505,17 +574,96 @@ var selectedCat;
                                     itemBuilder: (context, index) {
                                       var category = newCategories[index];
                                       return GestureDetector(
-                                        onTap: (){
+                                        onTap: () {
                                           tappedCat = category['category'];
                                           tappedColor = category['color'];
 
-                                          updateDatabase(category:category['category'],color:category['color'],
-                                              time: TimeOfDay.now().format(context),
+                                          updateDatabase(
+                                              category: category['category'],
+                                              color: category['color'],
+                                              time: TimeOfDay.now()
+                                                  .format(context),
                                               date: DateFormat.yMMMd()
                                                   .format(DateTime.now()),
+                                              title: jsonEncode(quillController
+                                                  .document
+                                                  .toDelta()
+                                                  .toJson()),
+                                              ptitle: quillController.document
+                                                  .toPlainText());
+                                          Navigator.of(context).pop();
+                                        },
+                                        child: buildMenuCategoryItem(
+                                          model: category,
+                                          context: context,
+                                          index: index,
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ),
+                        ))));
+      },
+    );
+  }
 
-                                              title: jsonEncode(quillController.document.toDelta().toJson()),
-                                              ptitle: quillController.document.toPlainText());
+  void showCategoryFilterPrompt(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+            scrollable: true,
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+            title: Row(
+              children: [
+                const Text(
+                  'Categories',
+                  style: TextStyle(color: Styles.gumColor),
+                ),
+                SizedBox(
+                  width: 5,
+                ),
+                const Icon(
+                  Icons.swipe,
+                  color: Styles.gumColor,
+                  size: 20,
+                )
+              ],
+            ),
+            content: newCategories.length == 1
+                ? const Center(
+                    child: Text(
+                      'Long press category Icon on home to add categories',
+                      textAlign: TextAlign.center,
+                      maxLines: 5,
+                    ),
+                  )
+                : SingleChildScrollView(
+                    child: ConstrainedBox(
+                        constraints: const BoxConstraints(maxHeight: 700),
+                        child: SizedBox(
+                          width: double.maxFinite,
+                          child: newCategories.isEmpty
+                              ? const Center(
+                                  child: Text(
+                                    'Long press category Icon on home to add categories',
+                                    textAlign: TextAlign.center,
+                                    maxLines: 5,
+                                  ),
+                                )
+                              : SizedBox(
+                                  height:
+                                      MediaQuery.sizeOf(context).height * 0.1,
+                                  child: ListView.builder(
+                                    scrollDirection: Axis.horizontal,
+                                    shrinkWrap: true,
+                                    itemCount: newCategories.length,
+                                    itemBuilder: (context, index) {
+                                      var category = newCategories[index];
+                                      return GestureDetector(
+                                        onTap: () {
+                                          catFilterNotes(
+                                              category['category']);
                                           Navigator.of(context).pop();
                                         },
                                         child: buildMenuCategoryItem(
@@ -615,7 +763,6 @@ var selectedCat;
           [name, color],
         ).then(
           (value) {
-            // filteredCategories = [];
             emit(AppInsertDatabaseState());
             getFromDatabase(database);
           },

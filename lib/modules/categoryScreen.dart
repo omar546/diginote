@@ -33,6 +33,7 @@ class CategoryScreen extends StatelessWidget {
                       physics: const BouncingScrollPhysics(),
                       itemBuilder: (context, index) => GestureDetector(
                         onTap: () {
+
                         },
                         child: buildCategoryItem(
                           model: categories[index],

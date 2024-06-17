@@ -94,6 +94,7 @@ class HomeLayout extends StatelessWidget {
                           children: [
                             IconButton(
                               onPressed: () {
+                                cubit.filteredNotes=[];
                                 cubit.changeBottomNavBarState(0);
                               },
                               icon: const Icon(Icons.arrow_back_rounded, size: 30),
@@ -284,9 +285,10 @@ class HomeLayout extends StatelessWidget {
                         onLongPress:(){cubit.changeBottomNavBarState(3);},
                           child: IconButton(
                             onPressed: () {
+                              cubit.showCategoryFilterPrompt(context);
                             },
-                            icon: const Icon(
-                              Icons.category_outlined,
+                            icon: Icon(
+                              (cubit.notFiltered) ? Icons.category_outlined : Icons.category_rounded,
                               size: 30,
                             ),
                             color: Styles.gumColor,
@@ -430,7 +432,7 @@ class HomeLayout extends StatelessWidget {
                             ),
                             onChanged: (query) {
                               // Perform filtering whenever the text changes
-                              cubit.filterTasks(query);
+                              cubit.searchFilterNotes(query);
                             },
                           ),
                         ),

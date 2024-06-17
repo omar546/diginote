@@ -64,7 +64,7 @@ Widget buildTextField({
 
 Widget buildCategoryItem({required Map model, context, required index}) =>
     GestureDetector(
-      onLongPress: () {},
+      onLongPress: () {AppCubit.get(context).deleteAllByCategory(id: model['id'],cat:model['category'],context: context);},
       child: Dismissible(
         direction: DismissDirection.endToStart,
         background: Container(
@@ -82,7 +82,10 @@ Widget buildCategoryItem({required Map model, context, required index}) =>
           ),
         ),
         onDismissed: (direction) {
-          AppCubit.get(context).deleteCategory(id: model['id']);
+          if(model['category']!='uncategorized'){
+            AppCubit.get(context).deleteCategory(id: model['id'],cat:model['category']);
+          }
+
         },
         key: Key(model['id'].toString()),
         child: Padding(
@@ -151,15 +154,11 @@ Widget buildCategoryItem({required Map model, context, required index}) =>
 
 Widget buildMenuCategoryItem({required Map model, context, required int index}) {
   return Padding(
-    padding: const EdgeInsets.all(10.0),
+    padding: const EdgeInsets.all(5.0),
     child: Column(
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.folder,color: hexToColor(model['color']),size: 50,)
-          ],
-        ),
+        Icon(Icons.folder,color: hexToColor(model['color']),size: 50,),
+        Text(model['category'],style: TextStyle(fontSize: 10,overflow: TextOverflow.ellipsis),),
       ],
     ),
   );
@@ -195,6 +194,7 @@ Widget buildNoteItem({required Map model, context, required index}) =>
           ),
           onDismissed: (direction) {
             AppCubit.get(context).deleteDatabase(id: model['id']);
+
           },
           key: Key(model['id'].toString()),
           child: Padding(
