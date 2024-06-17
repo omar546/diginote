@@ -52,7 +52,6 @@ class NewNotesScreen extends StatelessWidget {
                                     cubit.tappedDate = notes[index]['date'];
                                     cubit.tappedId = notes[index]['id'];
                                     cubit.tappedCat = notes[index]['category'];
-                                    print(cubit.tappedCat);
                                     cubit.tappedColor = notes[index]['color'];
                                     cubit.changeBottomNavBarState(2);
                                   },

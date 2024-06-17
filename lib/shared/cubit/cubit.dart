@@ -1,5 +1,4 @@
 import 'package:camera/camera.dart';
-import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
 import 'package:diginote/modules/loadingScreen.dart';
 import 'package:diginote/modules/login/login_screen.dart';
 import 'package:diginote/shared/styles/styles.dart';
@@ -9,6 +8,7 @@ import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:flutter_quill/flutter_quill.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:diginote/modules/cameraScreen.dart';
+import 'package:intl/intl.dart';
 import 'package:path/path.dart';
 import 'package:async/async.dart';
 import 'dart:io';
@@ -312,9 +312,7 @@ class AppCubit extends Cubit<AppStates> {
       },
     );
   }
-
   Future<void> updateDatabase({
-    required int oldId,
     required String title,
     required String ptitle,
     required String date,
@@ -324,7 +322,7 @@ class AppCubit extends Cubit<AppStates> {
   }) async {
     // Insert a new row with updated data
     await database.transaction((txn) async {
-      await txn.rawInsert(
+      int newId = await txn.rawInsert(
         'INSERT INTO tasks(title,ptitle, date, time,category,color) VALUES(?, ?, ?,?,?,?)',
         [
           title.replaceAll("'", "''").replaceAll('\\"', '""'),
@@ -337,9 +335,10 @@ class AppCubit extends Cubit<AppStates> {
       );
 
       // Delete the old row
-      await txn.rawDelete('DELETE FROM tasks WHERE id = ?', [oldId]);
+      await txn.rawDelete('DELETE FROM tasks WHERE id = ?', [tappedId]);
       filteredNotes = [];
       searchController.clear();
+      tappedId=newId;
       getFromDatabase(database);
       emit(AppUpdateDatabaseState());
     });
@@ -401,8 +400,7 @@ class AppCubit extends Cubit<AppStates> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          backgroundColor:
-              Theme.of(context).scaffoldBackgroundColor,
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           title: const Text(
             'Settings',
             style: TextStyle(color: Styles.gumColor),
@@ -432,7 +430,10 @@ class AppCubit extends Cubit<AppStates> {
               ),
               IconButton(
                 tooltip: "Theme",
-                onPressed: () {context.read<ThemeCubit>().toggleTheme();Navigator.of(context).pop();},
+                onPressed: () {
+                  context.read<ThemeCubit>().toggleTheme();
+                  Navigator.of(context).pop();
+                },
                 icon: const Icon(
                   Icons.mode_night_rounded,
                   color: Styles.gumColor,
@@ -440,7 +441,9 @@ class AppCubit extends Cubit<AppStates> {
               ),
               IconButton(
                 tooltip: "Logout",
-                onPressed: () {navigateAndFinish(context, LoginScreen());},
+                onPressed: () {
+                  navigateAndFinish(context, LoginScreen());
+                },
                 icon: const Icon(
                   Icons.logout_rounded,
                   color: Styles.gumColor,
@@ -452,55 +455,82 @@ class AppCubit extends Cubit<AppStates> {
       },
     );
   }
+var selectedCat;
+  var selectedColor;
+  void showCategoryUpdatePrompt(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+            scrollable: true,
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+            title: Row(
+              children: [
+                const Text(
+                  'Categories',
+                  style: TextStyle(color: Styles.gumColor),
+                ),
+                SizedBox(width: 5,),
+                const Icon(Icons.swipe,color: Styles.gumColor,size: 20,)
+              ],
+            ),
+            content: newCategories.isEmpty
+                ? const Center(
+                    child: Text(
+                      'Long press category Icon on home to add categories',
+                      textAlign: TextAlign.center,
+                      maxLines: 5,
+                    ),
+                  )
+                : SingleChildScrollView(
+                    child: ConstrainedBox(
+                        constraints: const BoxConstraints(maxHeight: 700),
+                        child: SizedBox(
+                          width: double.maxFinite,
+                          child: newCategories.isEmpty
+                              ? const Center(
+                                  child: Text(
+                                    'Long press category Icon on home to add categories',
+                                    textAlign: TextAlign.center,
+                                    maxLines: 5,
+                                  ),
+                                )
+                              : SizedBox(
+                                  height:
+                                      MediaQuery.sizeOf(context).height * 0.1,
+                                  child: ListView.builder(
+                                    scrollDirection: Axis.horizontal,
+                                    shrinkWrap: true,
+                                    itemCount: newCategories.length,
+                                    itemBuilder: (context, index) {
+                                      var category = newCategories[index];
+                                      return GestureDetector(
+                                        onTap: (){
+                                          tappedCat = category['category'];
+                                          tappedColor = category['color'];
 
-  // void showCategoryUpdatePrompt(BuildContext context) {
-  //   showDialog(
-  //     context: context,
-  //     builder: (BuildContext context) {
-  //       return AlertDialog(
-  //         scrollable: true,
-  //         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-  //         title: Text(
-  //           'Category',
-  //           style: TextStyle(color: Styles.gumColor),
-  //         ),
-  //         content: newCategories.isEmpty
-  //             ? Center(
-  //           child: Text(
-  //             'Long press category Icon on home to add categories',
-  //             textAlign: TextAlign.center,
-  //             maxLines: 5,
-  //           ),
-  //         )
-  //             : Container(
-  //           constraints: BoxConstraints(maxHeight: 400), // Example constraint
-  //           child: ListView.separated(
-  //             physics: BouncingScrollPhysics(),
-  //             separatorBuilder: (context, index) => SizedBox(height: 1),
-  //             itemCount: newCategories.length,
-  //             itemBuilder: (context, index) {
-  //               return GestureDetector(
-  //                 onTap: () {
-  //                   // Handle onTap
-  //                 },
-  //                 child: Transform.scale(
-  //                   scale: 0.5,
-  //                   child: buildCategoryItem(
-  //                     model: newCategories[index],
-  //                     context: context,
-  //                     index: index,
-  //                   ),
-  //                 ),
-  //               );
-  //             },
-  //           ),
-  //         ),
-  //       );
-  //     },
-  //   );
-  // }
+                                          updateDatabase(category:category['category'],color:category['color'],
+                                              time: TimeOfDay.now().format(context),
+                                              date: DateFormat.yMMMd()
+                                                  .format(DateTime.now()),
 
-
+                                              title: jsonEncode(quillController.document.toDelta().toJson()),
+                                              ptitle: quillController.document.toPlainText());
+                                          Navigator.of(context).pop();
+                                        },
+                                        child: buildMenuCategoryItem(
+                                          model: category,
+                                          context: context,
+                                          index: index,
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ),
+                        ))));
+      },
+    );
+  }
 
   void showCategoryPrompt(BuildContext context) {
     showDialog(
@@ -508,7 +538,7 @@ class AppCubit extends Cubit<AppStates> {
       builder: (BuildContext context) {
         return AlertDialog(
           backgroundColor:
-          Theme.of(context).scaffoldBackgroundColor.withOpacity(0.95),
+              Theme.of(context).scaffoldBackgroundColor.withOpacity(0.95),
           title: const Text(
             'Add Category',
             style: TextStyle(color: Styles.gumColor),
@@ -567,13 +597,12 @@ class AppCubit extends Cubit<AppStates> {
       },
     );
   }
+
   Color catColor = Styles.greyColor;
   void changeColor(Color color) {
     catColor = color;
     emit(CategoryColor());
   }
-
-
 
   Future insertIntoCategories({
     required String name,

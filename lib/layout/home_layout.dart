@@ -1,9 +1,7 @@
 import 'dart:convert';
 
 import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_quill/flutter_quill.dart';
 import 'package:intl/intl.dart';
@@ -250,7 +248,6 @@ class HomeLayout extends StatelessWidget {
                                     //         .validate()
                                     ) {
                                       cubit.updateDatabase(category:cubit.tappedCat,color:cubit.tappedColor,
-                                          oldId: cubit.tappedId,
                                           time: TimeOfDay.now().format(context),
                                           date: DateFormat.yMMMd()
                                               .format(DateTime.now()),
