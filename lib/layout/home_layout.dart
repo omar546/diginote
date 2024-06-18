@@ -104,22 +104,25 @@ class HomeLayout extends StatelessWidget {
                               visible: cubit.currentIndex == 2,
                               child: GestureDetector(
                                 onTap: (){cubit.showCategoryUpdatePrompt(context);},
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Icon(
-                                      Icons.folder,
-                                      size: 20,
-                                      color: hexToColor(cubit.tappedColor),
-                                    ),
-                                    const SizedBox(width: 2),
-                                    Text(
-                                      cubit.tappedCat,
-                                      style: const TextStyle(fontSize: 10),
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                  ],
+                                child: Container(height: double.maxFinite,color: Theme.of(context)
+                                    .scaffoldBackgroundColor,
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Icon(
+                                        Icons.folder,
+                                        size: 25,
+                                        color: hexToColor(cubit.tappedColor),
+                                      ),
+                                      const SizedBox(width: 2),
+                                      Text(
+                                        cubit.tappedCat.length > 13 ? '${cubit.tappedCat.substring(0, 11)}...' : cubit.tappedCat,
+                                        style: TextStyle(fontSize: 10,color: Theme.of(context).textTheme.bodyMedium?.color ),
+                                        overflow: TextOverflow.ellipsis,maxLines: 1,
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),

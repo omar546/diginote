@@ -162,7 +162,7 @@ Widget buildMenuCategoryItem({required Map model, context, required int index}) 
     child: Column(
       children: [
         Icon(Icons.folder,color: hexToColor(model['color']),size: 50,),
-        Text(model['category'],style: TextStyle(fontSize: 10,overflow: TextOverflow.ellipsis),),
+        Text(model['category'],style: const TextStyle(fontSize: 10,overflow: TextOverflow.ellipsis),),
       ],
     ),
   );
@@ -305,8 +305,12 @@ Widget buildNoteItem({required Map model, context, required index}) =>
                                 ),
                                 const Spacer(),
                                 CircleAvatar(
-                                  backgroundColor: hexToColor(model['color']),
-                                  radius: 5,
+                                  backgroundColor: Colors.black45,
+                                  radius: 6,
+                                  child: CircleAvatar(
+                                    backgroundColor: hexToColor(model['color']),
+                                    radius: 5,
+                                  ),
                                 )
                               ],
                             )),
