@@ -138,7 +138,7 @@ class AppCubit extends Cubit<AppStates> {
     var length = await imageFile.length();
 
     // string to uri
-    var uri = Uri.parse("https://example-pre-reader.onrender.com/upload/");
+    var uri = Uri.parse("http://3.75.171.189/upload/");
 
     // create multipart request
     var request = http.MultipartRequest("POST", uri);
@@ -473,6 +473,7 @@ class AppCubit extends Cubit<AppStates> {
               IconButton(
                 tooltip: "Ping",
                 onPressed: () {
+                  Navigator.of(context).pop();
                   DioHelper.getData(url: 'test').then((value) {
                     showToast(
                         message: value.data['text'],
