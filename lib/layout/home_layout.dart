@@ -63,7 +63,7 @@ class HomeLayout extends StatelessWidget {
               key: scaffoldKey,
               appBar: cubit.currentIndex == 4 || cubit.currentIndex == 3
                   ? AppBar(elevation: 0,
-                automaticallyImplyLeading: false,title:const Center(child: Text("Categories",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 25,color: Styles.gumColor))))
+                automaticallyImplyLeading: false,title:Visibility(visible:cubit.currentIndex != 4,child: const Center(child: Text("Categories",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 25,color: Styles.gumColor)))))
                   :AppBar(
                 elevation: 0,
                 automaticallyImplyLeading: false,
