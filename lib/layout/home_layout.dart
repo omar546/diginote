@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_quill/flutter_quill.dart';
@@ -116,10 +117,12 @@ class HomeLayout extends StatelessWidget {
                                         color: hexToColor(cubit.tappedColor),
                                       ),
                                       const SizedBox(width: 2),
-                                      Text(
-                                        cubit.tappedCat.length > 13 ? '${cubit.tappedCat.substring(0, 11)}...' : cubit.tappedCat,
-                                        style: TextStyle(fontSize: 10,color: Theme.of(context).textTheme.bodyMedium?.color ),
-                                        overflow: TextOverflow.ellipsis,maxLines: 1,
+                                      Visibility(visible: cubit.editorLocked == true,
+                                        child: Text(
+                                          cubit.tappedCat.length > 13 ? '${cubit.tappedCat.substring(0, 11)}...' : cubit.tappedCat,
+                                          style: TextStyle(fontSize: 10,color: Theme.of(context).textTheme.bodyMedium?.color ),
+                                          overflow: TextOverflow.ellipsis,maxLines: 1,
+                                        ),
                                       ),
                                     ],
                                   ),
@@ -173,7 +176,7 @@ class HomeLayout extends StatelessWidget {
                           children: [
                             Visibility(
                               visible: !cubit.isBottomSheetShown &&
-                                  cubit.currentIndex == 2,
+                                  cubit.currentIndex == 2 && cubit.editorLocked == true,
                               child: IconButton(
                                   onPressed: () {
 
