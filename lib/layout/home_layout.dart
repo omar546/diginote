@@ -154,16 +154,12 @@ class HomeLayout extends StatelessWidget {
                                   cubit.changeBottomNavBarState(1);
                                 } else {
 
-                                  await cubit.pickImageFromGallery()
-                                      .then(
-                                      (value) =>
-                                          cubit.insertIntoDatabase(
-                                          title:
-                                          cubit.responseValue,
-                                          ptitle:cubit.responseValue,
+                                  await cubit.pickImageFromGallery();
+                                  cubit.insertIntoDatabase(
+                                          title: cubit.responseValue,
+                                          ptitle: cubit.responseValue,
                                           time: TimeOfDay.now().format(context),
-                                          date: DateFormat.yMMMd()
-                                              .format(DateTime.now()))
+                                          date: DateFormat.yMMMd().format(DateTime.now())
                                   );
                                 }
                               },
@@ -465,16 +461,13 @@ class HomeLayout extends StatelessWidget {
                             if (cubit.currentIndex == 0) {
                               cubit.changeBottomNavBarState(1);
                             } else {
-                              await cubit.take().then(
-                                      (value) =>
-                                      cubit.insertIntoDatabase(
-                                          title:
-                                          cubit.responseValue,
-                                          ptitle:
-                                          cubit.responseValue,
-                                          time: TimeOfDay.now().format(context),
-                                          date: DateFormat.yMMMd()
-                                              .format(DateTime.now())));
+                              await cubit.take();
+                              cubit.insertIntoDatabase(
+                                      title: cubit.responseValue,
+                                      ptitle: cubit.responseValue,
+                                      time: TimeOfDay.now().format(context),
+                                      date: DateFormat.yMMMd().format(DateTime.now())
+                              );
                             }
                           },
                           child: const Icon(

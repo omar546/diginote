@@ -132,40 +132,40 @@ class AppCubit extends Cubit<AppStates> {
   }
 
   Future<String> upload(File imageFile) async {
-    // open a bytestream
+    // Open a bytestream
     var stream = http.ByteStream(DelegatingStream.typed(imageFile.openRead()));
-    // get file length
+    // Get file length
     var length = await imageFile.length();
 
-    // string to uri
+    // String to URI
     var uri = Uri.parse("http://3.75.171.189/upload/");
 
-    // create multipart request
+    // Create multipart request
     var request = http.MultipartRequest("POST", uri);
 
-    // multipart that takes file
+    // Multipart that takes file
     var multipartFile = http.MultipartFile('file', stream, length,
         filename: basename(imageFile.path));
 
-    // add file to multipart
+    // Add file to multipart
     request.files.add(multipartFile);
 
-    // send
+    // Send
     var response = await request.send();
     if (kDebugMode) {
       print(response.statusCode);
     }
 
-    // listen for response
-    response.stream.transform(utf8.decoder).listen((value) async {
-      textfromimage = extractText(value);
-      emit(CameraPictureTaken());
-      if (kDebugMode) {
-        print(textfromimage);
-      }
-    });
+    // Listen for response and await the response stream transformation
+    var responseString = await response.stream.transform(utf8.decoder).join();
+    textfromimage = extractText(responseString);
+    emit(CameraPictureTaken());
+    if (kDebugMode) {
+      print("${textfromimage} upload");
+    }
     return textfromimage;
   }
+
 
   Future<void> pickImageFromGallery() async {
     final imagePicker = ImagePicker();
@@ -174,17 +174,11 @@ class AppCubit extends Cubit<AppStates> {
     );
 
     if (pickedImage != null) {
-      // Use the path of the picked image
       String imagePath = pickedImage.path;
 
       try {
-        // FormData formData = FormData.fromMap({
-        //   'file': await MultipartFile.fromFile(imagePath),
-        // });
-
-        // Use DioHelper.postData to upload the image
         changeBottomNavBarState(4);
-        await upload(File(imagePath)).then((value) => responseValue=value);
+        responseValue = await upload(File(imagePath));
       } catch (e) {
         if (kDebugMode) {
           print('Error uploading image: $e');
@@ -205,7 +199,9 @@ class AppCubit extends Cubit<AppStates> {
 
       // Emit a new state with the image path
       changeBottomNavBarState(4);
-       await upload(File(imagePath)).then((value) => responseValue=value);
+
+      // Await the upload operation and set responseValue
+      responseValue = await upload(File(imagePath));
     } catch (e) {
       // Handle errors
       if (kDebugMode) {
