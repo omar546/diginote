@@ -294,6 +294,36 @@ class AppCubit extends Cubit<AppStates> {
     );
   }
 
+  Future insertIntoDatabaseFromApi({
+    required String title,
+    required String ptitle,
+    required String date,
+    required String time,
+  }) {
+    return database.transaction(
+          (Transaction txn) async {
+        txn.rawInsert(
+          'INSERT INTO tasks(title,ptitle, date, time,category,color) VALUES(?, ?, ?,?,"uncategorized","#d2d2d2")',
+          [
+            title,
+            ptitle,
+            date,
+            time
+          ],
+        ).then(
+              (value) {
+            filteredNotes = [];
+            notFiltered=true;
+            searchController.clear();
+            emit(AppInsertDatabaseState());
+            changeBottomNavBarState(0);
+            getFromDatabase(database);
+          },
+        );
+      },
+    );
+  }
+
   void getFromDatabase(database) {
     newNotes = [];
     newCategories = [];

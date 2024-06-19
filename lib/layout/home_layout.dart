@@ -158,9 +158,9 @@ class HomeLayout extends StatelessWidget {
                                 } else {
 
                                   await cubit.pickImageFromGallery();
-                                  cubit.insertIntoDatabase(
+                                  cubit.insertIntoDatabaseFromApi(
                                           title: cubit.responseValue,
-                                          ptitle: cubit.responseValue,
+                                          ptitle: Document.fromJson(jsonDecode(cubit.responseValue)).toPlainText(),
                                           time: TimeOfDay.now().format(context),
                                           date: DateFormat.yMMMd().format(DateTime.now())
                                   );
@@ -465,9 +465,9 @@ class HomeLayout extends StatelessWidget {
                               cubit.changeBottomNavBarState(1);
                             } else {
                               await cubit.take();
-                              cubit.insertIntoDatabase(
+                              cubit.insertIntoDatabaseFromApi(
                                       title: cubit.responseValue,
-                                      ptitle: cubit.responseValue,
+                                      ptitle: Document.fromJson(jsonDecode(cubit.responseValue)).toPlainText(),
                                       time: TimeOfDay.now().format(context),
                                       date: DateFormat.yMMMd().format(DateTime.now())
                               );

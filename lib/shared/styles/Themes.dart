@@ -3,15 +3,27 @@ import 'package:diginote/shared/styles/styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../network/local/cache_helper.dart';
+
 enum AppTheme { Light, Dark }
 
 class ThemeCubit extends Cubit<ThemeData> {
-  ThemeCubit() : super(lightTheme);
+  static const String themeKey = 'theme';
+  ThemeCubit() : super(lightTheme){
+    final themeIndex = CacheHelper.getData(key: themeKey) ?? AppTheme.Light.index;
+    if (themeIndex == AppTheme.Dark.index) {
+      emit(darkTheme);
+    } else {
+      emit(lightTheme);
+    }
+  }
 
   void toggleTheme() {
     if (state == lightTheme) {
+      CacheHelper.saveData(key: themeKey, value: AppTheme.Dark.index);
       emit(darkTheme);
     } else {
+      CacheHelper.saveData(key: themeKey, value: AppTheme.Light.index);
       emit(lightTheme);
     }
   }
