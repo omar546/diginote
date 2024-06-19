@@ -184,7 +184,7 @@ class AppCubit extends Cubit<AppStates> {
 
         // Use DioHelper.postData to upload the image
         changeBottomNavBarState(4);
-        responseValue = await upload(File(imagePath));
+        await upload(File(imagePath)).then((value) => responseValue=value);
       } catch (e) {
         if (kDebugMode) {
           print('Error uploading image: $e');
@@ -205,7 +205,7 @@ class AppCubit extends Cubit<AppStates> {
 
       // Emit a new state with the image path
       changeBottomNavBarState(4);
-      responseValue = await upload(File(imagePath));
+       await upload(File(imagePath)).then((value) => responseValue=value);
     } catch (e) {
       // Handle errors
       if (kDebugMode) {

@@ -5,7 +5,7 @@ class DioHelper {
   static init() {
     dio = Dio(
       BaseOptions(
-          baseUrl: 'https://example-pre-reader.onrender.com/',
+          baseUrl: 'http://3.75.171.189/',
           receiveDataWhenStatusError: true,
           headers: {
             'Content-Type': 'application/json',
