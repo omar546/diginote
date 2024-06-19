@@ -884,13 +884,15 @@ class AppCubit extends Cubit<AppStates> {
     final selection = TextSelection(baseOffset: 0, extentOffset: docLength);
     quillController.updateSelection(selection, ChangeSource.local);
   }
+
   // Future<void> export() async {
   //   try {
-  //     final htmlString = await DeltaToHTML.encodeJson(AppCubit.get(context).quillController.document.toDelta().toJson());
+  //     final htmlString = await DeltaToHTML.encodeJson(quillController.document.toDelta().toJson());
   //     var targetPath = "/storage/emulated/0/Download";
   //     var targetFileName = "example_pdf_file";
   //
   //     // Show loading indicator while generating PDF
+  //     changeBottomNavBarState(4);
   //
   //
   //     var generatedPdfFile = await FlutterHtmlToPdf.convertFromHtmlContent(
