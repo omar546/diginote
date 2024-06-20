@@ -9,8 +9,9 @@ enum AppTheme { Light, Dark }
 
 class ThemeCubit extends Cubit<ThemeData> {
   static const String themeKey = 'theme';
-  ThemeCubit() : super(lightTheme){
-    final themeIndex = CacheHelper.getData(key: themeKey) ?? AppTheme.Light.index;
+  ThemeCubit() : super(lightTheme) {
+    final themeIndex =
+        CacheHelper.getData(key: themeKey) ?? AppTheme.Light.index;
     if (themeIndex == AppTheme.Dark.index) {
       emit(darkTheme);
     } else {
@@ -64,8 +65,9 @@ ThemeData lightTheme = ThemeData(
     scaffoldBackgroundColor: Styles.whiteColor,
     primarySwatch: customGum,
     textTheme: TextTheme(
-      bodyMedium:
-      const TextStyle(color: Styles.blackColor,),
+      bodyMedium: const TextStyle(
+        color: Styles.blackColor,
+      ),
       bodySmall: TextStyle(
           color: Styles.blackColor.withOpacity(0.5), fontFamily: 'nunito'),
     ),
@@ -73,8 +75,7 @@ ThemeData lightTheme = ThemeData(
       prefixIconColor: Styles.lightBlackColor,
       suffixIconColor: Styles.greyColor.withOpacity(0.5),
       labelStyle: const TextStyle(color: Styles.blackColor),
-    )
-);
+    ));
 ThemeData darkTheme = ThemeData(
     bottomNavigationBarTheme: const BottomNavigationBarThemeData(
       elevation: 30,
@@ -98,7 +99,8 @@ ThemeData darkTheme = ThemeData(
     primarySwatch: customGum,
     textTheme: TextTheme(
       bodyMedium: const TextStyle(
-          color: Styles.whiteColor,),
+        color: Styles.whiteColor,
+      ),
       bodySmall: TextStyle(
           color: Styles.greyColor.withOpacity(0.5), fontFamily: 'nunito'),
     ),

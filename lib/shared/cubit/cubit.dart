@@ -2,6 +2,7 @@ import 'package:camera/camera.dart';
 import 'package:diginote/modules/loadingScreen.dart';
 import 'package:diginote/modules/login/login_screen.dart';
 import 'package:diginote/shared/styles/styles.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:flutter_quill/flutter_quill.dart';
@@ -15,8 +16,8 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
-
 import '../../modules/categoryScreen.dart';
 import '../../modules/new_notes.dart';
 import '../../modules/showEditScreen.dart';
@@ -70,10 +71,10 @@ class AppCubit extends Cubit<AppStates> {
     // If the query is empty, show all tasks
     if (query.isEmpty) {
       filteredNotes = newNotes;
-      notFiltered =true;
+      notFiltered = true;
     } else {
       // Filter tasks based on the query
-      notFiltered =false;
+      notFiltered = false;
       filteredNotes = newNotes.where((note) {
         // Check if the task title contains the query (case-insensitive)
         return note['category'] == (query);
@@ -119,7 +120,7 @@ class AppCubit extends Cubit<AppStates> {
     }
   }
 
-  String textfromimage = "";
+  String tokenfromimage = "";
   String responseValue = "";
   String extractText(String jsonString) {
     // Parse the JSON string
@@ -130,6 +131,7 @@ class AppCubit extends Cubit<AppStates> {
 
     return text;
   }
+
 
   Future<String> upload(File imageFile) async {
     // Open a bytestream
@@ -158,14 +160,15 @@ class AppCubit extends Cubit<AppStates> {
 
     // Listen for response and await the response stream transformation
     var responseString = await response.stream.transform(utf8.decoder).join();
-    textfromimage = extractText(responseString);
+    tokenfromimage = extractText(responseString);
+    // await DioHelper.getImage(token: tokenfromimage);
+    var textformimage = await DioHelper.getData(url: 'getText',query: {'token':tokenfromimage}).then((value) => value.data['text']);
     emit(CameraPictureTaken());
     if (kDebugMode) {
-      print("${textfromimage} upload");
+      print("${textformimage} upload");
     }
-    return textfromimage;
+    return textformimage;
   }
-
 
   Future<void> pickImageFromGallery() async {
     final imagePicker = ImagePicker();
@@ -232,7 +235,7 @@ class AppCubit extends Cubit<AppStates> {
     }
     currentIndex = index;
     filteredNotes = [];
-    notFiltered=true;
+    notFiltered = true;
     await cameraController?.setFlashMode(FlashMode.off);
     emit(AppChangeNavBarState());
   }
@@ -283,7 +286,7 @@ class AppCubit extends Cubit<AppStates> {
         ).then(
           (value) {
             filteredNotes = [];
-            notFiltered=true;
+            notFiltered = true;
             searchController.clear();
             emit(AppInsertDatabaseState());
             changeBottomNavBarState(0);
@@ -301,19 +304,14 @@ class AppCubit extends Cubit<AppStates> {
     required String time,
   }) {
     return database.transaction(
-          (Transaction txn) async {
+      (Transaction txn) async {
         txn.rawInsert(
           'INSERT INTO tasks(title,ptitle, date, time,category,color) VALUES(?, ?, ?,?,"uncategorized","#d2d2d2")',
-          [
-            title,
-            ptitle,
-            date,
-            time
-          ],
+          [title, ptitle, date, time],
         ).then(
-              (value) {
+          (value) {
             filteredNotes = [];
-            notFiltered=true;
+            notFiltered = true;
             searchController.clear();
             emit(AppInsertDatabaseState());
             changeBottomNavBarState(0);
@@ -385,7 +383,7 @@ class AppCubit extends Cubit<AppStates> {
       // Delete the old row
       await txn.rawDelete('DELETE FROM tasks WHERE id = ?', [tappedId]);
       filteredNotes = [];
-      notFiltered=true;
+      notFiltered = true;
       searchController.clear();
       tappedId = newId;
       getFromDatabase(database);
@@ -404,15 +402,16 @@ class AppCubit extends Cubit<AppStates> {
       },
     );
   }
-  void deleteAllByCategory({required int id,required String cat,required BuildContext context}) {
+
+  void deleteAllByCategory(
+      {required int id, required String cat, required BuildContext context}) {
     showDialog(
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
             titleTextStyle: const TextStyle(color: Styles.gumColor),
-            backgroundColor: Theme.of(context)
-                .scaffoldBackgroundColor
-                .withOpacity(0.95),
+            backgroundColor:
+                Theme.of(context).scaffoldBackgroundColor.withOpacity(0.95),
             title: const Text('Delete all notes under this category?'),
             actions: <Widget>[
               Center(
@@ -421,20 +420,22 @@ class AppCubit extends Cubit<AppStates> {
                         backgroundColor: Styles.gumColor,
                         foregroundColor: Styles.whiteColor),
                     onPressed: () {
-                      database.delete('tasks',where: 'category = ?',whereArgs:[cat]);
-                      database.rawDelete('DELETE FROM categories WHERE id = ?', [id]).then(
-                            (value) {
-                              if(cat=='uncategorized'){
-                                database.rawInsert('INSERT INTO categories(category,color) VALUES("uncategorized", "#d2d2d2")');
-                              }
+                      database.delete('tasks',
+                          where: 'category = ?', whereArgs: [cat]);
+                      database.rawDelete(
+                          'DELETE FROM categories WHERE id = ?', [id]).then(
+                        (value) {
+                          if (cat == 'uncategorized') {
+                            database.rawInsert(
+                                'INSERT INTO categories(category,color) VALUES("uncategorized", "#d2d2d2")');
+                          }
                           getFromDatabase(database);
                           emit(AppDeleteDatabaseState());
-
                         },
-                      ).then((v){
+                      ).then((v) {
                         Navigator.of(context).pop();
-                      });}
-                    ,
+                      });
+                    },
                     child: const Text('Yes!')),
               )
             ],
@@ -442,8 +443,9 @@ class AppCubit extends Cubit<AppStates> {
         });
   }
 
-  void deleteCategory({required int id,required String cat}) {
-    database.update('tasks',{'category':'uncategorized','color':'#d2d2d2'},where: 'category = ?',whereArgs:[cat]);
+  void deleteCategory({required int id, required String cat}) {
+    database.update('tasks', {'category': 'uncategorized', 'color': '#d2d2d2'},
+        where: 'category = ?', whereArgs: [cat]);
     database.rawDelete('DELETE FROM categories WHERE id = ?', [id]).then(
       (value) {
         getFromDatabase(database);
@@ -689,8 +691,7 @@ class AppCubit extends Cubit<AppStates> {
                                       var category = newCategories[index];
                                       return GestureDetector(
                                         onTap: () {
-                                          catFilterNotes(
-                                              category['category']);
+                                          catFilterNotes(category['category']);
                                           Navigator.of(context).pop();
                                         },
                                         child: buildMenuCategoryItem(
@@ -732,7 +733,8 @@ class AppCubit extends Cubit<AppStates> {
                       context: context,
                       builder: (BuildContext context) {
                         return AlertDialog(
-                          titleTextStyle: const TextStyle(color: Styles.gumColor),
+                          titleTextStyle:
+                              const TextStyle(color: Styles.gumColor),
                           backgroundColor: Theme.of(context)
                               .scaffoldBackgroundColor
                               .withOpacity(0.95),
@@ -772,14 +774,16 @@ class AppCubit extends Cubit<AppStates> {
       },
     );
   }
-  void showCategoryValueUpdatePrompt({required int id,required String cat,required BuildContext context}) {
-    addCategoryController.text=cat;
+
+  void showCategoryValueUpdatePrompt(
+      {required int id, required String cat, required BuildContext context}) {
+    addCategoryController.text = cat;
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
           backgroundColor:
-          Theme.of(context).scaffoldBackgroundColor.withOpacity(0.95),
+              Theme.of(context).scaffoldBackgroundColor.withOpacity(0.95),
           title: const Text(
             'Edit Category',
             style: TextStyle(color: Styles.gumColor),
@@ -798,7 +802,8 @@ class AppCubit extends Cubit<AppStates> {
                       context: context,
                       builder: (BuildContext context) {
                         return AlertDialog(
-                          titleTextStyle: const TextStyle(color: Styles.gumColor),
+                          titleTextStyle:
+                              const TextStyle(color: Styles.gumColor),
                           backgroundColor: Theme.of(context)
                               .scaffoldBackgroundColor
                               .withOpacity(0.95),
@@ -821,8 +826,22 @@ class AppCubit extends Cubit<AppStates> {
                                     backgroundColor: Styles.gumColor,
                                     foregroundColor: Styles.whiteColor),
                                 onPressed: () {
-                                  database.update('tasks', {'category':addCategoryController.text,'color':catColor.toHexString()},where: 'category = ?',whereArgs: [cat]);
-                                  database.update('categories', {'category':addCategoryController.text,'color':catColor.toHexString()},where: 'id = ?',whereArgs: [id]);
+                                  database.update(
+                                      'tasks',
+                                      {
+                                        'category': addCategoryController.text,
+                                        'color': catColor.toHexString()
+                                      },
+                                      where: 'category = ?',
+                                      whereArgs: [cat]);
+                                  database.update(
+                                      'categories',
+                                      {
+                                        'category': addCategoryController.text,
+                                        'color': catColor.toHexString()
+                                      },
+                                      where: 'id = ?',
+                                      whereArgs: [id]);
                                   emit(AppInsertDatabaseState());
                                   getFromDatabase(database);
                                   Navigator.of(context).pop();
@@ -839,6 +858,7 @@ class AppCubit extends Cubit<AppStates> {
       },
     );
   }
+
   Color catColor = Styles.greyColor;
   void changeColor(Color color) {
     catColor = color;

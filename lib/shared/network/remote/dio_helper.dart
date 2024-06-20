@@ -28,6 +28,19 @@ class DioHelper {
       queryParameters: query,
     );
   }
+  static Future<Response> getImage({
+    Map<String, dynamic>? query,
+    String? token,
+  }) async {
+    dio.options.headers= {
+    };
+    return await dio.get(
+      'http://3.75.171.189/getImg/?token=${token!}',
+      queryParameters: query,
+      options: Options(responseType: ResponseType.bytes
+      )
+    );
+  }
 
   static Future<Response> postData({
     required String url,

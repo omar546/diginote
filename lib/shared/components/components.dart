@@ -63,12 +63,17 @@ Widget buildTextField({
 }
 
 Widget buildCategoryItem({required Map model, context, required index}) =>
-    GestureDetector(onTap: (){
-      if(model['category']!= 'uncategorized'){
-        AppCubit.get(context).showCategoryValueUpdatePrompt(id: model['id'],context: context,cat: model['category']);
-      }
-    },
-      onLongPress: () {AppCubit.get(context).deleteAllByCategory(id: model['id'],cat:model['category'],context: context);},
+    GestureDetector(
+      onTap: () {
+        if (model['category'] != 'uncategorized') {
+          AppCubit.get(context).showCategoryValueUpdatePrompt(
+              id: model['id'], context: context, cat: model['category']);
+        }
+      },
+      onLongPress: () {
+        AppCubit.get(context).deleteAllByCategory(
+            id: model['id'], cat: model['category'], context: context);
+      },
       child: Dismissible(
         direction: DismissDirection.endToStart,
         background: Container(
@@ -86,10 +91,10 @@ Widget buildCategoryItem({required Map model, context, required index}) =>
           ),
         ),
         onDismissed: (direction) {
-          if(model['category']!='uncategorized'){
-            AppCubit.get(context).deleteCategory(id: model['id'],cat:model['category']);
+          if (model['category'] != 'uncategorized') {
+            AppCubit.get(context)
+                .deleteCategory(id: model['id'], cat: model['category']);
           }
-
         },
         key: Key(model['id'].toString()),
         child: Padding(
@@ -156,13 +161,21 @@ Widget buildCategoryItem({required Map model, context, required index}) =>
       ),
     );
 
-Widget buildMenuCategoryItem({required Map model, context, required int index}) {
+Widget buildMenuCategoryItem(
+    {required Map model, context, required int index}) {
   return Padding(
     padding: const EdgeInsets.all(5.0),
     child: Column(
       children: [
-        Icon(Icons.folder,color: hexToColor(model['color']),size: 50,),
-        Text(model['category'],style: const TextStyle(fontSize: 10,overflow: TextOverflow.ellipsis),),
+        Icon(
+          Icons.folder,
+          color: hexToColor(model['color']),
+          size: 50,
+        ),
+        Text(
+          model['category'],
+          style: const TextStyle(fontSize: 10, overflow: TextOverflow.ellipsis),
+        ),
       ],
     ),
   );
@@ -198,7 +211,6 @@ Widget buildNoteItem({required Map model, context, required index}) =>
           ),
           onDismissed: (direction) {
             AppCubit.get(context).deleteDatabase(id: model['id']);
-
           },
           key: Key(model['id'].toString()),
           child: Padding(

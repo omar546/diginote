@@ -30,19 +30,19 @@ void main() async {
     print(token);
   }
   await AppCubit().initializeCamera();
-  if(onBoarding != false)
-  {
-    if (token != 'null'){
+  if (onBoarding != false) {
+    if (token != 'null') {
       widget = BlocProvider(
-      create: (context) => AppCubit()..createDatabase(),
-      child: HomeLayout(),
-    );}
-    else{ widget = BlocProvider(
-      create: (context) => AppCubit()..createDatabase(),
-      child: LoginScreen(),
-    );}
-  }else
-  {
+        create: (context) => AppCubit()..createDatabase(),
+        child: HomeLayout(),
+      );
+    } else {
+      widget = BlocProvider(
+        create: (context) => AppCubit()..createDatabase(),
+        child: LoginScreen(),
+      );
+    }
+  } else {
     widget = const OnBoardingScreen();
   }
 
@@ -50,27 +50,24 @@ void main() async {
       .then((value) => runApp(MyApp(widget)));
 }
 
-
-class MyApp extends StatelessWidget
-{
+class MyApp extends StatelessWidget {
   final Widget startWidget;
-const MyApp(this.startWidget, {super.key});
+  const MyApp(this.startWidget, {super.key});
   // constructor
   // build
   @override
-  Widget build(BuildContext context)
-  {
+  Widget build(BuildContext context) {
     return BlocProvider(
-        create: (context) => ThemeCubit(),
-        child: BlocBuilder<ThemeCubit, ThemeData>(
+      create: (context) => ThemeCubit(),
+      child: BlocBuilder<ThemeCubit, ThemeData>(
         builder: (context, theme) {
-      return MaterialApp(
-        debugShowCheckedModeBanner: false,
-        theme: theme,
-        home: startWidget,
-      );
+          return MaterialApp(
+            debugShowCheckedModeBanner: false,
+            theme: theme,
+            home: startWidget,
+          );
         },
-        ),
+      ),
     );
   }
 }
