@@ -224,7 +224,7 @@ class AppCubit extends Cubit<AppStates> {
     const CameraScreen(),
     const ShowEditScreen(),
     const CategoryScreen(),
-    const LoadingScreen(),
+    LoadingScreen(),
   ];
 
   Future<void> changeBottomNavBarState(index) async {
@@ -903,30 +903,4 @@ class AppCubit extends Cubit<AppStates> {
     quillController.updateSelection(selection, ChangeSource.local);
   }
 
-  // Future<void> export() async {
-  //   try {
-  //     final htmlString = await DeltaToHTML.encodeJson(quillController.document.toDelta().toJson());
-  //     var targetPath = "/storage/emulated/0/Download";
-  //     var targetFileName = "example_pdf_file";
-  //
-  //     // Show loading indicator while generating PDF
-  //     changeBottomNavBarState(4);
-  //
-  //
-  //     var generatedPdfFile = await FlutterHtmlToPdf.convertFromHtmlContent(
-  //       htmlString,
-  //       targetPath,
-  //       targetFileName,
-  //     );
-  //     changeBottomNavBarState(0);
-  //
-  //
-  //     // Handle successful PDF generation (e.g., show a success message)
-  //   } on Exception catch (e) {
-  //     // Handle the exception (e.g., show a snackbar to the user)
-  //     if (kDebugMode) {
-  //       print("Error generating PDF: $e");
-  //     }
-  //   }
-  // }
 }
