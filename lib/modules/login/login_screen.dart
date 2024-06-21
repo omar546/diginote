@@ -191,6 +191,7 @@ class LoginScreen extends StatelessWidget {
                                           email: emailController.text,
                                           password: passwordController.text);
                                     }
+                                    CacheHelper.saveData(key: 'token', value: 'faketoken');
                                     navigateAndFinish(context, HomeLayout());
                                   }),
                               fallback: (context) =>

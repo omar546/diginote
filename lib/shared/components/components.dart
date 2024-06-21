@@ -186,7 +186,7 @@ Widget buildNoteItem({required Map model, context, required index}) =>
       return GestureDetector(
         onLongPress: () {
           Clipboard.setData(ClipboardData(
-            text: model['title']
+            text: model['ptitle']
                 .replaceAll('""', '"')
                 .replaceAll("''", "'")
                 .replaceAll('￼', ''),
@@ -210,7 +210,9 @@ Widget buildNoteItem({required Map model, context, required index}) =>
             ),
           ),
           onDismissed: (direction) {
-            AppCubit.get(context).deleteDatabase(id: model['id']);
+            if(AppCubit.get(context).filteredNotes.length==1){AppCubit.get(context).changeBottomNavBarState(0);AppCubit.get(context).deleteDatabase(id: model['id']);}else{
+            AppCubit.get(context).deleteDatabase(id: model['id']);}
+
           },
           key: Key(model['id'].toString()),
           child: Padding(

@@ -75,8 +75,10 @@ class AppCubit extends Cubit<AppStates> {
       notFiltered = false;
       filteredNotes = newNotes.where((note) {
         // Check if the task title contains the query (case-insensitive)
+
         return note['category'] == (query);
       }).toList();
+
     }
     emit(AppFilterTasksState());
   }
@@ -530,6 +532,7 @@ class AppCubit extends Cubit<AppStates> {
               IconButton(
                 tooltip: "Logout",
                 onPressed: () {
+
                   navigateAndFinish(context, LoginScreen());
                 },
                 icon: const Icon(

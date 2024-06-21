@@ -249,6 +249,9 @@ flutter:
     - assets/images/onBoarding1.png
     - assets/images/onBoarding2.png
     - assets/images/onBoarding3.png
+    - assets/images/onBoarding4.png
+    - assets/images/onBoarding5.png
+    - assets/images/onBoarding6.png
     - assets/icon/icon_trans.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
