@@ -159,13 +159,13 @@ class AppCubit extends Cubit<AppStates> {
     // Listen for response and await the response stream transformation
     var responseString = await response.stream.transform(utf8.decoder).join();
     tokenfromimage = extractText(responseString);
-    // await DioHelper.getImage(token: tokenfromimage);
-    var textformimage = await DioHelper.getData(url: 'getText',query: {'token':tokenfromimage}).then((value) => value.data['text']);
+    // // await DioHelper.getImage(token: tokenfromimage);
+    // var textformimage = await DioHelper.getData(url: 'getText',query: {'token':tokenfromimage}).then((value) => value.data['text']);
     emit(CameraPictureTaken());
     if (kDebugMode) {
-      print("${textformimage} upload");
+      print("${tokenfromimage} upload");
     }
-    return textformimage;
+    return tokenfromimage;
   }
 
   Future<void> pickImageFromGallery() async {
@@ -500,7 +500,7 @@ class AppCubit extends Cubit<AppStates> {
                 tooltip: "Ping",
                 onPressed: () {
                   Navigator.of(context).pop();
-                  DioHelper.getData(url: 'test').then((value) {
+                  DioHelper.getData(url: 'test/').then((value) {
                     showToast(
                         message: value.data['text'],
                         state: ToastStates.SUCCESS);

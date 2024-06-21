@@ -186,7 +186,7 @@ Widget buildNoteItem({required Map model, context, required index}) =>
       return GestureDetector(
         onLongPress: () {
           Clipboard.setData(ClipboardData(
-            text: model['title']
+            text: model['ptitle']
                 .replaceAll('""', '"')
                 .replaceAll("''", "'")
                 .replaceAll('￼', ''),
