@@ -5,7 +5,13 @@ class LoadingScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(body: Center(child: LinearProgressIndicator(
-    )));
+    return Scaffold(
+      body: Center(
+        child: SizedBox(
+          width: 300,
+          child: LinearProgressIndicator(),
+        ),
+      ),
+    );
   }
 }
