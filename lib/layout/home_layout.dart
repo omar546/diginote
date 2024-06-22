@@ -188,7 +188,9 @@ class HomeLayout extends StatelessWidget {
                                       } else {
                                         await cubit.pickImageFromGallery();
                                         cubit.insertIntoDatabaseFromApi(
-                                            title: cubit.responseValue.replaceAll('{"insert": ""},',''),
+                                            title: cubit.responseValue
+                                                .replaceAll(
+                                                    '{"insert": ""},', ''),
                                             ptitle: Document.fromJson(
                                                     jsonDecode(
                                                         cubit.responseValue))
