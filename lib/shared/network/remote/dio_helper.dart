@@ -5,7 +5,7 @@ class DioHelper {
   static init() {
     dio = Dio(
       BaseOptions(
-          baseUrl: 'https://example-pre-reader.onrender.com/',
+          baseUrl: 'http://3.75.171.189/',
           receiveDataWhenStatusError: true,
           headers: {
             'Content-Type': 'application/json',
@@ -26,6 +26,19 @@ class DioHelper {
     return await dio.get(
       url,
       queryParameters: query,
+    );
+  }
+  static Future<Response> getImage({
+    Map<String, dynamic>? query,
+    String? token,
+  }) async {
+    dio.options.headers= {
+    };
+    return await dio.get(
+      'http://3.75.171.189/getImg/?token=${token!}',
+      queryParameters: query,
+      options: Options(responseType: ResponseType.bytes
+      )
     );
   }
 

@@ -3,15 +3,28 @@ import 'package:diginote/shared/styles/styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../network/local/cache_helper.dart';
+
 enum AppTheme { Light, Dark }
 
 class ThemeCubit extends Cubit<ThemeData> {
-  ThemeCubit() : super(lightTheme);
+  static const String themeKey = 'theme';
+  ThemeCubit() : super(lightTheme) {
+    final themeIndex =
+        CacheHelper.getData(key: themeKey) ?? AppTheme.Light.index;
+    if (themeIndex == AppTheme.Dark.index) {
+      emit(darkTheme);
+    } else {
+      emit(lightTheme);
+    }
+  }
 
   void toggleTheme() {
     if (state == lightTheme) {
+      CacheHelper.saveData(key: themeKey, value: AppTheme.Dark.index);
       emit(darkTheme);
     } else {
+      CacheHelper.saveData(key: themeKey, value: AppTheme.Light.index);
       emit(lightTheme);
     }
   }
@@ -52,8 +65,9 @@ ThemeData lightTheme = ThemeData(
     scaffoldBackgroundColor: Styles.whiteColor,
     primarySwatch: customGum,
     textTheme: TextTheme(
-      bodyMedium:
-      const TextStyle(color: Styles.blackColor,),
+      bodyMedium: const TextStyle(
+        color: Styles.blackColor,
+      ),
       bodySmall: TextStyle(
           color: Styles.blackColor.withOpacity(0.5), fontFamily: 'nunito'),
     ),
@@ -61,8 +75,7 @@ ThemeData lightTheme = ThemeData(
       prefixIconColor: Styles.lightBlackColor,
       suffixIconColor: Styles.greyColor.withOpacity(0.5),
       labelStyle: const TextStyle(color: Styles.blackColor),
-    )
-);
+    ));
 ThemeData darkTheme = ThemeData(
     bottomNavigationBarTheme: const BottomNavigationBarThemeData(
       elevation: 30,
@@ -86,7 +99,8 @@ ThemeData darkTheme = ThemeData(
     primarySwatch: customGum,
     textTheme: TextTheme(
       bodyMedium: const TextStyle(
-          color: Styles.whiteColor,),
+        color: Styles.whiteColor,
+      ),
       bodySmall: TextStyle(
           color: Styles.greyColor.withOpacity(0.5), fontFamily: 'nunito'),
     ),

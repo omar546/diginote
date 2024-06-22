@@ -41,6 +41,18 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
         image: 'assets/images/onBoarding3.png',
         body: 'Get digital readings!',
         title: 'Results'),
+    BoardingModel(
+        image: 'assets/images/onBoarding4.png',
+        body: 'Tap to edit or long press to copy text',
+        title: 'Tip💡'),
+    BoardingModel(
+        image: 'assets/images/onBoarding5.png',
+        body: 'Tap to filter by category\nor long press to add/edit categories',
+        title: 'Filter'),
+    BoardingModel(
+        image: 'assets/images/onBoarding6.png',
+        body: 'Tap to edit category\nor long press to delete notes\nunder a category',
+        title: 'Tip💡'),
   ];
 
   bool isLast = false;

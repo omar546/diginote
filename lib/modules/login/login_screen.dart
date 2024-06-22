@@ -191,6 +191,7 @@ class LoginScreen extends StatelessWidget {
                                           email: emailController.text,
                                           password: passwordController.text);
                                     }
+                                    CacheHelper.saveData(key: 'token', value: 'faketoken');
                                     navigateAndFinish(context, HomeLayout());
                                   }),
                               fallback: (context) =>
@@ -212,12 +213,12 @@ class LoginScreen extends StatelessWidget {
                             ),
                           ],
                         ),
-                        Row(mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Checkbox(shape:const CircleBorder(),onChanged: (f){NoteLoginCubit.get(context).changeAgreement();}, value: NoteLoginCubit.get(context).agreement,),
-                            const Expanded(child: Text('By checking, you agree on using your data to improve our model',softWrap: true,maxLines: 4,))
-                          ],
-                        )
+                        // Row(mainAxisAlignment: MainAxisAlignment.start,
+                        //   children: [
+                        //     Checkbox(shape:const CircleBorder(),onChanged: (f){NoteLoginCubit.get(context).changeAgreement();}, value: NoteLoginCubit.get(context).agreement,),
+                        //     const Expanded(child: Text('By checking, you agree on using your data to improve our model',softWrap: true,maxLines: 4,))
+                        //   ],
+                        // )
                       ],
                     ),
                   ),

@@ -35,7 +35,6 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   torch_light: ^1.0.0
-  cupertino_icons: ^1.0.2
   image_picker: ^1.0.4
   camera: ^0.10.5+5
   sqflite: ^2.2.8+4
@@ -50,18 +49,13 @@ dependencies:
   fluttertoast: ^8.2.2
   carousel_slider: ^4.2.1
   flutter_quill: ^9.3.10
-  quill_pdf_converter: ^9.3.11
   flutter_quill_extensions: ^9.3.12
-#  webview_flutter: ^4.2.2
-
-  path: any
   async: any
   http: any
-  printing: ^5.12.0
   flutter_html: ^3.0.0-beta.2
   flutter_colorpicker: ^1.1.0
-#  delta_to_html: ^0.2.2
-#  flutter_html_to_pdf: ^0.7.0
+  wakelock: ^0.4.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -256,6 +250,9 @@ flutter:
     - assets/images/onBoarding1.png
     - assets/images/onBoarding2.png
     - assets/images/onBoarding3.png
+    - assets/images/onBoarding4.png
+    - assets/images/onBoarding5.png
+    - assets/images/onBoarding6.png
     - assets/icon/icon_trans.png
 
   # An image asset can refer to one or more resolution-specific "variants", see

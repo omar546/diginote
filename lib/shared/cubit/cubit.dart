@@ -16,7 +16,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sqflite/sqflite.dart';
-
 import '../../modules/categoryScreen.dart';
 import '../../modules/new_notes.dart';
 import '../../modules/showEditScreen.dart';
@@ -70,14 +69,16 @@ class AppCubit extends Cubit<AppStates> {
     // If the query is empty, show all tasks
     if (query.isEmpty) {
       filteredNotes = newNotes;
-      notFiltered =true;
+      notFiltered = true;
     } else {
       // Filter tasks based on the query
-      notFiltered =false;
+      notFiltered = false;
       filteredNotes = newNotes.where((note) {
         // Check if the task title contains the query (case-insensitive)
+
         return note['category'] == (query);
       }).toList();
+
     }
     emit(AppFilterTasksState());
   }
@@ -119,7 +120,7 @@ class AppCubit extends Cubit<AppStates> {
     }
   }
 
-  String textfromimage = "";
+  String tokenfromimage = "";
   String responseValue = "";
   String extractText(String jsonString) {
     // Parse the JSON string
@@ -131,40 +132,42 @@ class AppCubit extends Cubit<AppStates> {
     return text;
   }
 
+
   Future<String> upload(File imageFile) async {
-    // open a bytestream
+    // Open a bytestream
     var stream = http.ByteStream(DelegatingStream.typed(imageFile.openRead()));
-    // get file length
+    // Get file length
     var length = await imageFile.length();
 
-    // string to uri
-    var uri = Uri.parse("https://example-pre-reader.onrender.com/upload/");
+    // String to URI
+    var uri = Uri.parse("http://3.75.171.189/upload/");
 
-    // create multipart request
+    // Create multipart request
     var request = http.MultipartRequest("POST", uri);
 
-    // multipart that takes file
+    // Multipart that takes file
     var multipartFile = http.MultipartFile('file', stream, length,
         filename: basename(imageFile.path));
 
-    // add file to multipart
+    // Add file to multipart
     request.files.add(multipartFile);
 
-    // send
+    // Send
     var response = await request.send();
     if (kDebugMode) {
       print(response.statusCode);
     }
 
-    // listen for response
-    response.stream.transform(utf8.decoder).listen((value) async {
-      textfromimage = extractText(value);
-      emit(CameraPictureTaken());
-      if (kDebugMode) {
-        print(textfromimage);
-      }
-    });
-    return textfromimage;
+    // Listen for response and await the response stream transformation
+    var responseString = await response.stream.transform(utf8.decoder).join();
+    tokenfromimage = extractText(responseString);
+    // // await DioHelper.getImage(token: tokenfromimage);
+    // var textformimage = await DioHelper.getData(url: 'getText',query: {'token':tokenfromimage}).then((value) => value.data['text']);
+    emit(CameraPictureTaken());
+    if (kDebugMode) {
+      print("${tokenfromimage} upload");
+    }
+    return tokenfromimage;
   }
 
   Future<void> pickImageFromGallery() async {
@@ -174,15 +177,9 @@ class AppCubit extends Cubit<AppStates> {
     );
 
     if (pickedImage != null) {
-      // Use the path of the picked image
       String imagePath = pickedImage.path;
 
       try {
-        // FormData formData = FormData.fromMap({
-        //   'file': await MultipartFile.fromFile(imagePath),
-        // });
-
-        // Use DioHelper.postData to upload the image
         changeBottomNavBarState(4);
         responseValue = await upload(File(imagePath));
       } catch (e) {
@@ -205,6 +202,8 @@ class AppCubit extends Cubit<AppStates> {
 
       // Emit a new state with the image path
       changeBottomNavBarState(4);
+
+      // Await the upload operation and set responseValue
       responseValue = await upload(File(imagePath));
     } catch (e) {
       // Handle errors
@@ -227,7 +226,7 @@ class AppCubit extends Cubit<AppStates> {
     const CameraScreen(),
     const ShowEditScreen(),
     const CategoryScreen(),
-    const LoadingScreen(),
+    LoadingScreen(),
   ];
 
   Future<void> changeBottomNavBarState(index) async {
@@ -236,7 +235,7 @@ class AppCubit extends Cubit<AppStates> {
     }
     currentIndex = index;
     filteredNotes = [];
-    notFiltered=true;
+    notFiltered = true;
     await cameraController?.setFlashMode(FlashMode.off);
     emit(AppChangeNavBarState());
   }
@@ -287,7 +286,32 @@ class AppCubit extends Cubit<AppStates> {
         ).then(
           (value) {
             filteredNotes = [];
-            notFiltered=true;
+            notFiltered = true;
+            searchController.clear();
+            emit(AppInsertDatabaseState());
+            changeBottomNavBarState(0);
+            getFromDatabase(database);
+          },
+        );
+      },
+    );
+  }
+
+  Future insertIntoDatabaseFromApi({
+    required String title,
+    required String ptitle,
+    required String date,
+    required String time,
+  }) {
+    return database.transaction(
+      (Transaction txn) async {
+        txn.rawInsert(
+          'INSERT INTO tasks(title,ptitle, date, time,category,color) VALUES(?, ?, ?,?,"uncategorized","#d2d2d2")',
+          [title, ptitle, date, time],
+        ).then(
+          (value) {
+            filteredNotes = [];
+            notFiltered = true;
             searchController.clear();
             emit(AppInsertDatabaseState());
             changeBottomNavBarState(0);
@@ -359,7 +383,7 @@ class AppCubit extends Cubit<AppStates> {
       // Delete the old row
       await txn.rawDelete('DELETE FROM tasks WHERE id = ?', [tappedId]);
       filteredNotes = [];
-      notFiltered=true;
+      notFiltered = true;
       searchController.clear();
       tappedId = newId;
       getFromDatabase(database);
@@ -378,15 +402,16 @@ class AppCubit extends Cubit<AppStates> {
       },
     );
   }
-  void deleteAllByCategory({required int id,required String cat,required BuildContext context}) {
+
+  void deleteAllByCategory(
+      {required int id, required String cat, required BuildContext context}) {
     showDialog(
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
             titleTextStyle: const TextStyle(color: Styles.gumColor),
-            backgroundColor: Theme.of(context)
-                .scaffoldBackgroundColor
-                .withOpacity(0.95),
+            backgroundColor:
+                Theme.of(context).scaffoldBackgroundColor.withOpacity(0.95),
             title: const Text('Delete all notes under this category?'),
             actions: <Widget>[
               Center(
@@ -395,20 +420,22 @@ class AppCubit extends Cubit<AppStates> {
                         backgroundColor: Styles.gumColor,
                         foregroundColor: Styles.whiteColor),
                     onPressed: () {
-                      database.delete('tasks',where: 'category = ?',whereArgs:[cat]);
-                      database.rawDelete('DELETE FROM categories WHERE id = ?', [id]).then(
-                            (value) {
-                              if(cat=='uncategorized'){
-                                database.rawInsert('INSERT INTO categories(category,color) VALUES("uncategorized", "#d2d2d2")');
-                              }
+                      database.delete('tasks',
+                          where: 'category = ?', whereArgs: [cat]);
+                      database.rawDelete(
+                          'DELETE FROM categories WHERE id = ?', [id]).then(
+                        (value) {
+                          if (cat == 'uncategorized') {
+                            database.rawInsert(
+                                'INSERT INTO categories(category,color) VALUES("uncategorized", "#d2d2d2")');
+                          }
                           getFromDatabase(database);
                           emit(AppDeleteDatabaseState());
-
                         },
-                      ).then((v){
+                      ).then((v) {
                         Navigator.of(context).pop();
-                      });}
-                    ,
+                      });
+                    },
                     child: const Text('Yes!')),
               )
             ],
@@ -416,8 +443,9 @@ class AppCubit extends Cubit<AppStates> {
         });
   }
 
-  void deleteCategory({required int id,required String cat}) {
-    database.update('tasks',{'category':'uncategorized','color':'#d2d2d2'},where: 'category = ?',whereArgs:[cat]);
+  void deleteCategory({required int id, required String cat}) {
+    database.update('tasks', {'category': 'uncategorized', 'color': '#d2d2d2'},
+        where: 'category = ?', whereArgs: [cat]);
     database.rawDelete('DELETE FROM categories WHERE id = ?', [id]).then(
       (value) {
         getFromDatabase(database);
@@ -473,7 +501,8 @@ class AppCubit extends Cubit<AppStates> {
               IconButton(
                 tooltip: "Ping",
                 onPressed: () {
-                  DioHelper.getData(url: 'test').then((value) {
+                  Navigator.of(context).pop();
+                  DioHelper.getData(url: 'test/').then((value) {
                     showToast(
                         message: value.data['text'],
                         state: ToastStates.SUCCESS);
@@ -503,6 +532,7 @@ class AppCubit extends Cubit<AppStates> {
               IconButton(
                 tooltip: "Logout",
                 onPressed: () {
+
                   navigateAndFinish(context, LoginScreen());
                 },
                 icon: const Icon(
@@ -662,8 +692,7 @@ class AppCubit extends Cubit<AppStates> {
                                       var category = newCategories[index];
                                       return GestureDetector(
                                         onTap: () {
-                                          catFilterNotes(
-                                              category['category']);
+                                          catFilterNotes(category['category']);
                                           Navigator.of(context).pop();
                                         },
                                         child: buildMenuCategoryItem(
@@ -705,7 +734,8 @@ class AppCubit extends Cubit<AppStates> {
                       context: context,
                       builder: (BuildContext context) {
                         return AlertDialog(
-                          titleTextStyle: const TextStyle(color: Styles.gumColor),
+                          titleTextStyle:
+                              const TextStyle(color: Styles.gumColor),
                           backgroundColor: Theme.of(context)
                               .scaffoldBackgroundColor
                               .withOpacity(0.95),
@@ -745,14 +775,16 @@ class AppCubit extends Cubit<AppStates> {
       },
     );
   }
-  void showCategoryValueUpdatePrompt({required int id,required String cat,required BuildContext context}) {
-    addCategoryController.text=cat;
+
+  void showCategoryValueUpdatePrompt(
+      {required int id, required String cat, required BuildContext context}) {
+    addCategoryController.text = cat;
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
           backgroundColor:
-          Theme.of(context).scaffoldBackgroundColor.withOpacity(0.95),
+              Theme.of(context).scaffoldBackgroundColor.withOpacity(0.95),
           title: const Text(
             'Edit Category',
             style: TextStyle(color: Styles.gumColor),
@@ -771,7 +803,8 @@ class AppCubit extends Cubit<AppStates> {
                       context: context,
                       builder: (BuildContext context) {
                         return AlertDialog(
-                          titleTextStyle: const TextStyle(color: Styles.gumColor),
+                          titleTextStyle:
+                              const TextStyle(color: Styles.gumColor),
                           backgroundColor: Theme.of(context)
                               .scaffoldBackgroundColor
                               .withOpacity(0.95),
@@ -794,8 +827,22 @@ class AppCubit extends Cubit<AppStates> {
                                     backgroundColor: Styles.gumColor,
                                     foregroundColor: Styles.whiteColor),
                                 onPressed: () {
-                                  database.update('tasks', {'category':addCategoryController.text,'color':catColor.toHexString()},where: 'category = ?',whereArgs: [cat]);
-                                  database.update('categories', {'category':addCategoryController.text,'color':catColor.toHexString()},where: 'id = ?',whereArgs: [id]);
+                                  database.update(
+                                      'tasks',
+                                      {
+                                        'category': addCategoryController.text,
+                                        'color': catColor.toHexString()
+                                      },
+                                      where: 'category = ?',
+                                      whereArgs: [cat]);
+                                  database.update(
+                                      'categories',
+                                      {
+                                        'category': addCategoryController.text,
+                                        'color': catColor.toHexString()
+                                      },
+                                      where: 'id = ?',
+                                      whereArgs: [id]);
                                   emit(AppInsertDatabaseState());
                                   getFromDatabase(database);
                                   Navigator.of(context).pop();
@@ -812,6 +859,7 @@ class AppCubit extends Cubit<AppStates> {
       },
     );
   }
+
   Color catColor = Styles.greyColor;
   void changeColor(Color color) {
     catColor = color;
@@ -857,29 +905,5 @@ class AppCubit extends Cubit<AppStates> {
     final selection = TextSelection(baseOffset: 0, extentOffset: docLength);
     quillController.updateSelection(selection, ChangeSource.local);
   }
-  // Future<void> export() async {
-  //   try {
-  //     final htmlString = await DeltaToHTML.encodeJson(AppCubit.get(context).quillController.document.toDelta().toJson());
-  //     var targetPath = "/storage/emulated/0/Download";
-  //     var targetFileName = "example_pdf_file";
-  //
-  //     // Show loading indicator while generating PDF
-  //
-  //
-  //     var generatedPdfFile = await FlutterHtmlToPdf.convertFromHtmlContent(
-  //       htmlString,
-  //       targetPath,
-  //       targetFileName,
-  //     );
-  //     changeBottomNavBarState(0);
-  //
-  //
-  //     // Handle successful PDF generation (e.g., show a success message)
-  //   } on Exception catch (e) {
-  //     // Handle the exception (e.g., show a snackbar to the user)
-  //     if (kDebugMode) {
-  //       print("Error generating PDF: $e");
-  //     }
-  //   }
-  // }
+
 }

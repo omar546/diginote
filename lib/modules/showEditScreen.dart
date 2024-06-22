@@ -29,7 +29,8 @@ class _ShowEditScreenState extends State<ShowEditScreen> {
         title: const Text('Enter Image URL'),
         content: const TextField(
           autofocus: true,
-          decoration: InputDecoration(hintText: 'https://example.com/image.jpg'),
+          decoration:
+              InputDecoration(hintText: 'https://example.com/image.jpg'),
         ),
         actions: [
           TextButton(
@@ -38,7 +39,8 @@ class _ShowEditScreenState extends State<ShowEditScreen> {
           ),
           TextButton(
             onPressed: () {
-              final enteredUrl = (Navigator.of(context).pop() as String?)?.trim();
+              final enteredUrl =
+                  (Navigator.of(context).pop() as String?)?.trim();
               if (enteredUrl?.isNotEmpty == true) {
                 Navigator.pop(context, enteredUrl);
               }
@@ -57,7 +59,10 @@ class _ShowEditScreenState extends State<ShowEditScreen> {
         })
         ..insert("\n"); // Add a newline after the image
 
-      AppCubit.get(context).quillController.compose(imageDelta, TextSelection.collapsed(offset: imageDelta.length), ChangeSource.local);
+      AppCubit.get(context).quillController.compose(
+          imageDelta,
+          TextSelection.collapsed(offset: imageDelta.length),
+          ChangeSource.local);
     }
   }
 
@@ -67,16 +72,14 @@ class _ShowEditScreenState extends State<ShowEditScreen> {
 
     AppCubit.get(context).hideFormatter();
     AppCubit.get(context).quillController = QuillController(
-      document: Document.fromJson(jsonDecode(
-          AppCubit.get(context)
+      document: Document.fromJson(jsonDecode(AppCubit.get(context)
           .tappedTitle
           .replaceAll("''", "'")
-          .replaceAll('""', '\\"')
-
-      )),
+          .replaceAll('""', '\\"'))),
       selection: const TextSelection.collapsed(offset: 0),
     );
-    AppCubit.get(context).quillController.readOnly = AppCubit.get(context).editorLocked;
+    AppCubit.get(context).quillController.readOnly =
+        AppCubit.get(context).editorLocked;
   }
 
   @override
@@ -129,7 +132,6 @@ class _ShowEditScreenState extends State<ShowEditScreen> {
                           embedButtons: FlutterQuillEmbeds.toolbarButtons(),
                           sharedConfigurations: const QuillSharedConfigurations(
                             locale: Locale('en'),
-
                           ),
                         ),
                       ),

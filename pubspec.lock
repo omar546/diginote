@@ -33,22 +33,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.11.0"
-  barcode:
-    dependency: transitive
-    description:
-      name: barcode
-      sha256: ab180ce22c6555d77d45f0178a523669db67f95856e3378259ef2ffeb43e6003
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.2.8"
-  bidi:
-    dependency: transitive
-    description:
-      name: bidi
-      sha256: "1a7d0c696324b2089f72e7671fd1f1f64fef44c980f3cebc84e803967c597b63"
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.0.10"
   bloc:
     dependency: "direct main"
     description:
@@ -193,14 +177,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.17.3"
-  cupertino_icons:
-    dependency: "direct main"
-    description:
-      name: cupertino_icons
-      sha256: ba631d1c7f7bef6b729a622b7b752645a2d076dba9976925b8f25725a30e1ee6
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.8"
   dart_quill_delta:
     dependency: transitive
     description:
@@ -549,22 +525,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.3.1"
-  html_unescape:
-    dependency: transitive
-    description:
-      name: html_unescape
-      sha256: "15362d7a18f19d7b742ef8dcb811f5fd2a2df98db9f80ea393c075189e0b61e3"
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.0.0"
-  htmltopdfwidgets:
-    dependency: transitive
-    description:
-      name: htmltopdfwidgets
-      sha256: "990e3002fbbfaf307555f1991bed61b6228d7053b7e1945815c7a68f56bbda81"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.3"
   http:
     dependency: "direct main"
     description:
@@ -782,21 +742,13 @@ packages:
     source: hosted
     version: "1.0.0"
   path:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: path
       sha256: "087ce49c3f0dc39180befefc60fdb4acd8f8620e5682fe2476afd0b3688bb4af"
       url: "https://pub.dev"
     source: hosted
     version: "1.9.0"
-  path_parsing:
-    dependency: transitive
-    description:
-      name: path_parsing
-      sha256: e3e67b1629e6f7e8100b367d3db6ba6af4b1f0bb80f64db18ef1fbabd2fa9ccf
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.1"
   path_provider_linux:
     dependency: transitive
     description:
@@ -821,22 +773,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.2.1"
-  pdf:
-    dependency: transitive
-    description:
-      name: pdf
-      sha256: "243f05342fc0bdf140eba5b069398985cdbdd3dbb1d776cf43d5ea29cc570ba6"
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.10.8"
-  pdf_widget_wrapper:
-    dependency: transitive
-    description:
-      name: pdf_widget_wrapper
-      sha256: "9c3ca36e5000c9682d52bbdc486867ba7c5ee4403d1a5d6d03ed72157753377b"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.3"
   petitparser:
     dependency: transitive
     description:
@@ -877,14 +813,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.8"
-  printing:
-    dependency: "direct main"
-    description:
-      name: printing
-      sha256: "1c99cab90ebcc1fff65831d264627d5b529359d563e53f33ab9b8117f2d280bc"
-      url: "https://pub.dev"
-    source: hosted
-    version: "5.12.0"
   provider:
     dependency: transitive
     description:
@@ -893,30 +821,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "6.1.2"
-  qr:
-    dependency: transitive
-    description:
-      name: qr
-      sha256: "64957a3930367bf97cc211a5af99551d630f2f4625e38af10edd6b19131b64b3"
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.0.1"
-  quill_html_converter:
-    dependency: transitive
-    description:
-      name: quill_html_converter
-      sha256: "96f790bf0b665a1bb27acf98b0bba03c18212a9984ca2d0ca34efe4fe5108302"
-      url: "https://pub.dev"
-    source: hosted
-    version: "9.3.11"
-  quill_pdf_converter:
-    dependency: "direct main"
-    description:
-      name: quill_pdf_converter
-      sha256: "97f0dafd0a73683d2a4f4ed800d65dd66c63ad9f156e810104c8a5721e5c1203"
-      url: "https://pub.dev"
-    source: hosted
-    version: "9.3.11"
   quiver:
     dependency: transitive
     description:
@@ -1258,14 +1162,38 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "13.0.0"
-  vsc_quill_delta_to_html:
-    dependency: transitive
+  wakelock:
+    dependency: "direct main"
     description:
-      name: vsc_quill_delta_to_html
-      sha256: "1feab4edc0b48cddc0a2995a5729dd32830a0f19e6e9ca05112f61de143e622a"
+      name: wakelock
+      sha256: "78bad4822be81d37e7bc34b6990da7dface2a445255cd37c6f053b51a4ccdb3b"
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.4"
+    version: "0.4.0"
+  wakelock_macos:
+    dependency: transitive
+    description:
+      name: wakelock_macos
+      sha256: "73581e5d9ed2dd1ba951375c30e63f0eb8c58d7d6286ae9ddf927b88f2aea8d9"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.1.0+3"
+  wakelock_platform_interface:
+    dependency: transitive
+    description:
+      name: wakelock_platform_interface
+      sha256: d0a8a1c02af68077db5df1e0f5e2b745f7b1f2cdcc48e3e0b6f8f4dcc349050e
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.2.1+3"
+  wakelock_web:
+    dependency: transitive
+    description:
+      name: wakelock_web
+      sha256: "06b0033d5421712138e7fa482ff5c6280fe12e0a41c40c3fe8fda2c007eb4348"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.2.0+3"
   web:
     dependency: transitive
     description:
