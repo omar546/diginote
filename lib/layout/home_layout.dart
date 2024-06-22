@@ -207,20 +207,20 @@ class HomeLayout extends StatelessWidget {
                               ),
                               Row(
                                 children: [
-                                  Visibility(
-                                    visible: !cubit.isBottomSheetShown &&
-                                        cubit.currentIndex == 2 &&
-                                        cubit.editorLocked == true,
-                                    child: IconButton(
-                                        onPressed: () {
-
-                                        },
-                                        icon: const Icon(
-                                          Icons.picture_as_pdf_outlined,
-                                          size: 30,
-                                          color: Styles.gumColor,
-                                        )),
-                                  ),
+                                  // Visibility(
+                                  //   visible: !cubit.isBottomSheetShown &&
+                                  //       cubit.currentIndex == 2 &&
+                                  //       cubit.editorLocked == true,
+                                  //   child: IconButton(
+                                  //       onPressed: () {
+                                  //
+                                  //       },
+                                  //       icon: const Icon(
+                                  //         Icons.picture_as_pdf_outlined,
+                                  //         size: 30,
+                                  //         color: Styles.gumColor,
+                                  //       )),
+                                  // ),
                                   Visibility(
                                     visible: !cubit.isBottomSheetShown &&
                                         cubit.currentIndex == 2 &&
