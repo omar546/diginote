@@ -57,6 +57,7 @@ class AppCubit extends Cubit<AppStates> {
       filteredNotes = newNotes;
     } else {
       // Filter tasks based on the query
+      notFiltered=false;
       filteredNotes = newNotes.where((note) {
         // Check if the task title contains the query (case-insensitive)
         return note['title'].toLowerCase().contains(query.toLowerCase());
@@ -70,6 +71,7 @@ class AppCubit extends Cubit<AppStates> {
     if (query.isEmpty) {
       filteredNotes = newNotes;
       notFiltered = true;
+      emit(AppFilterTasksState());
     } else {
       // Filter tasks based on the query
       notFiltered = false;
@@ -638,6 +640,12 @@ class AppCubit extends Cubit<AppStates> {
   }
 
   void showCategoryFilterPrompt(BuildContext context) {
+    if(notFiltered==false){
+      searchController.text='';
+      filteredNotes = newNotes;
+      notFiltered = true;
+      emit(AppFilterTasksState());
+    }else{
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -707,7 +715,7 @@ class AppCubit extends Cubit<AppStates> {
                         ))));
       },
     );
-  }
+  }}
 
   void showCategoryPrompt(BuildContext context) {
     showDialog(

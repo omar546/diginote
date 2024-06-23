@@ -59,6 +59,7 @@ class HomeLayout extends StatelessWidget {
               key: scaffoldKey,
               appBar: cubit.currentIndex == 4 || cubit.currentIndex == 3
                   ? AppBar(
+                scrolledUnderElevation: 0.0,
                       elevation: 0,
                       automaticallyImplyLeading: false,
                       title: Visibility(
@@ -351,10 +352,11 @@ class HomeLayout extends StatelessWidget {
                                   icon: Icon(
                                     (cubit.notFiltered)
                                         ? Icons.category_outlined
-                                        : Icons.category_rounded,
+                                        : Icons.filter_alt_off,
                                     size: 30,
                                   ),
-                                  color: Styles.gumColor,
+
+                                  color: (cubit.notFiltered)?Styles.gumColor:Styles.greyColor,
                                 ),
                               ),
                               IconButton(
