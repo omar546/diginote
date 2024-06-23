@@ -59,7 +59,7 @@ class HomeLayout extends StatelessWidget {
               key: scaffoldKey,
               appBar: cubit.currentIndex == 4 || cubit.currentIndex == 3
                   ? AppBar(
-                scrolledUnderElevation: 0.0,
+                surfaceTintColor: Colors.transparent,
                       elevation: 0,
                       automaticallyImplyLeading: false,
                       title: Visibility(
@@ -71,6 +71,7 @@ class HomeLayout extends StatelessWidget {
                                       fontSize: 25,
                                       color: Styles.gumColor)))))
                   : AppBar(
+                surfaceTintColor: Colors.transparent,
                       elevation: 0,
                       automaticallyImplyLeading: false,
                       leadingWidth: cubit.currentIndex == 2
