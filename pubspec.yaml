@@ -54,7 +54,7 @@ dependencies:
   http: any
   flutter_html: ^3.0.0-beta.2
   flutter_colorpicker: ^1.1.0
-  wakelock: ^0.4.0
+  wakelock_plus: ^1.2.5
 
 dev_dependencies:
   flutter_test:

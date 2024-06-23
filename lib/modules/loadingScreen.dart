@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:diginote/shared/styles/styles.dart';
 import 'package:flutter/material.dart';
-import 'package:wakelock/wakelock.dart';
+import 'package:wakelock_plus/wakelock_plus.dart';
 
 class LoadingScreen extends StatefulWidget {
    LoadingScreen({Key? key}) : super(key: key);
@@ -18,19 +18,19 @@ class _LoadingScreenState extends State<LoadingScreen> {
 
   int _millisecondsElapsed = 0;
 
-  final int _totalMilliseconds =25000;
+  final int _totalMilliseconds =20000;
  // 20 seconds in milliseconds
   @override
   void initState() {
     super.initState();
     startTimer();
-    Wakelock.enable();
+    WakelockPlus.enable();
   }
 
   @override
   void dispose() {
     _timer?.cancel();
-    Wakelock.disable();
+    WakelockPlus.disable();
     super.dispose();
   }
 
