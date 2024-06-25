@@ -10,6 +10,6 @@ a Flutter Notes app with Handwriting Recognition/digitalization features.
 
 
 
-The model is on AWS ec2 Ubuntu instance managed with FastApi and apache2
+The DL model is on an AWS ec2 Ubuntu instance managed with FastApi and apache2
 
 https://github.com/omar546/FastAPI-DIGINOTE
