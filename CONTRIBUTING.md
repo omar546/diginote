@@ -8,10 +8,10 @@ Definitions
 "Contribution" means any original work of authorship, including any modifications or additions to an existing work, submitted by a Contributor to the Project.
 "Recipient" means the individual or legal entity that initially received the Contribution.
 "You" or "Your" means the Contributor.
-Grant of LicenseSubject to the terms and conditions of this Agreement, You hereby grant to Recipient and to recipients of software distributed by Recipient a perpetual, worldwide, non-exclusive, royalty-free, irrevocable license, under Your applicable intellectual property rights, to use, reproduce, prepare derivative works of, publicly display, publicly perform, sublicense, and distribute Your Contributions and such derivative works.
-Use of DIGINOTE Name and DesignYou agree not to use the name "DIGINOTE" or any design elements associated with the Project for any purpose without prior written permission from Recipient.
+Grant of License Subject to the terms and conditions of this Agreement, You hereby grant to Recipient and to recipients of software distributed by Recipient a perpetual, worldwide, non-exclusive, royalty-free, irrevocable license, under Your applicable intellectual property rights, to use, reproduce, prepare derivative works of, publicly display, publicly perform, sublicense, and distribute Your Contributions and such derivative works.
+Use of DIGINOTE Name and DesignYou agree not to use the name "DIGINOTE" or any design elements associated with the Project for any purpose without prior written permission from the Recipient.
 Your RepresentationsYou represent that You are legally entitled to grant the above license. If Your employer(s) has rights to intellectual property that You create that includes Your Contributions, You represent that You have received permission to make Contributions on behalf of that employer, that Your employer has waived such rights for Your Contributions to the Project, or that Your employer has executed a separate CLA with Recipient.
-AgreementYou agree to the terms and conditions of this Agreement by providing Contributions to the Project. This Agreement may not be amended except in writing signed by both parties.
+Agreement You agree to the terms and conditions of this Agreement by providing Contributions to the Project. This Agreement may not be amended except in writing signed by both parties.
 Please indicate your acceptance of the terms of this Agreement by signing below:
 
 Signature: __________________________________
