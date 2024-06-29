@@ -1,6 +1,6 @@
 <h1 align="center">DIGINOTE</h1>
 
-<p align="center">A Flutter Notes app with Handwriting text-formatting Recognition/digitalization features.</p>
+<p align="center">A Flutter Notes app with Handwriting text & layout Recognition / digitalization features.</p>
 
 <p align="center">
   <img src="https://github.com/omar546/diginote/assets/71936776/017490a8-3852-47c7-937b-a2012abbaf98" alt="nbhjhuhuk"/>
