@@ -11,7 +11,13 @@
 <p align="center">The DL model is on an AWS ec2 Ubuntu instance managed with FastApi and apache2</p>
 
 <p align="center">
-  <a href="https://github.com/omar546/FastAPI-DIGINOTE">https://github.com/omar546/FastAPI-DIGINOTE</a>
+  <a href="https://github.com/omar546/FastAPI-DIGINOTE">FastAPI</a>
+</p>
+
+<p align="center">Also you can see how the model works</p>
+
+<p align="center">
+  <a href="https://github.com/RahmaEzzatHassan/Handwritten-layout-recognition-/tree/main">Here!</a>
 </p>
 <p align="center">
   <img src="https://github.com/omar546/diginote/assets/71936776/5df0211d-53b5-449b-9a77-a0229b9fd5f9" alt="nbhjhuhuk"/>
