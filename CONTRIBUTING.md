@@ -1,6 +1,6 @@
 Contributor License Agreement
 
-Thank you for your interest in contributing to DIGINOTE (the "Project"). In order to clarify the intellectual property license granted with Contributions from any person or entity ("Contributors"), Omar Abo El-Khair and his Team ("Recipient") must have a Contributor License Agreement ("CLA") on file that has been signed by each Contributor. This license is for your protection as a Contributor as well as the protection of Omar Abo El-Khair and his Team; it does not change your rights to use your own Contributions for any other purpose.
+Thank you for your interest in contributing to DIGINOTE (the "Project"). To clarify the intellectual property license granted with Contributions from any person or entity ("Contributors"), Omar Abo El-Khair and his Team ("Recipient") must have a Contributor License Agreement ("CLA") on file that has been signed by each Contributor. This license is for your protection as a Contributor as well as the protection of Omar Abo El-Khair and his Team; it does not change your rights to use your Contributions for any other purpose.
 
 If you have not already done so, please complete and sign this Agreement and send it to [omermkawy.om@gmail.com]. Please read this document carefully before signing and keep a copy for your records.
 
