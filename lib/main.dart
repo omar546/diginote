@@ -32,15 +32,9 @@ void main() async {
   await AppCubit().initializeCamera();
   if (onBoarding != false) {
     if (token != 'null') {
-      widget = BlocProvider(
-        create: (context) => AppCubit()..createDatabase(),
-        child: HomeLayout(),
-      );
+      widget = HomeLayout();
     } else {
-      widget = BlocProvider(
-        create: (context) => AppCubit()..createDatabase(),
-        child: LoginScreen(),
-      );
+      widget = LoginScreen();
     }
   } else {
     widget = const OnBoardingScreen();

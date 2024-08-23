@@ -535,7 +535,7 @@ class AppCubit extends Cubit<AppStates> {
                 tooltip: "Logout",
                 onPressed: () {
 
-                  navigateAndFinish(context, LoginScreen());
+                  navigateTo(context, LoginScreen());
                 },
                 icon: const Icon(
                   Icons.logout_rounded,
