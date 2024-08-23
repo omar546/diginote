@@ -1,4 +1,5 @@
 import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -31,9 +32,11 @@ class NewNotesScreen extends StatelessWidget {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Image.asset(
-                            'assets/icon/icon_trans.png',
-                            opacity: const AlwaysStoppedAnimation(.3),
+                          RepaintBoundary(
+                            child: Image.asset(
+                              'assets/icon/icon_trans.png',
+                              opacity: const AlwaysStoppedAnimation(.3),
+                            ),
                           ),
                         ],
                       ),
