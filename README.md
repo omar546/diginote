@@ -1,3 +1,5 @@
+
+https://github.com/user-attachments/assets/d00a5d48-eb65-4eaf-a5b2-eba9eea2a0ec
 <h1 align="center">DIGINOTE</h1>
 
 <p align="center">A Flutter Notes app with Handwriting text & layout Recognition / digitalization features.</p>
@@ -31,3 +33,12 @@
   <img src="https://github.com/omar546/diginote/assets/71936776/929e7629-136f-4b36-ac2f-3fe0b9b26be1" alt="nbhjhuhuk"/>
   <img src="https://github.com/omar546/diginote/assets/71936776/b717926f-8384-4c1e-8705-c35f05e64cae" alt="nbhjhuhuk"/>
 </p>
+
+
+Overview on the app flow:
+
+
+
+https://github.com/user-attachments/assets/85899a14-bf61-4231-a36c-d8c022c2c21d
+
+
